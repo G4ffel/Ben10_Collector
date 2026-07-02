@@ -99,7 +99,13 @@ def api_figuras(request):
             'id': f.id,
             'nombre': f.nombre,
             'imagen_url': f.imagen.url,
-            'serie': f.serie
+            'serie': f.serie,
+            'estado': f.estado,
+            'marca': f.marca,
+            'tamano': f.tamano,
+            'estado_display': f.get_estado_display(),
+            'marca_display': f.get_marca_display(),
+            'tamano_display': f.get_tamano_display()
         })
     return JsonResponse({'figuras': data})
 

@@ -34,6 +34,25 @@ class Figura(models.Model):
         ('Alien X', 'Alien X'),
     ]
 
+    ESTADO_CHOICES = [
+        ('excelente', 'Excelente'),
+        ('bueno', 'Bueno'),
+        ('medio', 'Medio'),
+        ('malo', 'Malo'),
+    ]
+
+    MARCA_CHOICES = [
+        ('original', 'Original'),
+        ('fake', 'Fake'),
+        ('bandai', 'Bandai'),
+    ]
+
+    TAMANO_CHOICES = [
+        ('grande', 'Grande'),
+        ('mediano', 'Mediano'),
+        ('pequeno', 'Pequeño'),
+    ]
+
     nombre = models.CharField(
         max_length=100, 
         choices=ALIEN_CHOICES, 
@@ -48,6 +67,24 @@ class Figura(models.Model):
         choices=SERIE_CHOICES, 
         default='Ben 10',
         verbose_name="Serie de origen"
+    )
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,
+        default='excelente',
+        verbose_name="Estado"
+    )
+    marca = models.CharField(
+        max_length=20,
+        choices=MARCA_CHOICES,
+        default='original',
+        verbose_name="Marca"
+    )
+    tamano = models.CharField(
+        max_length=20,
+        choices=TAMANO_CHOICES,
+        default='mediano',
+        verbose_name="Tamaño"
     )
 
     class Meta:

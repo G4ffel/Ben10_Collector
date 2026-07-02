@@ -57,7 +57,7 @@
         Mis Figuras (<span class="green-text">{{ figuras_count }}</span>)
       </h2>
       <button class="btn-primary" id="openAddModalBtn" style="cursor: pointer;">
-        <span class="btn-icon"></span> + Añadir Figura
+        + Añadir Figura
       </button>
     </div>
 
@@ -74,7 +74,15 @@
         {% if figuras_classic %}
         <div class="figures-grid-omni">
           {% for figura in figuras_classic %}
-          <div class="figure-card-omni">
+          <div class="figure-card-omni" style="cursor: pointer;"
+            data-nombre="{{ figura.nombre }}"
+            data-precio="${{ figura.precio }} CLP"
+            data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
+            data-serie="{{ figura.serie }}"
+            data-estado="{{ figura.get_estado_display }}"
+            data-marca="{{ figura.get_marca_display }}"
+            data-tamano="{{ figura.get_tamano_display }}"
+            data-imagen="{{ figura.imagen.url }}">
             <div class="figure-img-wrap" style="border-bottom: none;">
               <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
             </div>
@@ -97,7 +105,8 @@
               <button class="btn-secondary edit-figure-btn"
                 style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
                 data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}">
+                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}">
                 Editar Figura
               </button>
             </div>
@@ -120,7 +129,15 @@
         {% if figuras_af %}
         <div class="figures-grid-omni">
           {% for figura in figuras_af %}
-          <div class="figure-card-omni">
+          <div class="figure-card-omni" style="cursor: pointer;"
+            data-nombre="{{ figura.nombre }}"
+            data-precio="${{ figura.precio }} CLP"
+            data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
+            data-serie="{{ figura.serie }}"
+            data-estado="{{ figura.get_estado_display }}"
+            data-marca="{{ figura.get_marca_display }}"
+            data-tamano="{{ figura.get_tamano_display }}"
+            data-imagen="{{ figura.imagen.url }}">
             <div class="figure-img-wrap" style="border-bottom: none;">
               <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
             </div>
@@ -143,7 +160,8 @@
               <button class="btn-secondary edit-figure-btn"
                 style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
                 data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}">
+                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}">
                 Editar Figura
               </button>
             </div>
@@ -166,7 +184,15 @@
         {% if figuras_ov %}
         <div class="figures-grid-omni">
           {% for figura in figuras_ov %}
-          <div class="figure-card-omni">
+          <div class="figure-card-omni" style="cursor: pointer;"
+            data-nombre="{{ figura.nombre }}"
+            data-precio="${{ figura.precio }} CLP"
+            data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
+            data-serie="{{ figura.serie }}"
+            data-estado="{{ figura.get_estado_display }}"
+            data-marca="{{ figura.get_marca_display }}"
+            data-tamano="{{ figura.get_tamano_display }}"
+            data-imagen="{{ figura.imagen.url }}">
             <div class="figure-img-wrap" style="border-bottom: none;">
               <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
             </div>
@@ -189,7 +215,8 @@
               <button class="btn-secondary edit-figure-btn"
                 style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
                 data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}">
+                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}">
                 Editar Figura
               </button>
             </div>
@@ -273,6 +300,24 @@
         </div>
 
         <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="{{ form.estado.id_for_label }}"
+            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Estado</label>
+          {{ form.estado }}
+        </div>
+
+        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="{{ form.marca.id_for_label }}"
+            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Marca</label>
+          {{ form.marca }}
+        </div>
+
+        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="{{ form.tamano.id_for_label }}"
+            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Tamaño</label>
+          {{ form.tamano }}
+        </div>
+
+        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
           <label for="{{ form.imagen.id_for_label }}" class="file-label-custom-btn" id="fileLabelBtn"
             style="margin-top: 5px; display: inline-block; text-align: center; cursor: pointer;">
             📁 Seleccionar Imagen
@@ -295,10 +340,70 @@
           </button>
           <button type="submit" class="btn-primary" id="modalFormSubmit"
             style="flex: 2; justify-content: center; padding: 12px 20px; cursor: pointer; font-family: var(--font-display); font-size: 0.75rem;">
-            <span class="btn-icon"></span> GUARDAR
+            GUARDAR
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DETALLE DE FIGURA ===== -->
+  <div class="transform-modal" id="alienDetailModal">
+    <div class="modal-overlay" id="modalDetailOverlay"></div>
+    <div class="modal-content" id="detailModalContent" style="max-width: 950px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
+      <div class="form-header-omni" id="detailModalHeader" style="margin-bottom: 0px; border-bottom: 1px solid var(--border-green); padding-bottom: 18px; display: flex; align-items: center; gap: 15px; width: 100%;">
+        <div class="omni-radar" id="detailModalRadar" style="width: 16px; height: 16px;"></div>
+        <h2 id="detailModalTitle" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">DETALLE DE FIGURA</h2>
+        <button type="button" id="modalDetailCloseX" style="margin-left: auto; background: none; border: none; color: var(--green-primary); font-size: 1.8rem; cursor: pointer; outline: none; transition: transform 0.2s ease, color 0.2s ease;">✕</button>
+      </div>
+
+      <div class="detail-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; align-items: stretch;">
+        <!-- Imagen del Alien -->
+        <div class="detail-img-wrap" id="detailAlienImgWrap" style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: #ffffff; height: 100%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); transition: var(--transition);">
+          <img id="detailAlienImg" src="" alt="Alien" style="width: 100%; height: 100%; object-fit: contain; transition: var(--transition);" />
+        </div>
+
+        <!-- Información del Alien (HUD Boxes) -->
+        <div class="detail-info-wrap" style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+            <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">SERIE DE ORIGEN</span>
+            <span id="detailAlienSerie" style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: #ffffff; text-transform: uppercase;">-</span>
+          </div>
+
+          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+            <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">PRECIO DE ADQUISICIÓN</span>
+            <span id="detailAlienPrecio" class="green-text" style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; text-shadow: 0 0 10px var(--green-primary);">-</span>
+          </div>
+
+          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+            <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">FECHA DE ADQUISICIÓN</span>
+            <span id="detailAlienFecha" style="font-family: var(--font-body); font-size: 1.15rem; color: var(--text-secondary); font-weight: 600;">-</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+              <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">ESTADO</span>
+              <span id="detailAlienEstado" style="font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; text-transform: capitalize;">-</span>
+            </div>
+
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+              <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">MARCA</span>
+              <span id="detailAlienMarca" style="font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; text-transform: capitalize;">-</span>
+            </div>
+          </div>
+
+          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+            <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">TAMAÑO</span>
+            <span id="detailAlienTamano" style="font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; text-transform: capitalize;">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; width: 100%; margin-top: 10px;">
+        <button type="button" class="btn-primary" id="modalDetailCloseBtn" style="width: 100%; justify-content: center; padding: 14px 20px; cursor: pointer; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
+          CERRAR DETALLE GALÁCTICO
+        </button>
+      </div>
     </div>
   </div>
 

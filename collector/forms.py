@@ -4,7 +4,7 @@ from .models import Figura, Perfil
 class FiguraForm(forms.ModelForm):
     class Meta:
         model = Figura
-        fields = ['nombre', 'precio', 'imagen', 'fecha_adquisicion', 'serie']
+        fields = ['nombre', 'precio', 'imagen', 'fecha_adquisicion', 'serie', 'estado', 'marca', 'tamano']
         widgets = {
             'nombre': forms.Select(attrs={
                 'class': 'cta-input custom-input select-custom'
@@ -22,6 +22,15 @@ class FiguraForm(forms.ModelForm):
                 'type': 'date'
             }),
             'serie': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'estado': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'marca': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'tamano': forms.Select(attrs={
                 'class': 'cta-input custom-input select-custom'
             })
         }
