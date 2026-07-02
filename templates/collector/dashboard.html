@@ -96,7 +96,7 @@
       style="background: var(--dark-2); border: 1px solid var(--border-green); border-radius: 12px; padding: 30px; margin-bottom: 40px; box-shadow: 0 0 15px rgba(0,255,65,0.02);">
       <h2 class="sub-title-omni"
         style="border: none; padding-left: 0; font-size: 1.2rem; margin-bottom: 25px; font-family: var(--font-display); color: var(--green-primary);">
-        📊 Completitud de Base de Datos Galáctica (Aliens Únicos)
+        Completitud de Base de Datos Galáctica (Aliens Únicos)
       </h2>
       <div style="display: flex; flex-direction: column; gap: 20px;">
 
@@ -104,7 +104,7 @@
         <div class="progress-bar-row">
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
-            <span>🟢 Ben 10 (Clásico)</span>
+            <span>Ben 10 (Clásico)</span>
             <span class="green-text">{{ completitud_classic }}% (11 posibles)</span>
           </div>
           <div
@@ -119,7 +119,7 @@
         <div class="progress-bar-row">
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
-            <span>🔵 Ben 10: Alien Force</span>
+            <span>Ben 10: Alien Force</span>
             <span style="color: #00ccff;">{{ completitud_af }}% (10 posibles)</span>
           </div>
           <div
@@ -134,7 +134,7 @@
         <div class="progress-bar-row">
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
-            <span>🟣 Ben 10: Omniverse</span>
+            <span>Ben 10: Omniverse</span>
             <span style="color: #d880ff;">{{ completitud_ov }}% (21 posibles)</span>
           </div>
           <div
@@ -201,12 +201,12 @@
               <div style="display: flex; gap: 8px; justify-content: center;">
                 <a href="{% url 'coleccion' %}?editar={{ figura.id }}" class="btn-secondary"
                   style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: var(--border-green);">
-                  ✏️ Editar
+                  Editar
                 </a>
                 <a href="{% url 'eliminar_figura' figura.id %}" class="btn-secondary"
                   style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333;"
                   onclick="return confirm('¿Seguro que deseas desintegrar a {{ figura.nombre }} de la base de datos galáctica?');">
-                  🗑️ Eliminar
+                  Eliminar
                 </a>
               </div>
             </td>
@@ -216,7 +216,7 @@
       </table>
       {% else %}
       <div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-body);">
-        🛸 Base de datos vacía. Registra figuras en la colección para visualizar analíticas.
+        Base de datos vacía. Registra figuras en la colección para visualizar analíticas.
       </div>
       {% endif %}
     </div>
@@ -362,8 +362,8 @@
 
           <!-- Botón de Edición (Solo Engranaje) -->
           <button class="edit-profile-trigger" id="switchToEditBtn"
-            style="font-size: 1.1rem; padding: 6px 8px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 15px; z-index: 10;"
-            title="Configurar Perfil" onclick="openPerfilEditPanel()">⚙️</button>
+            style="font-size: 1.1rem; padding: 6px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 15px; z-index: 10;"
+            title="Configurar Perfil" onclick="openPerfilEditPanel()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block; transition: transform 0.3s ease;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
 
           <!-- Avatar y Cabecera de Identidad -->
           <div class="perfil-avatar-container">

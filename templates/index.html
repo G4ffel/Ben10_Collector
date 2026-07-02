@@ -64,10 +64,10 @@
       </p>
       <div class="hero-actions">
         <a href="{% url 'coleccion' %}" class="btn-primary" id="heroPrimary">
-          <span class="btn-icon">⬡</span> Ver Colección
+          <span class="btn-icon"></span> Ver Colección
         </a>
         <a href="{% url 'dashboard' %}" class="btn-secondary" id="heroSecondary">
-          Añadir Figura →
+          Añadir Figura
         </a>
       </div>
       <div class="hero-stats">
@@ -99,12 +99,8 @@
             <div class="omnitrix-core">
               <div class="omnitrix-symbol">
                 <div class="omnitrix-inner-ring"></div>
-                <svg class="alien-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <ellipse cx="50" cy="38" rx="20" ry="24" fill="#00ff41" opacity="0.9" />
-                  <ellipse cx="42" cy="32" rx="5" ry="7" fill="#001a00" />
-                  <ellipse cx="58" cy="32" rx="5" ry="7" fill="#001a00" />
-                  <path d="M 30 65 Q 50 55 70 65 L 68 80 Q 50 75 32 80 Z" fill="#00ff41" opacity="0.9" />
-                </svg>
+                <img src="/media/omnitrix/Ben_10_Omnitrix.png" class="omnitrix-img img-1" alt="Omnitrix Classic">
+                <img src="/media/omnitrix/hi-there-i-made-some-omnitrix-watch-faces-for-the-samsung-v0-zmy7jxeb1z7b1.png" class="omnitrix-img img-2" alt="Omnitrix 3D">
               </div>
             </div>
           </div>
@@ -265,8 +261,8 @@
 
           <!-- Botón de Edición (Solo Engranaje) -->
           <button class="edit-profile-trigger" id="switchToEditBtn"
-            style="font-size: 1.1rem; padding: 6px 8px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 15px; z-index: 10;"
-            title="Configurar Perfil" onclick="openPerfilEditPanel()">⚙️</button>
+            style="font-size: 1.1rem; padding: 6px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 15px; z-index: 10;"
+            title="Configurar Perfil" onclick="openPerfilEditPanel()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block; transition: transform 0.3s ease;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
 
           <!-- Avatar y Cabecera de Identidad -->
           <div class="perfil-avatar-container">

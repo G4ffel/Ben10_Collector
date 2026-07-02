@@ -105,20 +105,11 @@ img { max-width: 100%; display: block; }
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--green-primary) 30%, var(--green-dark) 70%);
-  border: 2px solid var(--green-primary);
+  background: url('/media/omnitrix/Ben_10_Omnitrix.png') center/cover no-repeat;
+  border: 1px solid var(--green-primary);
   box-shadow: 0 0 15px var(--green-primary), inset 0 0 10px rgba(0, 200, 50, 0.3);
   animation: omni-pulse 2s ease-in-out infinite;
   position: relative;
-}
-
-.omnitrix-mini::after {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  border-radius: 50%;
-  background: var(--dark-1);
-  border: 1.5px solid rgba(0,255,65,0.5);
 }
 
 @keyframes omni-pulse {
@@ -552,16 +543,34 @@ img { max-width: 100%; display: block; }
   animation: ring-spin 8s linear infinite;
 }
 
-.alien-svg {
-  width: 70px;
-  height: 70px;
-  filter: drop-shadow(0 0 10px var(--green-primary));
-  animation: alien-breathe 3s ease-in-out infinite;
+.omnitrix-img {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.5));
+  transition: opacity 1s ease-in-out;
 }
 
-@keyframes alien-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+.omnitrix-img.img-1 {
+  animation: fade-alternate-1 8s infinite ease-in-out;
+}
+
+.omnitrix-img.img-2 {
+  animation: fade-alternate-2 8s infinite ease-in-out;
+}
+
+@keyframes fade-alternate-1 {
+  0%, 40% { opacity: 1; }
+  50%, 90% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fade-alternate-2 {
+  0%, 40% { opacity: 0; }
+  50%, 90% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .orbit {
