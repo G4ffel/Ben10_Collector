@@ -316,7 +316,7 @@
               <select name="rango" class="cta-input custom-input select-custom"
                 style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
                 {% for val, label in perfil_form.fields.rango.choices %}
-                <option value="{{ val }}" {% if perfil.rango==val %}selected{% endif %}>{{ label }}</option>
+                <option value="{{ val }}" {% if perfil.rango == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -327,7 +327,7 @@
               <select name="omnitrix_favorito" class="cta-input custom-input select-custom"
                 style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
                 {% for val, label in perfil_form.fields.omnitrix_favorito.choices %}
-                <option value="{{ val }}" {% if perfil.omnitrix_favorito==val %}selected{% endif %}>{{ label }}</option>
+                <option value="{{ val }}" {% if perfil.omnitrix_favorito == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -338,7 +338,7 @@
               <select name="alien_favorito" class="cta-input custom-input select-custom"
                 style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
                 {% for alien in todos_los_aliens_list %}
-                <option value="{{ alien }}" {% if perfil.alien_favorito==alien %}selected{% endif %}>{{ alien }}
+                <option value="{{ alien }}" {% if perfil.alien_favorito == alien %}selected{% endif %}>{{ alien }}
                 </option>
                 {% endfor %}
               </select>
@@ -358,12 +358,12 @@
 
         <!-- CARD 1: VISTA DE PERFIL (ESTILO JOHN DOE / HUD PREMIUM) -->
         <div id="profileViewCard"
-          style="width: 100%; text-align: left; display: flex; flex-direction: column; transition: opacity 0.3s ease;">
+          style="width: 100%; text-align: left; display: flex; flex-direction: column; transition: opacity 0.3s ease; position: relative;">
 
-          <!-- Botón de Edición -->
+          <!-- Botón de Edición (Solo Engranaje) -->
           <button class="edit-profile-trigger" id="switchToEditBtn"
-            style="font-size: 1.1rem; padding: 6px 8px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;"
-            title="Configurar Perfil">⚙</button>
+            style="font-size: 1.1rem; padding: 6px 8px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 15px; z-index: 10;"
+            title="Configurar Perfil" onclick="openPerfilEditPanel()">⚙️</button>
 
           <!-- Avatar y Cabecera de Identidad -->
           <div class="perfil-avatar-container">
@@ -638,6 +638,23 @@
         });
       }
     });
+
+    // Función global para abrir el panel de configuración de perfil
+    window.openPerfilEditPanel = function () {
+      const ap = document.getElementById('avatarPickerSection');
+      const spA = document.getElementById('subPanelAvatar');
+      const spD = document.getElementById('subPanelData');
+      const pm = document.getElementById('profileModal');
+
+      if (pm && pm.style.display !== 'flex') {
+        pm.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+
+      if (ap) ap.style.display = 'flex';
+      if (spA) spA.style.display = 'none';
+      if (spD) spD.style.display = 'flex';
+    };
   </script>
 </body>
 

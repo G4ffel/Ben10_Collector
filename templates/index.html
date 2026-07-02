@@ -219,7 +219,7 @@
               <select name="rango" class="cta-input custom-input select-custom"
                 style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
                 {% for val, label in perfil_form.fields.rango.choices %}
-                <option value="{{ val }}" {% if perfil.rango==val %}selected{% endif %}>{{ label }}</option>
+                <option value="{{ val }}" {% if perfil.rango == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -230,7 +230,7 @@
               <select name="omnitrix_favorito" class="cta-input custom-input select-custom"
                 style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
                 {% for val, label in perfil_form.fields.omnitrix_favorito.choices %}
-                <option value="{{ val }}" {% if perfil.omnitrix_favorito==val %}selected{% endif %}>{{ label }}</option>
+                <option value="{{ val }}" {% if perfil.omnitrix_favorito == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -241,7 +241,7 @@
               <select name="alien_favorito" class="cta-input custom-input select-custom"
                 style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
                 {% for alien in todos_los_aliens_list %}
-                <option value="{{ alien }}" {% if perfil.alien_favorito==alien %}selected{% endif %}>{{ alien }}
+                <option value="{{ alien }}" {% if perfil.alien_favorito == alien %}selected{% endif %}>{{ alien }}
                 </option>
                 {% endfor %}
               </select>
