@@ -88,6 +88,32 @@ class Perfil(models.Model):
     omnitrix_favorito = models.CharField(max_length=50, choices=OMNITRIX_CHOICES, default='Clásico', verbose_name="Omnitrix Favorito")
     avatar = models.CharField(max_length=50, choices=AVATAR_CHOICES, default='icon1', verbose_name="Avatar del Fanático")
     rango = models.CharField(max_length=50, choices=RANGO_CHOICES, default='recluta', verbose_name="Rango del Coleccionista")
+    fav_figuras = models.CharField(max_length=255, default="", blank=True, verbose_name="Figuras Favoritas")
+
+    def get_fav_figuras(self):
+        if not self.fav_figuras:
+            return [None] * 5
+        parts = self.fav_figuras.split(',')
+        ids = []
+        for x in parts:
+            val = x.strip()
+            if val and val.isdigit():
+                ids.append(int(val))
+            else:
+                ids.append(None)
+        while len(ids) < 5:
+            ids.append(None)
+        
+        figures = []
+        for fid in ids[:5]:
+            if fid is not None:
+                try:
+                    figures.append(Figura.objects.get(id=fid))
+                except Figura.DoesNotExist:
+                    figures.append(None)
+            else:
+                figures.append(None)
+        return figures
 
     @property
     def avatar_url(self):

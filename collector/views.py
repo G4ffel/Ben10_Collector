@@ -89,6 +89,20 @@ def editar_perfil(request):
             form.save()
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
+from django.http import JsonResponse
+
+def api_figuras(request):
+    figuras = Figura.objects.all().order_by('-fecha_adquisicion')
+    data = []
+    for f in figuras:
+        data.append({
+            'id': f.id,
+            'nombre': f.nombre,
+            'imagen_url': f.imagen.url,
+            'serie': f.serie
+        })
+    return JsonResponse({'figuras': data})
+
 
 
 

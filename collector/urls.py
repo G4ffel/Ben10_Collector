@@ -7,4 +7,5 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('coleccion/eliminar/<int:id>/', views.eliminar_figura, name='eliminar_figura'),
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
+    path('api/figuras/', views.api_figuras, name='api_figuras'),
 ]
