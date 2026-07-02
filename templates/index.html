@@ -18,13 +18,21 @@
 
 <body>
 
+  <!-- ===== BACKGROUND ANIMADO GLOBAL ===== -->
+  <div class="global-bg">
+    <div class="energy-ring ring-1"></div>
+    <div class="energy-ring ring-2"></div>
+    <div class="energy-ring ring-3"></div>
+    <div class="particles-container" id="global-particles"></div>
+  </div>
+
   <!-- ===== NAVBAR ===== -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
-      <div class="nav-logo">
+      <a href="{% url 'home' %}" class="nav-logo">
         <div class="omnitrix-mini"></div>
         <span class="logo-text">BEN <span class="logo-num">10</span></span>
-      </div>
+      </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="{% url 'home' %}" class="nav-link active">Inicio</a></li>
         <li><a href="{% url 'coleccion' %}" class="nav-link">Colección</a></li>
@@ -42,12 +50,6 @@
 
   <!-- ===== HERO SECTION ===== -->
   <section class="hero" id="home">
-    <div class="hero-bg">
-      <div class="energy-ring ring-1"></div>
-      <div class="energy-ring ring-2"></div>
-      <div class="energy-ring ring-3"></div>
-      <div class="particles-container" id="particles"></div>
-    </div>
     <div class="hero-content">
       <div class="hero-badge">
         <span class="badge-dot"></span>
@@ -119,6 +121,7 @@
     </div>
   </section>
 
+  <script src="{% static 'js/bg-particles.js' %}"></script>
   <script src="{% static 'js/app.js' %}"></script>
 
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
@@ -244,7 +247,7 @@
             </div>
 
             <button type="submit" class="btn-primary"
-              style="justify-content: center; padding: 11px; font-family: var(--font-display); font-size: 0.7rem; margin-top: 6px; cursor: pointer; width: 100%;">⚡
+              style="justify-content: center; padding: 11px; font-family: var(--font-display); font-size: 0.7rem; margin-top: 6px; cursor: pointer; width: 100%;">
               APLICAR AJUSTES</button>
           </form>
         </div>
