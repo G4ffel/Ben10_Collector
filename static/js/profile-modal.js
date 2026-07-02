@@ -265,9 +265,18 @@ document.addEventListener('DOMContentLoaded', () => {
               opt.setAttribute('data-fig-id', fig.id);
               opt.setAttribute('title', `${fig.nombre} (${fig.serie})`);
 
+              // Estilos en línea para evitar caché de CSS
+              opt.style.borderRadius = '50%';
+              opt.style.overflow = 'hidden';
+              opt.style.position = 'relative';
+              opt.style.boxSizing = 'border-box';
+
               const img = document.createElement('img');
               img.src = fig.imagen_url;
               img.alt = fig.nombre;
+              img.style.position = 'absolute';
+              img.style.top = '0';
+              img.style.left = '0';
               img.style.width = '100%';
               img.style.height = '100%';
               img.style.objectFit = 'cover';
@@ -293,6 +302,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.className = 'avatar-option-quick remove-fav-fig-btn';
     btn.setAttribute('data-fig-id', 'None');
     btn.setAttribute('title', 'Vaciar espacio');
+
+    // Estilos en línea para evitar caché de CSS
+    btn.style.borderRadius = '50%';
+    btn.style.overflow = 'hidden';
+    btn.style.position = 'relative';
+    btn.style.boxSizing = 'border-box';
     btn.style.border = '1px dashed rgba(255, 0, 0, 0.3)';
     btn.style.background = 'rgba(255, 0, 0, 0.04)';
     btn.style.display = 'flex';

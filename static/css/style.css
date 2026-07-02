@@ -2489,9 +2489,8 @@ input[type=number] {
 
 /* QUICK AVATAR PICKER OPTION */
 .avatar-option-quick {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1/1;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
   border: 2px solid rgba(0, 255, 65, 0.15);
   overflow: hidden;
@@ -2502,6 +2501,9 @@ input[type=number] {
 }
 
 .avatar-option-quick img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border-radius: 50%;
