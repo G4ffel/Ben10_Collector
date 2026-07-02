@@ -1,0 +1,565 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ben 10 | Omnitrix Universe</title>
+  <meta name="description"
+    content="Entra al universo de Ben 10. Transforma, combate y descubre a todos los aliens del Omnitrix." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <div class="omnitrix-mini"></div>
+        <span class="logo-text">BEN <span class="logo-num">10</span></span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="{% url 'home' %}" class="nav-link active">Inicio</a></li>
+        <li><a href="{% url 'coleccion' %}" class="nav-link">Colección</a></li>
+        <li><a href="{% url 'dashboard' %}" class="nav-link">Panel</a></li>
+      </ul>
+      <button class="nav-profile-btn" id="openProfileBtn">
+        <img src="{{ perfil.avatar_url }}" class="nav-profile-avatar-img" alt="Avatar">
+        <span class="nav-profile-name">{{ perfil.nombre }}</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="energy-ring ring-1"></div>
+      <div class="energy-ring ring-2"></div>
+      <div class="energy-ring ring-3"></div>
+      <div class="particles-container" id="particles"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        OMNITRIX ACTIVADO
+      </div>
+      <h1 class="hero-title">
+        <span class="hero-sub">El universo de</span>
+        <span class="hero-main">BEN <span class="green-text">10</span></span>
+        <span class="hero-tag">Miles de aliens. Un héroe.</span>
+      </h1>
+      <p class="hero-desc">
+        Con el poder del Omnitrix, Benjamin Tennyson puede transformarse en cualquiera de los 10 aliens más poderosos de
+        la galaxia. ¿Estás listo para descubrirlos?
+      </p>
+      <div class="hero-actions">
+        <a href="{% url 'coleccion' %}" class="btn-primary" id="heroPrimary">
+          <span class="btn-icon">⬡</span> Ver Colección
+        </a>
+        <a href="{% url 'dashboard' %}" class="btn-secondary" id="heroSecondary">
+          Añadir Figura →
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">{{ total_classic }}</span>
+          <span class="stat-label">Ben 10</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">{{ total_af }}</span>
+          <span class="stat-label">Alien Force</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">{{ total_ov }}</span>
+          <span class="stat-label">Omniverse</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">{{ total_figuras }}</span>
+          <span class="stat-label">Totales</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="omnitrix-main">
+        <div class="omnitrix-outer">
+          <div class="omnitrix-mid">
+            <div class="omnitrix-core">
+              <div class="omnitrix-symbol">
+                <div class="omnitrix-inner-ring"></div>
+                <svg class="alien-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="50" cy="38" rx="20" ry="24" fill="#00ff41" opacity="0.9" />
+                  <ellipse cx="42" cy="32" rx="5" ry="7" fill="#001a00" />
+                  <ellipse cx="58" cy="32" rx="5" ry="7" fill="#001a00" />
+                  <path d="M 30 65 Q 50 55 70 65 L 68 80 Q 50 75 32 80 Z" fill="#00ff41" opacity="0.9" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="orbit orbit-1">
+          <div class="orbit-dot"></div>
+        </div>
+        <div class="orbit orbit-2">
+          <div class="orbit-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-arrow"></div>
+      <span>Desplaza para explorar</span>
+    </div>
+  </section>
+
+  <script src="{% static 'js/app.js' %}"></script>
+
+  <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
+  <div class="modal-container" id="profileModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.65);">
+    <div class="modal-overlay" id="profileModalOverlay" style="position: absolute; width: 100%; height: 100%;"></div>
+
+    <!-- CARD CONTENEDORA COMPUESTA (FLEX ROW PARA PANEL DIVIDIDO) -->
+    <div class="modal-content-wrapper"
+      style="max-width: 820px; width: 95%; background: var(--dark-2); border: 1px solid var(--border-green); border-radius: 16px; position: relative; z-index: 1001; box-shadow: 0 0 35px rgba(0, 255, 65, 0.18); box-sizing: border-box; display: flex; flex-direction: row; overflow: hidden; transition: all 0.3s ease;">
+
+      <!-- COLUMNA IZQUIERDA: PANEL DINÁMICO DE CONFIGURACIÓN (Oculto por defecto, animado) -->
+      <div id="avatarPickerSection"
+        style="flex: 1.1; border-right: 1px solid rgba(0, 255, 65, 0.15); padding: 30px; display: none; flex-direction: column; background: rgba(0, 0, 0, 0.25); animation: slideInLeft 0.35s ease; box-sizing: border-box;">
+
+        <!-- SUB-PANEL 1: GALERÍA DE AVATARES -->
+        <div id="subPanelAvatar" style="display: none; flex-direction: column; height: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <div>
+              <h3
+                style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin: 0; letter-spacing: 0.5px;">
+                Editar el avatar</h3>
+              <p
+                style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 0; font-family: var(--font-body);">
+                Elige de la galería del Omnitrix</p>
+            </div>
+            <button type="button" class="close-picker-btn"
+              style="background: none; border: none; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; outline: none; transition: var(--transition);">✕</button>
+          </div>
+
+          <form id="quickAvatarForm" method="POST" action="{% url 'editar_perfil' %}" style="margin: 0; padding: 0;">
+            {% csrf_token %}
+            <input type="hidden" name="nombre" value="{{ perfil.nombre }}">
+            <input type="hidden" name="alien_favorito" value="{{ perfil.alien_favorito }}">
+            <input type="hidden" name="omnitrix_favorito" value="{{ perfil.omnitrix_favorito }}">
+            <input type="hidden" name="rango" value="{{ perfil.rango }}">
+            <input type="hidden" id="quickAvatarInput" name="avatar" value="{{ perfil.avatar }}">
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px;">
+              <div class="avatar-option-quick {% if perfil.avatar == 'icon1' %}active{% endif %}" data-quick-val="icon1"
+                title="Ben Clásico">
+                <img src="/media/icon/017fb5a61c2e3d7c884717549a991708.jpg" alt="Icono 1">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'icon2' %}active{% endif %}" data-quick-val="icon2"
+                title="Ben Alien Force">
+                <img src="/media/icon/3ac3f32d4297ec19f726dc17c2d59067.jpg" alt="Icono 2">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'icon3' %}active{% endif %}" data-quick-val="icon3"
+                title="Ben Omniverse">
+                <img src="/media/icon/GCUGerJWUAAaIYi.jpg" alt="Icono 3">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'icon4' %}active{% endif %}" data-quick-val="icon4"
+                title="Ben Goop">
+                <img src="/media/icon/ben-gooppng.png" alt="Icono 4">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'icon5' %}active{% endif %}" data-quick-val="icon5"
+                title="Alien">
+                <img src="/media/icon/da92536834d09f7e083f5edccab9c04a.jpg" alt="Icono 5">
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- SUB-PANEL 2: AJUSTES DE DATOS (REEMPLAZA INTERFAZ ANTERIOR) -->
+        <div id="subPanelData" style="display: none; flex-direction: column; height: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <div>
+              <h3
+                style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin: 0; letter-spacing: 0.5px;">
+                Ajustes de Perfil</h3>
+              <p
+                style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 0; font-family: var(--font-body);">
+                Personaliza tu identidad plomero</p>
+            </div>
+            <button type="button" class="close-picker-btn"
+              style="background: none; border: none; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; outline: none; transition: var(--transition);">✕</button>
+          </div>
+
+          <form id="quickDataForm" method="POST" action="{% url 'editar_perfil' %}"
+            style="display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0;">
+            {% csrf_token %}
+            <input type="hidden" name="avatar" value="{{ perfil.avatar }}">
+
+            <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-family: var(--font-display); font-size: 0.65rem; color: var(--text-secondary);">Nombre
+                de Coleccionista</label>
+              <input type="text" name="nombre" class="cta-input custom-input" value="{{ perfil.nombre }}" required
+                style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
+            </div>
+
+            <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-family: var(--font-display); font-size: 0.65rem; color: var(--text-secondary);">Rango
+                del Coleccionista</label>
+              <select name="rango" class="cta-input custom-input select-custom"
+                style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
+                {% for val, label in perfil_form.fields.rango.choices %}
+                <option value="{{ val }}" {% if perfil.rango==val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-family: var(--font-display); font-size: 0.65rem; color: var(--text-secondary);">Reloj
+                Favorito</label>
+              <select name="omnitrix_favorito" class="cta-input custom-input select-custom"
+                style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
+                {% for val, label in perfil_form.fields.omnitrix_favorito.choices %}
+                <option value="{{ val }}" {% if perfil.omnitrix_favorito==val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-family: var(--font-display); font-size: 0.65rem; color: var(--text-secondary);">Alien
+                Favorito</label>
+              <select name="alien_favorito" class="cta-input custom-input select-custom"
+                style="font-size: 0.8rem; padding: 8px 10px; font-family: var(--font-body);">
+                {% for alien in todos_los_aliens_list %}
+                <option value="{{ alien }}" {% if perfil.alien_favorito==alien %}selected{% endif %}>{{ alien }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" class="btn-primary"
+              style="justify-content: center; padding: 11px; font-family: var(--font-display); font-size: 0.7rem; margin-top: 6px; cursor: pointer; width: 100%;">⚡
+              APLICAR AJUSTES</button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: TARJETA DE PERFIL (John Doe) -->
+      <div id="profileMainColumn"
+        style="flex: 1; display: flex; flex-direction: column; min-width: 320px; box-sizing: border-box;">
+
+        <!-- CARD 1: VISTA DE PERFIL (ESTILO JOHN DOE / HUD PREMIUM) -->
+        <div id="profileViewCard"
+          style="width: 100%; text-align: left; display: flex; flex-direction: column; transition: opacity 0.3s ease;">
+
+          <!-- Botón de Edición (Solo Engranaje) -->
+          <button class="edit-profile-trigger" id="switchToEditBtn"
+            style="font-size: 1.1rem; padding: 6px 8px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 15px; z-index: 10;"
+            title="Configurar Perfil" onclick="openPerfilEditPanel()">⚙️</button>
+
+          <!-- Avatar y Cabecera de Identidad -->
+          <div class="perfil-avatar-container">
+            <!-- Foto redonda con overlay de lápiz en hover -->
+            <div class="perfil-avatar-circle-large" id="triggerAvatarPickBtn" title="Cambiar avatar">
+              <img src="{{ perfil.avatar_url }}" alt="Avatar de Fanático">
+              <div class="perfil-avatar-overlay-edit">✎</div>
+            </div>
+
+            <h2 class="perfil-name-large" id="domProfileName">{{ perfil.nombre }}</h2>
+            <span class="rango-badge {{ perfil_rango_class }}" id="domProfileRango">{{ perfil_rango }}</span>
+            <div class="perfil-subtitle">
+              Favorito: <span class="green-text" id="domProfileAlien" style="font-weight: 600;">{{ perfil.alien_favorito
+                }}</span> | Reloj: <span class="green-text" id="domProfileReloj" style="font-weight: 600;">{{
+                perfil.get_omnitrix_favorito_display }}</span>
+            </div>
+          </div>
+
+          <!-- Fila de Estadísticas por Serie -->
+          <div class="perfil-stats-row">
+            <div class="perfil-stat-block">
+              <span class="perfil-stat-val">{{ perfil_count_ben10 }}</span>
+              <span class="perfil-stat-lbl">Ben 10</span>
+            </div>
+            <div class="perfil-stat-block">
+              <span class="perfil-stat-val">{{ perfil_count_af }}</span>
+              <span class="perfil-stat-lbl">Alien Force</span>
+            </div>
+            <div class="perfil-stat-block">
+              <span class="perfil-stat-val">{{ perfil_count_ov }}</span>
+              <span class="perfil-stat-lbl">Omniverse</span>
+            </div>
+            <div class="perfil-stat-block">
+              <span class="perfil-stat-val">{{ perfil_figuras_count }}</span>
+              <span class="perfil-stat-lbl">Totales</span>
+            </div>
+          </div>
+
+          <!-- Panel de Aliens Favoritos (5 imágenes con fallback) -->
+          <div style="padding: 25px 35px 35px 35px; box-sizing: border-box;">
+            <span class="perfil-gallery-title">Colección de Aliens Favoritos</span>
+            <div class="perfil-gallery-grid">
+              <div class="perfil-gallery-slot" title="Alien 1">
+                <img src="/static/images/alien1.png" alt="" onerror="this.style.display='none';">
+              </div>
+              <div class="perfil-gallery-slot" title="Alien 2">
+                <img src="/static/images/alien2.png" alt="" onerror="this.style.display='none';">
+              </div>
+              <div class="perfil-gallery-slot" title="Alien 3">
+                <img src="/static/images/alien3.png" alt="" onerror="this.style.display='none';">
+              </div>
+              <div class="perfil-gallery-slot" title="Alien 4">
+                <img src="/static/images/alien4.png" alt="" onerror="this.style.display='none';">
+              </div>
+              <div class="perfil-gallery-slot" title="Alien 5">
+                <img src="/static/images/alien5.png" alt="" onerror="this.style.display='none';">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 25px;">
+              <button type="button" class="btn-secondary" id="closeProfileBtn"
+                style="flex: 1; justify-content: center; padding: 12px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.75rem;">CERRAR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const pModal = document.getElementById('profileModal');
+      const openPBtn = document.getElementById('openProfileBtn');
+      const overlayP = document.getElementById('profileModalOverlay');
+
+      const viewCard = document.getElementById('profileViewCard');
+      const closeProfile = document.getElementById('closeProfileBtn');
+
+      // Elementos del panel lateral de configuración
+      const avatarPickerSection = document.getElementById('avatarPickerSection');
+      const subPanelAvatar = document.getElementById('subPanelAvatar');
+      const subPanelData = document.getElementById('subPanelData');
+
+      // Triggers
+      const triggerAvatarPickBtn = document.getElementById('triggerAvatarPickBtn');
+      const switchToEdit = document.getElementById('switchToEditBtn');
+
+      // Formularios e Inputs
+      const quickAvatarOptions = document.querySelectorAll('.avatar-option-quick');
+      const quickAvatarInput = document.getElementById('quickAvatarInput');
+      const quickAvatarForm = document.getElementById('quickAvatarForm');
+      const quickDataForm = document.getElementById('quickDataForm');
+
+      const openProfileModal = () => {
+        viewCard.style.display = 'flex';
+        avatarPickerSection.style.display = 'none';
+        pModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeProfileModal = () => {
+        pModal.style.display = 'none';
+        document.body.style.overflow = '';
+      };
+
+      // Control del fallback para los slots de la galería de aliens favoritos
+      document.querySelectorAll('.perfil-gallery-slot img').forEach(img => {
+        if (img.complete) {
+          if (img.naturalWidth > 0) {
+            img.parentElement.classList.add('has-img');
+          }
+        }
+        img.onload = () => {
+          img.parentElement.classList.add('has-img');
+        };
+      });
+
+      if (openPBtn) openPBtn.addEventListener('click', openProfileModal);
+      if (closeProfile) closeProfile.addEventListener('click', closeProfileModal);
+      if (overlayP) overlayP.addEventListener('click', closeProfileModal);
+
+      // Cerrar panel lateral (para botones ✕)
+      document.querySelectorAll('.close-picker-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          avatarPickerSection.style.display = 'none';
+        });
+      });
+
+      // Abrir Sub-panel de Avatares (al clickear la foto)
+      if (triggerAvatarPickBtn) {
+        triggerAvatarPickBtn.addEventListener('click', () => {
+          subPanelData.style.display = 'none';
+          subPanelAvatar.style.display = 'flex';
+          avatarPickerSection.style.display = 'flex';
+        });
+      }
+
+      // Abrir Sub-panel de Datos (al clickear el engranaje)
+      if (switchToEdit) {
+        switchToEdit.addEventListener('click', () => {
+          subPanelAvatar.style.display = 'none';
+          subPanelData.style.display = 'flex';
+          avatarPickerSection.style.display = 'flex';
+        });
+      }
+
+      // Selección instantánea de avatar (AJAX sin refresco de pantalla)
+      if (quickAvatarOptions && quickAvatarInput && quickAvatarForm) {
+        quickAvatarOptions.forEach(opt => {
+          opt.addEventListener('click', () => {
+            const selectedVal = opt.getAttribute('data-quick-val');
+
+            quickAvatarOptions.forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+
+            quickAvatarInput.value = selectedVal;
+
+            // Sincronizar en el formulario de datos para persistencia de otros cambios
+            const formAvatarHidden = quickDataForm.querySelector('input[name="avatar"]');
+            if (formAvatarHidden) formAvatarHidden.value = selectedVal;
+
+            const formData = new FormData(quickAvatarForm);
+            fetch(quickAvatarForm.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+            })
+              .then(res => {
+                if (res.ok) {
+                  const avatarMap = {
+                    'icon1': '/media/icon/017fb5a61c2e3d7c884717549a991708.jpg',
+                    'icon2': '/media/icon/3ac3f32d4297ec19f726dc17c2d59067.jpg',
+                    'icon3': '/media/icon/GCUGerJWUAAaIYi.jpg',
+                    'icon4': '/media/icon/ben-gooppng.png',
+                    'icon5': '/media/icon/da92536834d09f7e083f5edccab9c04a.jpg'
+                  };
+                  const newUrl = avatarMap[selectedVal] || avatarMap['icon1'];
+
+                  document.querySelectorAll('.perfil-avatar-circle-large img').forEach(img => {
+                    img.src = newUrl;
+                  });
+                  document.querySelectorAll('.nav-profile-avatar-img').forEach(img => {
+                    img.src = newUrl;
+                  });
+                }
+              })
+              .catch(err => console.error('Error al actualizar el avatar:', err));
+          });
+        });
+      }
+
+      // Formulario de Datos por AJAX (sin refresco de pantalla)
+      if (quickDataForm) {
+        quickDataForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(quickDataForm);
+          fetch(quickDataForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+            .then(res => {
+              if (res.ok) {
+                const nombre = formData.get('nombre');
+                const rangoVal = formData.get('rango');
+                const omnitrixVal = formData.get('omnitrix_favorito');
+                const alienVal = formData.get('alien_favorito');
+
+                // Mapeo de rangos a etiquetas
+                const rangoLabels = {
+                  'recluta': 'Recluta Plomero',
+                  'cadete': 'Cadete de la Academia',
+                  'elite': 'Plomero de Élite',
+                  'magister': 'Magister Plomero',
+                  'omni': 'Portador del Omnitrix',
+                  'protector': 'Protector de la Tierra',
+                  'heroe': 'Héroe del Cosmos'
+                };
+
+                // Mapeo de rangos a clases CSS de color
+                const rangoClasses = {
+                  'recluta': 'rango-novato',
+                  'cadete': 'rango-novato',
+                  'elite': 'rango-elite',
+                  'magister': 'rango-elite',
+                  'omni': 'rango-omni',
+                  'protector': 'rango-omni',
+                  'heroe': 'rango-omni'
+                };
+
+                // Actualizar datos del modal de inmediato
+                const domName = document.getElementById('domProfileName');
+                const domRango = document.getElementById('domProfileRango');
+                const domAlien = document.getElementById('domProfileAlien');
+                const domReloj = document.getElementById('domProfileReloj');
+
+                if (domName) domName.textContent = nombre;
+                if (domRango) {
+                  domRango.textContent = rangoLabels[rangoVal] || rangoVal;
+                  // Actualizar clases de color del rango
+                  domRango.className = `rango-badge ${rangoClasses[rangoVal] || 'rango-novato'}`;
+                }
+                if (domAlien) domAlien.textContent = alienVal;
+                if (domReloj) domReloj.textContent = omnitrixVal;
+
+                // Actualizar el nombre en el navbar también
+                document.querySelectorAll('.nav-profile-name').forEach(el => {
+                  el.textContent = nombre;
+                });
+
+                // Sincronizar campos en el formulario oculto de avatares
+                const avatarHiddenNombre = quickAvatarForm.querySelector('input[name="nombre"]');
+                const avatarHiddenAlien = quickAvatarForm.querySelector('input[name="alien_favorito"]');
+                const avatarHiddenReloj = quickAvatarForm.querySelector('input[name="omnitrix_favorito"]');
+                const avatarHiddenRango = quickAvatarForm.querySelector('input[name="rango"]');
+
+                if (avatarHiddenNombre) avatarHiddenNombre.value = nombre;
+                if (avatarHiddenAlien) avatarHiddenAlien.value = alienVal;
+                if (avatarHiddenReloj) avatarHiddenReloj.value = omnitrixVal;
+                if (avatarHiddenRango) avatarHiddenRango.value = rangoVal;
+
+                // Ocultar el panel de configuración
+                avatarPickerSection.style.display = 'none';
+              }
+            })
+            .catch(err => console.error('Error al actualizar datos:', err));
+        });
+      }
+    });
+
+    // Función global para abrir el panel de configuración de perfil
+    window.openPerfilEditPanel = function () {
+      const ap = document.getElementById('avatarPickerSection');
+      const spA = document.getElementById('subPanelAvatar');
+      const spD = document.getElementById('subPanelData');
+      const pm = document.getElementById('profileModal');
+
+      if (pm && pm.style.display !== 'flex') {
+        pm.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+
+      if (ap) ap.style.display = 'flex';
+      if (spA) spA.style.display = 'none';
+      if (spD) spD.style.display = 'flex';
+    };
+  </script>
+</body>
+
+</html>
