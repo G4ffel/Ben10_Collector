@@ -177,7 +177,7 @@
       </div>
 
       <!-- SECCIÓN: BEN 10 OMNIVERSE -->
-      <div class="serie-section-wrapper" style="margin-bottom: 40px;">
+      <div class="serie-section-wrapper" style="margin-bottom: 60px;">
         <h2 class="sub-title-omni" style="border-left-color: #b400ff; margin-bottom: 25px; font-size: 1.3rem;">
           Ben 10: Omniverse <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_ov.count }} Figuras)</span>
         </h2>
@@ -227,6 +227,116 @@
         <div class="empty-serie-inline"
           style="background: rgba(180, 0, 255, 0.02); border: 1px dashed rgba(180, 0, 255, 0.12); padding: 25px; text-align: center; border-radius: 10px; color: var(--text-muted); font-family: var(--font-body); font-size: 1rem;">
           Aún no tienes figuras de Ben 10 Omniverse.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- SECCIÓN: PERSONAJES -->
+      <div class="serie-section-wrapper" style="margin-bottom: 60px;">
+        <h2 class="sub-title-omni" style="border-left-color: #ffcc00; margin-bottom: 25px; font-size: 1.3rem;">
+          Personajes <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_personajes.count }} Figuras)</span>
+        </h2>
+        {% if figuras_personajes %}
+        <div class="figures-grid-omni">
+          {% for figura in figuras_personajes %}
+          <div class="figure-card-omni" style="cursor: pointer;"
+            data-nombre="{{ figura.nombre }}"
+            data-precio="${{ figura.precio }} CLP"
+            data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
+            data-serie="{{ figura.serie }}"
+            data-estado="{{ figura.get_estado_display }}"
+            data-marca="{{ figura.get_marca_display }}"
+            data-tamano="{{ figura.get_tamano_display }}"
+            data-imagen="{{ figura.imagen.url }}">
+            <div class="figure-img-wrap" style="border-bottom: none;">
+              <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
+            </div>
+            <span class="figure-serie-badge serie-personajes">
+              {{ figura.serie }}
+            </span>
+            <div class="figure-info-omni">
+              <h3>{{ figura.nombre }}</h3>
+              <div class="figure-meta">
+                <div class="meta-item">
+                  <span class="meta-label">PRECIO:</span>
+                  <span class="meta-value green-text">${{ figura.precio }} CLP</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">FECHA:</span>
+                  <span class="meta-value">{{ figura.fecha_adquisicion|date:"d/m/Y" }}</span>
+                </div>
+              </div>
+
+              <button class="btn-secondary edit-figure-btn"
+                style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
+                data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}">
+                Editar Figura
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-serie-inline"
+          style="background: rgba(255, 204, 0, 0.02); border: 1px dashed rgba(255, 204, 0, 0.12); padding: 25px; text-align: center; border-radius: 10px; color: var(--text-muted); font-family: var(--font-body); font-size: 1rem;">
+          Aún no tienes figuras en la categoría de Personajes.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- SECCIÓN: VILLANOS -->
+      <div class="serie-section-wrapper" style="margin-bottom: 40px;">
+        <h2 class="sub-title-omni" style="border-left-color: #ff3333; margin-bottom: 25px; font-size: 1.3rem;">
+          Villanos <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_villanos.count }} Figuras)</span>
+        </h2>
+        {% if figuras_villanos %}
+        <div class="figures-grid-omni">
+          {% for figura in figuras_villanos %}
+          <div class="figure-card-omni" style="cursor: pointer;"
+            data-nombre="{{ figura.nombre }}"
+            data-precio="${{ figura.precio }} CLP"
+            data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
+            data-serie="{{ figura.serie }}"
+            data-estado="{{ figura.get_estado_display }}"
+            data-marca="{{ figura.get_marca_display }}"
+            data-tamano="{{ figura.get_tamano_display }}"
+            data-imagen="{{ figura.imagen.url }}">
+            <div class="figure-img-wrap" style="border-bottom: none;">
+              <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
+            </div>
+            <span class="figure-serie-badge serie-villanos">
+              {{ figura.serie }}
+            </span>
+            <div class="figure-info-omni">
+              <h3>{{ figura.nombre }}</h3>
+              <div class="figure-meta">
+                <div class="meta-item">
+                  <span class="meta-label">PRECIO:</span>
+                  <span class="meta-value green-text">${{ figura.precio }} CLP</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">FECHA:</span>
+                  <span class="meta-value">{{ figura.fecha_adquisicion|date:"d/m/Y" }}</span>
+                </div>
+              </div>
+
+              <button class="btn-secondary edit-figure-btn"
+                style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
+                data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}">
+                Editar Figura
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-serie-inline"
+          style="background: rgba(255, 51, 51, 0.02); border: 1px dashed rgba(255, 51, 51, 0.12); padding: 25px; text-align: center; border-radius: 10px; color: var(--text-muted); font-family: var(--font-body); font-size: 1rem;">
+          Aún no tienes figuras en la categoría de Villanos.
         </div>
         {% endif %}
       </div>
@@ -370,6 +480,20 @@
       'Ben 10 Omniverse': [
         {% for alien in aliens %}
           {% if alien.serie_default == 'Ben 10 Omniverse' %}
+            "{{ alien.nombre|escapejs }}",
+          {% endif %}
+        {% endfor %}
+      ],
+      'Villanos': [
+        {% for alien in aliens %}
+          {% if alien.serie_default == 'Villanos' %}
+            "{{ alien.nombre|escapejs }}",
+          {% endif %}
+        {% endfor %}
+      ],
+      'Personajes': [
+        {% for alien in aliens %}
+          {% if alien.serie_default == 'Personajes' %}
             "{{ alien.nombre|escapejs }}",
           {% endif %}
         {% endfor %}

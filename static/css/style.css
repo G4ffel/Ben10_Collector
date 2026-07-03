@@ -1911,6 +1911,22 @@ img { max-width: 100%; display: block; }
   text-shadow: 0 0 5px rgba(180, 0, 255, 0.5);
 }
 
+.serie-villanos {
+  background: rgba(20, 4, 4, 0.9);
+  border-top: 1.5px solid #ff3333;
+  border-bottom: 1.5px solid rgba(255, 51, 51, 0.15);
+  color: #ff3333;
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+}
+
+.serie-personajes {
+  background: rgba(20, 16, 4, 0.9);
+  border-top: 1.5px solid #ffcc00;
+  border-bottom: 1.5px solid rgba(255, 204, 0, 0.15);
+  color: #ffcc00;
+  text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+}
+
 .figure-info-omni {
   padding: 20px;
   display: flex;

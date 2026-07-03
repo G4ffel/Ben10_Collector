@@ -156,6 +156,36 @@
           </div>
         </div>
 
+        <!-- Personajes Bar -->
+        <div class="progress-bar-row">
+          <div
+            style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
+            <span>Personajes</span>
+            <span style="color: #ffcc00;">{{ completitud_personajes }}% ({{ total_posibles_personajes }} posibles)</span>
+          </div>
+          <div
+            style="height: 12px; background: var(--dark-3); border: 1px solid rgba(255,204,0,0.2); border-radius: 6px; overflow: hidden; position: relative;">
+            <div
+              style="width: {{ completitud_personajes }}%; height: 100%; background: linear-gradient(90deg, #cc9900, #ffcc00); box-shadow: 0 0 10px #ffcc00; transition: width 0.8s ease;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Villanos Bar -->
+        <div class="progress-bar-row">
+          <div
+            style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
+            <span>Villanos</span>
+            <span style="color: #ff3333;">{{ completitud_villanos }}% ({{ total_posibles_villanos }} posibles)</span>
+          </div>
+          <div
+            style="height: 12px; background: var(--dark-3); border: 1px solid rgba(255,51,51,0.2); border-radius: 6px; overflow: hidden; position: relative;">
+            <div
+              style="width: {{ completitud_villanos }}%; height: 100%; background: linear-gradient(90deg, #b30000, #ff3333); box-shadow: 0 0 10px #ff3333; transition: width 0.8s ease;">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -205,7 +235,7 @@
               </td>
               <td style="padding: 15px;">
                 <span
-                  class="figure-serie-badge {% if figura.serie == 'Ben 10' %}serie-classic{% elif figura.serie == 'Ben 10 Alien Force' %}serie-af{% else %}serie-ov{% endif %}"
+                  class="figure-serie-badge {% if figura.serie == 'Ben 10' %}serie-classic{% elif figura.serie == 'Ben 10 Alien Force' %}serie-af{% elif figura.serie == 'Ben 10 Omniverse' %}serie-ov{% elif figura.serie == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}"
                   style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
                   {{ figura.serie }}
                 </span>
@@ -242,34 +272,46 @@
 
       <!-- CONTENIDO DE TAB 2: BASE DE DATOS DE ALIENS -->
       <div id="tabAliensContent" style="display: none; flex-direction: column; gap: 20px;">
-        <!-- Contenedor con filtros y formulario en la misma fila -->
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid rgba(0, 255, 65, 0.05); padding-bottom: 15px; flex-wrap: wrap; gap: 15px;">
+        <!-- Contenedor con filtros y formulario acoplados elegantemente -->
+        <div style="display: flex; flex-direction: column; gap: 20px; width: 100%; border-bottom: 1px solid rgba(0, 255, 65, 0.05); padding-bottom: 25px;">
           <!-- Filtros de Series -->
-          <div style="display: flex; gap: 12px; align-items: center; flex-grow: 1; max-width: 480px;">
-            <button type="button" class="sub-tab-filter active" data-filter="Ben 10" style="flex: 1; min-width: 110px; background: rgba(0, 255, 65, 0.08); border: 1px solid var(--green-primary); border-radius: 8px; padding: 10px 16px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: var(--green-primary); cursor: pointer; transition: all 0.25s ease; text-shadow: 0 0 8px var(--green-glow); text-align: center; letter-spacing: 0.5px; outline: none;">
+          <div style="display: flex; gap: 12px; align-items: center; width: 100%; flex-wrap: wrap;">
+            <button type="button" class="sub-tab-filter active" data-filter="Ben 10" style="flex: 1; min-width: 110px; background: rgba(0, 255, 65, 0.08); border: 1px solid var(--green-primary); border-radius: 8px; padding: 12px 18px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: var(--green-primary); cursor: pointer; transition: all 0.25s ease; text-shadow: 0 0 8px var(--green-glow); text-align: center; letter-spacing: 0.5px; outline: none;">
               CLÁSICO
             </button>
-            <button type="button" class="sub-tab-filter" data-filter="Ben 10 Alien Force" style="background: none; border: 1px solid rgba(0, 162, 255, 0.3); border-radius: 8px; padding: 10px 16px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #00ccff; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
+            <button type="button" class="sub-tab-filter" data-filter="Ben 10 Alien Force" style="background: none; border: 1px solid rgba(0, 162, 255, 0.3); border-radius: 8px; padding: 12px 18px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #00ccff; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
               ALIEN FORCE
             </button>
-            <button type="button" class="sub-tab-filter" data-filter="Ben 10 Omniverse" style="background: none; border: 1px solid rgba(216, 128, 255, 0.3); border-radius: 8px; padding: 10px 16px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #d880ff; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
+            <button type="button" class="sub-tab-filter" data-filter="Ben 10 Omniverse" style="background: none; border: 1px solid rgba(216, 128, 255, 0.3); border-radius: 8px; padding: 12px 18px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #d880ff; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
               OMNIVERSE
+            </button>
+            <button type="button" class="sub-tab-filter" data-filter="Personajes" style="background: none; border: 1px solid rgba(255, 204, 0, 0.3); border-radius: 8px; padding: 12px 18px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #ffcc00; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
+              PERSONAJES
+            </button>
+            <button type="button" class="sub-tab-filter" data-filter="Villanos" style="background: none; border: 1px solid rgba(255, 51, 51, 0.3); border-radius: 8px; padding: 12px 18px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #ff3333; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
+              VILLANOS
             </button>
           </div>
 
-          <!-- Formulario para añadir especie -->
-          <form method="POST" action="{% url 'dashboard' %}" style="display: flex; gap: 10px; align-items: center; margin: 0; flex-wrap: wrap;">
-            {% csrf_token %}
-            <input type="text" name="alien_nombre" placeholder="Nombre de nueva especie" required class="cta-input custom-input" style="font-size: 0.8rem; padding: 8px 12px; font-family: var(--font-body); width: 200px; margin: 0;" />
-            <select name="serie_default" class="cta-input custom-input select-custom" style="font-size: 0.8rem; padding: 8px 12px; font-family: var(--font-body); width: 180px; margin: 0; background-color: var(--dark-2);">
-              {% for val, label in serie_choices %}
-              <option value="{{ val }}">{{ label }}</option>
-              {% endfor %}
-            </select>
-            <button type="submit" class="btn-primary" style="font-size: 0.75rem; padding: 9px 18px; font-family: var(--font-display); cursor: pointer; letter-spacing: 0.5px;">
-              + AÑADIR ALIEN
-            </button>
-          </form>
+          <!-- Formulario HUD para añadir especie -->
+          <div style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.12); border-radius: 10px; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: var(--green-primary); box-shadow: 0 0 8px var(--green-glow);"></span>
+              <span style="font-family: var(--font-display); font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase;">Registrar Nueva Especie:</span>
+            </div>
+            <form method="POST" action="{% url 'dashboard' %}" style="display: flex; gap: 12px; align-items: center; margin: 0; flex-wrap: wrap; flex-grow: 1; justify-content: flex-end;">
+              {% csrf_token %}
+              <input type="text" name="alien_nombre" placeholder="Nombre de nueva especie" required class="cta-input custom-input" style="font-size: 0.8rem; padding: 10px 16px; font-family: var(--font-body); width: 220px; margin: 0;" />
+              <select name="serie_default" class="cta-input custom-input select-custom" style="font-size: 0.8rem; padding: 10px 16px; font-family: var(--font-body); width: 200px; margin: 0; background-color: var(--dark-2);">
+                {% for val, label in serie_choices %}
+                <option value="{{ val }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn-primary" style="font-size: 0.75rem; padding: 10px 20px; font-family: var(--font-display); cursor: pointer; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+                <span>+ AÑADIR ALIEN</span>
+              </button>
+            </form>
+          </div>
         </div>
 
         <div class="hud-scrollbar" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
@@ -290,7 +332,7 @@
                   {{ alien.nombre }}
                 </td>
                 <td style="padding: 15px;">
-                  <span class="figure-serie-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% else %}serie-ov{% endif %}" style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
+                  <span class="figure-serie-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% elif alien.serie_default == 'Ben 10 Omniverse' %}serie-ov{% elif alien.serie_default == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}" style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
                     {{ alien.serie_default }}
                   </span>
                 </td>

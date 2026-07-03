@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
           box.style.borderColor = 'rgba(0, 102, 255, 0.15)';
           box.style.background = 'rgba(0, 102, 255, 0.02)';
         });
-      } else {
+      } else if (serie === 'Ben 10 Omniverse') {
         // Morado Omniverse
         detailContent.style.borderColor = '#b400ff';
         detailContent.style.boxShadow = '0 0 40px rgba(180, 0, 255, 0.25)';
@@ -307,6 +307,40 @@ document.addEventListener('DOMContentLoaded', () => {
         hudBoxes.forEach(box => {
           box.style.borderColor = 'rgba(180, 0, 255, 0.15)';
           box.style.background = 'rgba(180, 0, 255, 0.02)';
+        });
+      } else if (serie === 'Villanos') {
+        // Rojo Villanos
+        detailContent.style.borderColor = '#ff3333';
+        detailContent.style.boxShadow = '0 0 40px rgba(255, 51, 51, 0.25)';
+        detailTitle.style.color = '#ff3333';
+        detailCloseBtnX.style.color = '#ff3333';
+        detailHeader.style.borderBottomColor = 'rgba(255, 51, 51, 0.25)';
+        detailRadar.style.backgroundColor = '#ff3333';
+        detailRadar.style.boxShadow = '0 0 10px #ff3333';
+        detailPrecio.style.color = '#ff3333';
+        detailPrecio.style.textShadow = '0 0 10px rgba(255, 51, 51, 0.5)';
+        detailImgWrap.style.borderColor = 'rgba(255, 51, 51, 0.4)';
+        detailImgWrap.style.boxShadow = '0 0 25px rgba(255, 51, 51, 0.15)';
+        hudBoxes.forEach(box => {
+          box.style.borderColor = 'rgba(255, 51, 51, 0.15)';
+          box.style.background = 'rgba(255, 51, 51, 0.02)';
+        });
+      } else {
+        // Amarillo/Dorado Personajes
+        detailContent.style.borderColor = '#ffcc00';
+        detailContent.style.boxShadow = '0 0 40px rgba(255, 204, 0, 0.25)';
+        detailTitle.style.color = '#ffcc00';
+        detailCloseBtnX.style.color = '#ffcc00';
+        detailHeader.style.borderBottomColor = 'rgba(255, 204, 0, 0.25)';
+        detailRadar.style.backgroundColor = '#ffcc00';
+        detailRadar.style.boxShadow = '0 0 10px #ffcc00';
+        detailPrecio.style.color = '#ffcc00';
+        detailPrecio.style.textShadow = '0 0 10px rgba(255, 204, 0, 0.5)';
+        detailImgWrap.style.borderColor = 'rgba(255, 204, 0, 0.4)';
+        detailImgWrap.style.boxShadow = '0 0 25px rgba(255, 204, 0, 0.15)';
+        hudBoxes.forEach(box => {
+          box.style.borderColor = 'rgba(255, 204, 0, 0.15)';
+          box.style.background = 'rgba(255, 204, 0, 0.02)';
         });
       }
 

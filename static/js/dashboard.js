@@ -63,10 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
             b.style.background = 'rgba(0, 162, 255, 0.08)';
             b.style.borderColor = '#00ccff';
             b.style.textShadow = '0 0 5px #00ccff';
-          } else {
+          } else if (bFilter === 'Ben 10 Omniverse') {
             b.style.background = 'rgba(216, 128, 255, 0.08)';
             b.style.borderColor = '#d880ff';
             b.style.textShadow = '0 0 5px #d880ff';
+          } else if (bFilter === 'Villanos') {
+            b.style.background = 'rgba(255, 51, 51, 0.08)';
+            b.style.borderColor = '#ff3333';
+            b.style.textShadow = '0 0 5px #ff3333';
+          } else if (bFilter === 'Personajes') {
+            b.style.background = 'rgba(255, 204, 0, 0.08)';
+            b.style.borderColor = '#ffcc00';
+            b.style.textShadow = '0 0 5px #ffcc00';
           }
         } else {
           b.classList.remove('active');
@@ -76,8 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
             b.style.borderColor = 'rgba(0, 255, 65, 0.3)';
           } else if (bFilter === 'Ben 10 Alien Force') {
             b.style.borderColor = 'rgba(0, 162, 255, 0.3)';
-          } else {
+          } else if (bFilter === 'Ben 10 Omniverse') {
             b.style.borderColor = 'rgba(216, 128, 255, 0.3)';
+          } else if (bFilter === 'Villanos') {
+            b.style.borderColor = 'rgba(255, 51, 51, 0.3)';
+          } else if (bFilter === 'Personajes') {
+            b.style.borderColor = 'rgba(255, 204, 0, 0.3)';
           }
         }
       });

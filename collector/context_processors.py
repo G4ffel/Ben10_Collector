@@ -29,6 +29,8 @@ def perfil_global(request):
     count_ben10 = Figura.objects.filter(serie='Ben 10').count()
     count_af    = Figura.objects.filter(serie='Ben 10 Alien Force').count()
     count_ov    = Figura.objects.filter(serie='Ben 10 Omniverse').count()
+    count_villanos = Figura.objects.filter(serie='Villanos').count()
+    count_personajes = Figura.objects.filter(serie='Personajes').count()
 
     # Rango editable asignado al perfil
     rango = perfil.get_rango_display()
@@ -68,6 +70,8 @@ def perfil_global(request):
         'perfil_count_ben10': count_ben10,
         'perfil_count_af': count_af,
         'perfil_count_ov': count_ov,
+        'perfil_count_villanos': count_villanos,
+        'perfil_count_personajes': count_personajes,
         'todos_los_aliens_list': todos_los_aliens,
     }
 

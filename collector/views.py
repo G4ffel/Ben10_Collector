@@ -15,6 +15,8 @@ def coleccion(request):
     figuras_classic = Figura.objects.filter(serie='Ben 10')
     figuras_af = Figura.objects.filter(serie='Ben 10 Alien Force')
     figuras_ov = Figura.objects.filter(serie='Ben 10 Omniverse')
+    figuras_villanos = Figura.objects.filter(serie='Villanos')
+    figuras_personajes = Figura.objects.filter(serie='Personajes')
     figuras_count = Figura.objects.count()
     aliens = Alien.objects.all().order_by('nombre')
 
@@ -22,6 +24,8 @@ def coleccion(request):
         'figuras_classic': figuras_classic,
         'figuras_af': figuras_af,
         'figuras_ov': figuras_ov,
+        'figuras_villanos': figuras_villanos,
+        'figuras_personajes': figuras_personajes,
         'figuras_count': figuras_count,
         'form': form,
         'aliens': aliens
@@ -67,6 +71,14 @@ def dashboard(request):
     unicos_ov = Figura.objects.filter(serie='Ben 10 Omniverse').values('nombre').distinct().count()
     completitud_ov = int((unicos_ov / total_posibles_ov) * 100) if total_posibles_ov > 0 else 0
 
+    total_posibles_villanos = Alien.objects.filter(serie_default='Villanos').count()
+    unicos_villanos = Figura.objects.filter(serie='Villanos').values('nombre').distinct().count()
+    completitud_villanos = int((unicos_villanos / total_posibles_villanos) * 100) if total_posibles_villanos > 0 else 0
+
+    total_posibles_personajes = Alien.objects.filter(serie_default='Personajes').count()
+    unicos_personajes = Figura.objects.filter(serie='Personajes').values('nombre').distinct().count()
+    completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
+
     figuras = Figura.objects.all().order_by('-precio')
     aliens = Alien.objects.all().order_by('nombre')
 
@@ -81,6 +93,10 @@ def dashboard(request):
         'total_posibles_af': total_posibles_af,
         'completitud_ov': completitud_ov,
         'total_posibles_ov': total_posibles_ov,
+        'completitud_villanos': completitud_villanos,
+        'total_posibles_villanos': total_posibles_villanos,
+        'completitud_personajes': completitud_personajes,
+        'total_posibles_personajes': total_posibles_personajes,
         'figuras': figuras,
         'aliens': aliens,
         'serie_choices': Figura.SERIE_CHOICES,

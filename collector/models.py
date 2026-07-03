@@ -5,6 +5,8 @@ class Figura(models.Model):
         ('Ben 10', 'Ben 10'),
         ('Ben 10 Alien Force', 'Ben 10 Alien Force'),
         ('Ben 10 Omniverse', 'Ben 10 Omniverse'),
+        ('Personajes', 'Personajes'),
+        ('Villanos', 'Villanos'),
     ]
 
     ALIEN_CHOICES = [
