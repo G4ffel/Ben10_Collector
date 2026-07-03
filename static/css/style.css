@@ -2167,21 +2167,21 @@ input[type=number] {
 }
 
 .rango-novato {
-  background: rgba(0, 255, 65, 0.08);
+  background: rgba(4, 25, 6, 0.88);
   color: var(--green-primary);
-  border: 1px solid rgba(0, 255, 65, 0.2);
+  border: 1px solid rgba(0, 255, 65, 0.35);
 }
 
 .rango-elite {
-  background: rgba(0, 102, 255, 0.08);
+  background: rgba(4, 18, 35, 0.88);
   color: #00ccff;
-  border: 1px solid rgba(0, 102, 255, 0.2);
+  border: 1px solid rgba(0, 102, 255, 0.35);
 }
 
 .rango-omni {
-  background: rgba(180, 0, 255, 0.08);
+  background: rgba(22, 4, 32, 0.88);
   color: #d880ff;
-  border: 1px solid rgba(180, 0, 255, 0.2);
+  border: 1px solid rgba(180, 0, 255, 0.35);
   animation: omni-pulse 2s infinite alternate;
 }
 
