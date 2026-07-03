@@ -36,6 +36,19 @@
     .nav-profile-btn:hover .nav-profile-avatar-img {
       transform: scale(1.15) !important;
     }
+    /* Estilos del selector de banners */
+    .banner-option-quick {
+      border: 2px solid rgba(0, 255, 65, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+    .banner-option-quick:hover {
+      border-color: var(--green-primary) !important;
+      box-shadow: 0 0 12px rgba(0, 255, 65, 0.35);
+    }
+    .banner-option-quick.active {
+      border-color: var(--green-primary) !important;
+      box-shadow: 0 0 15px var(--green-glow);
+    }
   </style>
   <div class="modal-container" id="profileModal"
     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.65);">
@@ -71,6 +84,7 @@
             <input type="hidden" name="omnitrix_favorito" value="{{ perfil.omnitrix_favorito }}">
             <input type="hidden" name="rango" value="{{ perfil.rango }}">
             <input type="hidden" id="quickAvatarInput" name="avatar" value="{{ perfil.avatar }}">
+            <input type="hidden" name="banner" value="{{ perfil.banner }}">
 
             <div class="avatar-category-label" style="font-family: var(--font-display); font-size: 0.75rem; color: var(--green-primary); margin-top: 15px; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase;">
               Personajes
@@ -113,6 +127,35 @@
           </form>
         </div>
 
+        <!-- SUB-PANEL 4: GALERÍA DE BANNERS -->
+        <div id="subPanelBanner" style="display: none; flex-direction: column; height: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <div>
+              <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin: 0; letter-spacing: 0.5px;">Editar el banner</h3>
+              <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 0; font-family: var(--font-body);">Selecciona un fondo para tu tarjeta</p>
+            </div>
+            <button type="button" class="close-picker-btn" style="background: none; border: none; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; outline: none; transition: var(--transition);">✕</button>
+          </div>
+
+          <form id="quickBannerForm" method="POST" action="{% url 'editar_perfil' %}" style="margin: 0; padding: 0;">
+            {% csrf_token %}
+            <input type="hidden" name="nombre" value="{{ perfil.nombre }}">
+            <input type="hidden" name="alien_favorito" value="{{ perfil.alien_favorito }}">
+            <input type="hidden" name="omnitrix_favorito" value="{{ perfil.omnitrix_favorito }}">
+            <input type="hidden" name="rango" value="{{ perfil.rango }}">
+            <input type="hidden" name="avatar" value="{{ perfil.avatar }}">
+            <input type="hidden" id="quickBannerInput" name="banner" value="{{ perfil.banner }}">
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 5px;" class="hud-scrollbar">
+              {% for banner_file in banners_list %}
+              <div class="banner-option-quick {% if perfil.banner == banner_file %}active{% endif %}" data-quick-val="{{ banner_file }}" title="{{ banner_file }}" style="position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; aspect-ratio: 16/9;">
+                <img src="/media/banner/{{ banner_file }}" alt="{{ banner_file }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              </div>
+              {% endfor %}
+            </div>
+          </form>
+        </div>
+
         <!-- SUB-PANEL 2: AJUSTES DE DATOS (REEMPLAZA INTERFAZ ANTERIOR) -->
         <div id="subPanelData" style="display: none; flex-direction: column; height: 100%;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
@@ -132,6 +175,7 @@
             style="display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0;">
             {% csrf_token %}
             <input type="hidden" name="avatar" value="{{ perfil.avatar }}">
+            <input type="hidden" name="banner" value="{{ perfil.banner }}">
 
             <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 4px;">
               <label style="font-family: var(--font-display); font-size: 0.65rem; color: var(--text-secondary);">Nombre
@@ -202,6 +246,7 @@
             <input type="hidden" name="omnitrix_favorito" value="{{ perfil.omnitrix_favorito }}">
             <input type="hidden" name="rango" value="{{ perfil.rango }}">
             <input type="hidden" name="avatar" value="{{ perfil.avatar }}">
+            <input type="hidden" name="banner" value="{{ perfil.banner }}">
             <input type="hidden" id="quickFavFiguresInput" name="fav_figuras" value="{{ perfil.fav_figuras }}">
           </form>
 
@@ -229,6 +274,11 @@
         <div id="profileViewCard"
           style="width: 100%; text-align: left; display: flex; flex-direction: column; transition: opacity 0.3s ease;">
 
+          <!-- Botón de Banner (Lápiz) -->
+          <button class="edit-profile-trigger" id="switchToBannerBtn"
+            style="font-size: 1.1rem; padding: 6px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 48px; z-index: 10;"
+            title="Cambiar Banner" onclick="openBannerPickerPanel()"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block; transition: transform 0.3s ease;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+
           <!-- Botón de Edición (Solo Engranaje) -->
           <button class="edit-profile-trigger" id="switchToEditBtn"
             style="font-size: 1.1rem; padding: 6px; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; position: absolute; top: 15px; right: 15px; z-index: 10;"
@@ -236,6 +286,12 @@
 
           <!-- Avatar y Cabecera de Identidad -->
           <div class="perfil-avatar-container">
+            <!-- Banner de Fondo con Difuminado Gradiente -->
+            <div class="profile-banner-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;">
+              <img src="{{ perfil.banner_url }}" alt="Banner" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+              <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(10, 21, 10, 0) 70%, var(--dark-2) 100%);"></div>
+            </div>
+
             <!-- Foto redonda con overlay de lápiz en hover -->
             <div class="perfil-avatar-circle-large" id="triggerAvatarPickBtn" title="Cambiar avatar">
               <img src="{{ perfil.avatar_url }}" alt="Avatar de Fanático">

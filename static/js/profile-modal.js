@@ -56,11 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const switchToBanner = document.getElementById('switchToBannerBtn');
+  const subPanelBanner = document.getElementById('subPanelBanner');
+
   // Abrir Sub-panel de Avatares (al clickear la foto)
   if (triggerAvatarPickBtn) {
     triggerAvatarPickBtn.addEventListener('click', () => {
       if (subPanelData) subPanelData.style.display = 'none';
       if (subPanelFavFigures) subPanelFavFigures.style.display = 'none';
+      if (subPanelBanner) subPanelBanner.style.display = 'none';
       if (subPanelAvatar) subPanelAvatar.style.display = 'flex';
       if (avatarPickerSection) avatarPickerSection.style.display = 'flex';
     });
@@ -71,8 +75,61 @@ document.addEventListener('DOMContentLoaded', () => {
     switchToEdit.addEventListener('click', () => {
       if (subPanelAvatar) subPanelAvatar.style.display = 'none';
       if (subPanelFavFigures) subPanelFavFigures.style.display = 'none';
+      if (subPanelBanner) subPanelBanner.style.display = 'none';
       if (subPanelData) subPanelData.style.display = 'flex';
       if (avatarPickerSection) avatarPickerSection.style.display = 'flex';
+    });
+  }
+
+  // Abrir Sub-panel de Banner (al clickear el lápiz)
+  if (switchToBanner) {
+    switchToBanner.addEventListener('click', () => {
+      if (subPanelAvatar) subPanelAvatar.style.display = 'none';
+      if (subPanelFavFigures) subPanelFavFigures.style.display = 'none';
+      if (subPanelData) subPanelData.style.display = 'none';
+      if (subPanelBanner) subPanelBanner.style.display = 'flex';
+      if (avatarPickerSection) avatarPickerSection.style.display = 'flex';
+    });
+  }
+
+  // Selección instantánea de banner (AJAX sin refresco de pantalla)
+  const quickBannerOptions = document.querySelectorAll('.banner-option-quick');
+  const quickBannerInput = document.getElementById('quickBannerInput');
+  const quickBannerForm = document.getElementById('quickBannerForm');
+
+  if (quickBannerOptions && quickBannerInput && quickBannerForm) {
+    quickBannerOptions.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const selectedVal = opt.getAttribute('data-quick-val');
+
+        quickBannerOptions.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+
+        quickBannerInput.value = selectedVal;
+
+        // Sincronizar en otros formularios del perfil
+        document.querySelectorAll('input[name="banner"]').forEach(inp => {
+          inp.value = selectedVal;
+        });
+
+        const formData = new FormData(quickBannerForm);
+        fetch(quickBannerForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+          .then(res => {
+            if (res.ok) {
+              const newUrl = `/media/banner/${selectedVal}`;
+              document.querySelectorAll('.profile-banner-bg img').forEach(img => {
+                img.src = newUrl;
+              });
+            }
+          })
+          .catch(err => console.error('Error al actualizar banner:', err));
+      });
     });
   }
 
@@ -480,6 +537,7 @@ window.openPerfilEditPanel = function () {
   const spA = document.getElementById('subPanelAvatar');
   const spD = document.getElementById('subPanelData');
   const spF = document.getElementById('subPanelFavFigures');
+  const spB = document.getElementById('subPanelBanner');
   const pm = document.getElementById('profileModal');
 
   if (pm && pm.style.display !== 'flex') {
@@ -490,5 +548,27 @@ window.openPerfilEditPanel = function () {
   if (ap) ap.style.display = 'flex';
   if (spA) spA.style.display = 'none';
   if (spF) spF.style.display = 'none';
+  if (spB) spB.style.display = 'none';
   if (spD) spD.style.display = 'flex';
+};
+
+// Función global para abrir el selector de banner
+window.openBannerPickerPanel = function () {
+  const ap = document.getElementById('avatarPickerSection');
+  const spA = document.getElementById('subPanelAvatar');
+  const spD = document.getElementById('subPanelData');
+  const spF = document.getElementById('subPanelFavFigures');
+  const spB = document.getElementById('subPanelBanner');
+  const pm = document.getElementById('profileModal');
+
+  if (pm && pm.style.display !== 'flex') {
+    pm.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  if (ap) ap.style.display = 'flex';
+  if (spA) spA.style.display = 'none';
+  if (spD) spD.style.display = 'none';
+  if (spF) spF.style.display = 'none';
+  if (spB) spB.style.display = 'flex';
 };

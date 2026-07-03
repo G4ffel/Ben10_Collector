@@ -191,6 +191,7 @@ class Perfil(models.Model):
     omnitrix_favorito = models.CharField(max_length=50, choices=OMNITRIX_CHOICES, default='Clásico', verbose_name="Omnitrix Favorito")
     avatar = models.CharField(max_length=50, choices=AVATAR_CHOICES, default='ben_clasico', verbose_name="Avatar del Fanático")
     rango = models.CharField(max_length=50, choices=RANGO_CHOICES, default='recluta', verbose_name="Rango del Coleccionista")
+    banner = models.CharField(max_length=100, default='Alien-x.jpg', verbose_name="Banner de Fondo")
     fav_figuras = models.CharField(max_length=255, default="", blank=True, verbose_name="Figuras Favoritas")
 
     def get_fav_figuras(self):
@@ -232,6 +233,10 @@ class Perfil(models.Model):
             'ultra_t': '/media/icon/Ultra-T.jpg',
         }
         return mapping.get(self.avatar, '/media/icon/Ben-Clasico.jpg')
+
+    @property
+    def banner_url(self):
+        return f'/media/banner/{self.banner}'
 
     class Meta:
         verbose_name = "Perfil de Fanático"

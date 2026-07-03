@@ -59,6 +59,15 @@ def perfil_global(request):
     # Unificar y ordenar alfabéticamente
     todos_los_aliens = sorted(list(set(aliens_en_db + aliens_predeterminados)))
 
+    import os
+    from django.conf import settings
+    banners_dir = os.path.join(settings.MEDIA_ROOT, 'banner')
+    banners_list = []
+    if os.path.exists(banners_dir):
+        banners_list = [f for f in os.listdir(banners_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.avif'))]
+    else:
+        banners_list = ['Alien-x.jpg']
+
     return {
         'perfil': perfil,
         'perfil_form': form_perfil,
@@ -73,5 +82,6 @@ def perfil_global(request):
         'perfil_count_villanos': count_villanos,
         'perfil_count_personajes': count_personajes,
         'todos_los_aliens_list': todos_los_aliens,
+        'banners_list': banners_list,
     }
 

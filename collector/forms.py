@@ -56,7 +56,7 @@ class FiguraForm(forms.ModelForm):
 class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
-        fields = ['nombre', 'alien_favorito', 'omnitrix_favorito', 'avatar', 'rango', 'fav_figuras']
+        fields = ['nombre', 'alien_favorito', 'omnitrix_favorito', 'avatar', 'rango', 'fav_figuras', 'banner']
         widgets = {
             'nombre': forms.TextInput(attrs={
                 'class': 'cta-input custom-input',
