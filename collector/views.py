@@ -67,7 +67,7 @@ def dashboard(request):
     unicos_ov = Figura.objects.filter(serie='Ben 10 Omniverse').values('nombre').distinct().count()
     completitud_ov = int((unicos_ov / total_posibles_ov) * 100) if total_posibles_ov > 0 else 0
 
-    figuras = Figura.objects.all()
+    figuras = Figura.objects.all().order_by('-precio')
     aliens = Alien.objects.all().order_by('nombre')
 
     return render(request, 'collector/dashboard.html', {
