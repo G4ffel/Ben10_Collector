@@ -18,11 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const autocompleteList = document.getElementById('alienAutocompleteList');
 
   // Relación de aliens por serie cargada desde la base de datos
-  const aliensPorSerie = window.aliensPorSerieDb || {
+  let aliensPorSerie = {
     'Ben 10': [],
     'Ben 10 Alien Force': [],
-    'Ben 10 Omniverse': []
+    'Ben 10 Omniverse': [],
+    'Personajes': [],
+    'Villanos': []
   };
+
+  const aliensDataEl = document.getElementById('aliens-por-serie-data');
+  if (aliensDataEl) {
+    try {
+      aliensPorSerie = JSON.parse(aliensDataEl.textContent);
+    } catch (e) {
+      console.error("Error parsing aliens JSON data:", e);
+    }
+  } else if (window.aliensPorSerieDb) {
+    aliensPorSerie = window.aliensPorSerieDb;
+  }
 
   const renderAutocompleteList = (serieSelectedValue, searchQuery = '') => {
     if (!nombreInput || !autocompleteList) return;

@@ -20,6 +20,14 @@ def coleccion(request):
     figuras_count = Figura.objects.count()
     aliens = Alien.objects.all().order_by('nombre')
 
+    aliens_por_serie = {
+        'Ben 10': list(aliens.filter(serie_default='Ben 10').values_list('nombre', flat=True)),
+        'Ben 10 Alien Force': list(aliens.filter(serie_default='Ben 10 Alien Force').values_list('nombre', flat=True)),
+        'Ben 10 Omniverse': list(aliens.filter(serie_default='Ben 10 Omniverse').values_list('nombre', flat=True)),
+        'Personajes': list(aliens.filter(serie_default='Personajes').values_list('nombre', flat=True)),
+        'Villanos': list(aliens.filter(serie_default='Villanos').values_list('nombre', flat=True)),
+    }
+
     return render(request, 'collector/coleccion.html', {
         'figuras_classic': figuras_classic,
         'figuras_af': figuras_af,
@@ -28,7 +36,8 @@ def coleccion(request):
         'figuras_personajes': figuras_personajes,
         'figuras_count': figuras_count,
         'form': form,
-        'aliens': aliens
+        'aliens': aliens,
+        'aliens_por_serie': aliens_por_serie
     })
 
 def editar_figura(request, id):

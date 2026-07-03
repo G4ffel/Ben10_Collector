@@ -370,6 +370,13 @@
         action="{% url 'coleccion' %}" style="display: flex; flex-direction: column; gap: 16px;">
         {% csrf_token %}
 
+        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="{{ form.serie.id_for_label }}"
+            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Serie de
+            Origen</label>
+          {{ form.serie }}
+        </div>
+
         <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px; position: relative;">
           <label for="{{ form.nombre.id_for_label }}"
             style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Nombre del Alien
@@ -389,27 +396,6 @@
         </div>
 
         <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
-          <label for="{{ form.precio.id_for_label }}"
-            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Precio
-            (CLP)</label>
-          {{ form.precio }}
-        </div>
-
-        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
-          <label for="{{ form.fecha_adquisicion.id_for_label }}"
-            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Fecha de
-            Adquisición</label>
-          {{ form.fecha_adquisicion }}
-        </div>
-
-        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
-          <label for="{{ form.serie.id_for_label }}"
-            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Serie de
-            Origen</label>
-          {{ form.serie }}
-        </div>
-
-        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
           <label for="{{ form.estado.id_for_label }}"
             style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Estado</label>
           {{ form.estado }}
@@ -425,6 +411,20 @@
           <label for="{{ form.tamano.id_for_label }}"
             style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Tamaño</label>
           {{ form.tamano }}
+        </div>
+
+        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="{{ form.precio.id_for_label }}"
+            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Precio
+            (CLP)</label>
+          {{ form.precio }}
+        </div>
+
+        <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="{{ form.fecha_adquisicion.id_for_label }}"
+            style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-secondary);">Fecha de
+            Adquisición</label>
+          {{ form.fecha_adquisicion }}
         </div>
 
         <div class="form-group-omni" style="display: flex; flex-direction: column; gap: 6px;">
@@ -460,46 +460,8 @@
   <!-- ===== MODAL DETALLE DE FIGURA ===== -->
   {% include 'collector/includes/detail_modal.html' %}
 
-  <!-- ===== JAVASCRIPT DE CONTROL ===== -->
-  <script>
-    window.aliensPorSerieDb = {
-      'Ben 10': [
-        {% for alien in aliens %}
-          {% if alien.serie_default == 'Ben 10' %}
-            "{{ alien.nombre|escapejs }}",
-          {% endif %}
-        {% endfor %}
-      ],
-      'Ben 10 Alien Force': [
-        {% for alien in aliens %}
-          {% if alien.serie_default == 'Ben 10 Alien Force' %}
-            "{{ alien.nombre|escapejs }}",
-          {% endif %}
-        {% endfor %}
-      ],
-      'Ben 10 Omniverse': [
-        {% for alien in aliens %}
-          {% if alien.serie_default == 'Ben 10 Omniverse' %}
-            "{{ alien.nombre|escapejs }}",
-          {% endif %}
-        {% endfor %}
-      ],
-      'Villanos': [
-        {% for alien in aliens %}
-          {% if alien.serie_default == 'Villanos' %}
-            "{{ alien.nombre|escapejs }}",
-          {% endif %}
-        {% endfor %}
-      ],
-      'Personajes': [
-        {% for alien in aliens %}
-          {% if alien.serie_default == 'Personajes' %}
-            "{{ alien.nombre|escapejs }}",
-          {% endif %}
-        {% endfor %}
-      ]
-    };
-  </script>
+  <!-- ===== DATOS PARA JAVASCRIPT ===== -->
+  {{ aliens_por_serie|json_script:"aliens-por-serie-data" }}
   <script src="{% static 'js/coleccion.js' %}?v=3"></script>
 
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
