@@ -3,6 +3,10 @@ from .forms import PerfilForm
 from django.db.models import Sum
 
 def perfil_global(request):
+    from .models import Alien
+    if Alien.objects.count() == 0:
+        Alien.seed_default_aliens()
+
     # Intentamos obtener el perfil existente, si no, creamos uno por defecto
     perfil = Perfil.objects.first()
     if not perfil:
