@@ -160,11 +160,15 @@ class Alien(models.Model):
 
 class Perfil(models.Model):
     AVATAR_CHOICES = [
-        ('icon1', 'Icono 1 (Ben Clásico)'),
-        ('icon2', 'Icono 2 (Ben FA)'),
-        ('icon3', 'Icono 3 (Ben Omniverse)'),
-        ('icon4', 'Icono 4 (Gooppng)'),
-        ('icon5', 'Icono 5 (Alien)'),
+        ('ben_clasico', 'Ben 10 (Clásico)'),
+        ('ben_af', 'Ben 10 (Alien Force)'),
+        ('ben_ov', 'Ben 10 (Omniverse)'),
+        ('ralph', 'Ralph'),
+        ('alien_x', 'Alien X'),
+        ('fantasmatico', 'Fantasmático'),
+        ('fuego', 'Fuego'),
+        ('goop', 'Goop'),
+        ('ultra_t', 'Ultra T'),
     ]
     OMNITRIX_CHOICES = [
         ('Clásico', 'Omnitrix Clásico'),
@@ -185,7 +189,7 @@ class Perfil(models.Model):
     nombre = models.CharField(max_length=100, default='Ben Tennyson', verbose_name="Nombre de Coleccionista")
     alien_favorito = models.CharField(max_length=100, default='Fuego', verbose_name="Alien Favorito")
     omnitrix_favorito = models.CharField(max_length=50, choices=OMNITRIX_CHOICES, default='Clásico', verbose_name="Omnitrix Favorito")
-    avatar = models.CharField(max_length=50, choices=AVATAR_CHOICES, default='icon1', verbose_name="Avatar del Fanático")
+    avatar = models.CharField(max_length=50, choices=AVATAR_CHOICES, default='ben_clasico', verbose_name="Avatar del Fanático")
     rango = models.CharField(max_length=50, choices=RANGO_CHOICES, default='recluta', verbose_name="Rango del Coleccionista")
     fav_figuras = models.CharField(max_length=255, default="", blank=True, verbose_name="Figuras Favoritas")
 
@@ -217,13 +221,17 @@ class Perfil(models.Model):
     @property
     def avatar_url(self):
         mapping = {
-            'icon1': '/media/icon/017fb5a61c2e3d7c884717549a991708.jpg',
-            'icon2': '/media/icon/3ac3f32d4297ec19f726dc17c2d59067.jpg',
-            'icon3': '/media/icon/GCUGerJWUAAaIYi.jpg',
-            'icon4': '/media/icon/ben-gooppng.png',
-            'icon5': '/media/icon/da92536834d09f7e083f5edccab9c04a.jpg',
+            'ben_clasico': '/media/icon/Ben-Clasico.jpg',
+            'ben_af': '/media/icon/Ben-AF.jpg',
+            'ben_ov': '/media/icon/Ben-OV.jpg',
+            'ralph': '/media/icon/ralph.png',
+            'alien_x': '/media/icon/Alien-X.jpg',
+            'fantasmatico': '/media/icon/Fantasmatico.jpg',
+            'fuego': '/media/icon/Fuego.webp',
+            'goop': '/media/icon/Goop.png',
+            'ultra_t': '/media/icon/Ultra-T.jpg',
         }
-        return mapping.get(self.avatar, '/media/icon/017fb5a61c2e3d7c884717549a991708.jpg')
+        return mapping.get(self.avatar, '/media/icon/Ben-Clasico.jpg')
 
     class Meta:
         verbose_name = "Perfil de Fanático"

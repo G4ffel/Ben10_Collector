@@ -104,13 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
           .then(res => {
             if (res.ok) {
               const avatarMap = {
-                'icon1': '/media/icon/017fb5a61c2e3d7c884717549a991708.jpg',
-                'icon2': '/media/icon/3ac3f32d4297ec19f726dc17c2d59067.jpg',
-                'icon3': '/media/icon/GCUGerJWUAAaIYi.jpg',
-                'icon4': '/media/icon/ben-gooppng.png',
-                'icon5': '/media/icon/da92536834d09f7e083f5edccab9c04a.jpg'
+                'ben_clasico': '/media/icon/Ben-Clasico.jpg',
+                'ben_af': '/media/icon/Ben-AF.jpg',
+                'ben_ov': '/media/icon/Ben-OV.jpg',
+                'ralph': '/media/icon/ralph.png',
+                'alien_x': '/media/icon/Alien-X.jpg',
+                'fantasmatico': '/media/icon/Fantasmatico.jpg',
+                'fuego': '/media/icon/Fuego.webp',
+                'goop': '/media/icon/Goop.png',
+                'ultra_t': '/media/icon/Ultra-T.jpg'
               };
-              const newUrl = avatarMap[selectedVal] || avatarMap['icon1'];
+              const newUrl = avatarMap[selectedVal] || avatarMap['ben_clasico'];
 
               document.querySelectorAll('.perfil-avatar-circle-large img').forEach(img => {
                 img.src = newUrl;

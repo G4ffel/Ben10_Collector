@@ -1,14 +1,40 @@
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
   <style>
     .avatar-option-quick {
-      width: 96px !important;
-      height: 96px !important;
+      width: 110px !important;
+      height: 110px !important;
     }
     @media (max-width: 768px) {
       .avatar-option-quick {
-        width: 76px !important;
-        height: 76px !important;
+        width: 85px !important;
+        height: 85px !important;
       }
+    }
+    /* Escalar avatares sutilmente para recortar bordes de imagen sin demasiado zoom */
+    .avatar-option-quick img {
+      transform: scale(1.08) !important;
+      transition: transform 0.3s ease !important;
+    }
+    .avatar-option-quick:hover img {
+      transform: scale(1.18) !important;
+    }
+    .avatar-option-quick.active img {
+      transform: scale(1.12) !important;
+    }
+    .perfil-avatar-circle-large img {
+      transform: scale(1.08) !important;
+      transition: transform 0.3s ease !important;
+    }
+    .perfil-avatar-circle-large:hover img {
+      transform: scale(1.15) !important;
+    }
+    .nav-profile-avatar-img {
+      transform: scale(1.08) !important;
+      transition: transform 0.3s ease !important;
+    }
+    /* Mantener efecto de escala en hover del botón del perfil en la navbar */
+    .nav-profile-btn:hover .nav-profile-avatar-img {
+      transform: scale(1.15) !important;
     }
   </style>
   <div class="modal-container" id="profileModal"
@@ -21,7 +47,7 @@
 
       <!-- COLUMNA IZQUIERDA: PANEL DINÁMICO DE CONFIGURACIÓN (Oculto por defecto, animado) -->
       <div id="avatarPickerSection"
-        style="flex: 1.1; border-right: 1px solid rgba(0, 255, 65, 0.15); padding: 30px; display: none; flex-direction: column; background: rgba(0, 0, 0, 0.25); animation: slideInLeft 0.35s ease; box-sizing: border-box;">
+        style="flex: 1.1; border-right: 1px solid rgba(0, 255, 65, 0.15); padding: 30px 18px; display: none; flex-direction: column; background: rgba(0, 0, 0, 0.25); animation: slideInLeft 0.35s ease; box-sizing: border-box;">
 
         <!-- SUB-PANEL 1: GALERÍA DE AVATARES -->
         <div id="subPanelAvatar" style="display: none; flex-direction: column; height: 100%;">
@@ -46,26 +72,42 @@
             <input type="hidden" name="rango" value="{{ perfil.rango }}">
             <input type="hidden" id="quickAvatarInput" name="avatar" value="{{ perfil.avatar }}">
 
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px;">
-              <div class="avatar-option-quick {% if perfil.avatar == 'icon1' %}active{% endif %}" data-quick-val="icon1"
-                title="Ben Clásico">
-                <img src="/media/icon/017fb5a61c2e3d7c884717549a991708.jpg" alt="Icono 1">
+            <div class="avatar-category-label" style="font-family: var(--font-display); font-size: 0.75rem; color: var(--green-primary); margin-top: 15px; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase;">
+              Personajes
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center;">
+              <div class="avatar-option-quick {% if perfil.avatar == 'ben_clasico' %}active{% endif %}" data-quick-val="ben_clasico" title="Ben Clásico">
+                <img src="/media/icon/Ben-Clasico.jpg" alt="Ben Clásico">
               </div>
-              <div class="avatar-option-quick {% if perfil.avatar == 'icon2' %}active{% endif %}" data-quick-val="icon2"
-                title="Ben Alien Force">
-                <img src="/media/icon/3ac3f32d4297ec19f726dc17c2d59067.jpg" alt="Icono 2">
+              <div class="avatar-option-quick {% if perfil.avatar == 'ben_af' %}active{% endif %}" data-quick-val="ben_af" title="Ben Alien Force">
+                <img src="/media/icon/Ben-AF.jpg" alt="Ben Alien Force">
               </div>
-              <div class="avatar-option-quick {% if perfil.avatar == 'icon3' %}active{% endif %}" data-quick-val="icon3"
-                title="Ben Omniverse">
-                <img src="/media/icon/GCUGerJWUAAaIYi.jpg" alt="Icono 3">
+              <div class="avatar-option-quick {% if perfil.avatar == 'ben_ov' %}active{% endif %}" data-quick-val="ben_ov" title="Ben Omniverse">
+                <img src="/media/icon/Ben-OV.jpg" alt="Ben Omniverse">
               </div>
-              <div class="avatar-option-quick {% if perfil.avatar == 'icon4' %}active{% endif %}" data-quick-val="icon4"
-                title="Ben Goop">
-                <img src="/media/icon/ben-gooppng.png" alt="Icono 4">
+            </div>
+
+            <div class="avatar-category-label" style="font-family: var(--font-display); font-size: 0.75rem; color: var(--green-primary); margin-top: 20px; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase;">
+              Aliens
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; margin-bottom: 15px;">
+              <div class="avatar-option-quick {% if perfil.avatar == 'ralph' %}active{% endif %}" data-quick-val="ralph" title="Ralph">
+                <img src="/media/icon/ralph.png" alt="Ralph">
               </div>
-              <div class="avatar-option-quick {% if perfil.avatar == 'icon5' %}active{% endif %}" data-quick-val="icon5"
-                title="Alien">
-                <img src="/media/icon/da92536834d09f7e083f5edccab9c04a.jpg" alt="Icono 5">
+              <div class="avatar-option-quick {% if perfil.avatar == 'alien_x' %}active{% endif %}" data-quick-val="alien_x" title="Alien X">
+                <img src="/media/icon/Alien-X.jpg" alt="Alien X">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'fantasmatico' %}active{% endif %}" data-quick-val="fantasmatico" title="Fantasmático">
+                <img src="/media/icon/Fantasmatico.jpg" alt="Fantasmático">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'fuego' %}active{% endif %}" data-quick-val="fuego" title="Fuego">
+                <img src="/media/icon/Fuego.webp" alt="Fuego">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'goop' %}active{% endif %}" data-quick-val="goop" title="Goop">
+                <img src="/media/icon/Goop.png" alt="Goop">
+              </div>
+              <div class="avatar-option-quick {% if perfil.avatar == 'ultra_t' %}active{% endif %}" data-quick-val="ultra_t" title="Ultra T">
+                <img src="/media/icon/Ultra-T.jpg" alt="Ultra T">
               </div>
             </div>
           </form>
