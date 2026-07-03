@@ -116,7 +116,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Ben 10 (Clásico)</span>
-            <span class="green-text">{{ completitud_classic }}% ({{ total_posibles_classic }} posibles)</span>
+            <span class="green-text">{{ completitud_classic }}% ({{ unicos_classic }}/{{ total_posibles_classic }} coleccionados)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(0,255,65,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -131,7 +131,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Ben 10: Alien Force</span>
-            <span style="color: #00ccff;">{{ completitud_af }}% ({{ total_posibles_af }} posibles)</span>
+            <span style="color: #00ccff;">{{ completitud_af }}% ({{ unicos_af }}/{{ total_posibles_af }} coleccionados)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(0,102,255,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -146,7 +146,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Ben 10: Omniverse</span>
-            <span style="color: #d880ff;">{{ completitud_ov }}% ({{ total_posibles_ov }} posibles)</span>
+            <span style="color: #d880ff;">{{ completitud_ov }}% ({{ unicos_ov }}/{{ total_posibles_ov }} coleccionados)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(180,0,255,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -161,7 +161,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Personajes</span>
-            <span style="color: #ffcc00;">{{ completitud_personajes }}% ({{ total_posibles_personajes }} posibles)</span>
+            <span style="color: #ffcc00;">{{ completitud_personajes }}% ({{ unicos_personajes }}/{{ total_posibles_personajes }} coleccionados)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(255,204,0,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -176,7 +176,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Villanos</span>
-            <span style="color: #ff3333;">{{ completitud_villanos }}% ({{ total_posibles_villanos }} posibles)</span>
+            <span style="color: #ff3333;">{{ completitud_villanos }}% ({{ unicos_villanos }}/{{ total_posibles_villanos }} coleccionados)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(255,51,51,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -190,7 +190,7 @@
     </div>
 
     <!-- CONSOLA DE GESTIÓN (TABS) -->
-    <div class="management-table-wrapper"
+    <div class="management-table-wrapper" id="management-console"
       style="background: rgba(10, 21, 10, 0.65); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border-green); border-radius: 12px; padding: 30px; box-shadow: 0 0 15px rgba(0,255,65,0.02); overflow-x: auto;">
       
       <!-- HEADER CON TABS -->
