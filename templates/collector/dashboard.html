@@ -116,7 +116,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Ben 10 (Clásico)</span>
-            <span class="green-text">{{ completitud_classic }}% (11 posibles)</span>
+            <span class="green-text">{{ completitud_classic }}% ({{ total_posibles_classic }} posibles)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(0,255,65,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -131,7 +131,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Ben 10: Alien Force</span>
-            <span style="color: #00ccff;">{{ completitud_af }}% (10 posibles)</span>
+            <span style="color: #00ccff;">{{ completitud_af }}% ({{ total_posibles_af }} posibles)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(0,102,255,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -146,7 +146,7 @@
           <div
             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-family: var(--font-display); font-size: 0.85rem;">
             <span>Ben 10: Omniverse</span>
-            <span style="color: #d880ff;">{{ completitud_ov }}% (21 posibles)</span>
+            <span style="color: #d880ff;">{{ completitud_ov }}% ({{ total_posibles_ov }} posibles)</span>
           </div>
           <div
             style="height: 12px; background: var(--dark-3); border: 1px solid rgba(180,0,255,0.2); border-radius: 6px; overflow: hidden; position: relative;">
@@ -159,82 +159,168 @@
       </div>
     </div>
 
-    <!-- CONSOLA DE GESTIÓN (TABLA CRUD) -->
+    <!-- CONSOLA DE GESTIÓN (TABS) -->
     <div class="management-table-wrapper"
       style="background: rgba(10, 21, 10, 0.65); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border-green); border-radius: 12px; padding: 30px; box-shadow: 0 0 15px rgba(0,255,65,0.02); overflow-x: auto;">
-      <h2 class="sub-title-omni"
-        style="border: none; padding-left: 0; font-size: 1.2rem; margin-bottom: 25px; font-family: var(--font-display); color: var(--green-primary);">
-        Consola de Gestión de Inventario
-      </h2>
-
-      {% if figuras %}
-      <table class="omni-hud-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-        <thead>
-          <tr
-            style="border-bottom: 1px solid var(--border-green); font-family: var(--font-display); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
-            <th style="padding: 12px 15px;">Figura</th>
-            <th style="padding: 12px 15px;">Alien</th>
-            <th style="padding: 12px 15px;">Serie</th>
-            <th style="padding: 12px 15px;">Precio</th>
-            <th style="padding: 12px 15px;">Fecha Adq.</th>
-            <th style="padding: 12px 15px; text-align: center;">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for figura in figuras %}
-          <tr class="table-row-hover"
-            style="border-bottom: 1px solid rgba(0,255,65,0.05); transition: var(--transition);">
-            <td style="padding: 15px;">
-              <div
-                style="width: 50px; height: 50px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(0,255,65,0.2); background: radial-gradient(circle, var(--dark-3), var(--dark-4)); display: flex; align-items: center; justify-content: center;">
-                <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}"
-                  style="max-width: 90%; max-height: 90%; object-fit: contain;" />
-              </div>
-            </td>
-            <td
-              style="padding: 15px; font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
-              {{ figura.nombre }}
-            </td>
-            <td style="padding: 15px;">
-              <span
-                class="figure-serie-badge {% if figura.serie == 'Ben 10' %}serie-classic{% elif figura.serie == 'Ben 10 Alien Force' %}serie-af{% else %}serie-ov{% endif %}"
-                style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
-                {{ figura.serie }}
-              </span>
-            </td>
-            <td style="padding: 15px; font-family: var(--font-body); font-weight: 600; color: var(--green-primary);">
-              ${{ figura.precio }} CLP
-            </td>
-            <td style="padding: 15px; color: var(--text-muted); font-size: 0.9rem;">
-              {{ figura.fecha_adquisicion|date:"d/m/Y" }}
-            </td>
-            <td style="padding: 15px; text-align: center;">
-              <div style="display: flex; gap: 8px; justify-content: center;">
-                <a href="{% url 'coleccion' %}?editar={{ figura.id }}" class="btn-secondary"
-                  style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: var(--border-green);">
-                  Editar
-                </a>
-                <a href="{% url 'eliminar_figura' figura.id %}" class="btn-secondary"
-                  style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333;"
-                  onclick="return confirm('¿Seguro que deseas desintegrar a {{ figura.nombre }} de la base de datos galáctica?');">
-                  Eliminar
-                </a>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-body);">
-        Base de datos vacía. Registra figuras en la colección para visualizar analíticas.
+      
+      <!-- HEADER CON TABS -->
+      <div style="display: flex; align-items: center; gap: 30px; margin-bottom: 25px; border-bottom: 1px solid rgba(0, 255, 65, 0.15); padding-bottom: 12px; flex-wrap: wrap;">
+        <button type="button" id="tabFiguresBtn" class="dashboard-tab-btn" style="background: none; border: none; font-family: var(--font-display); font-size: 1.2rem; color: var(--green-primary); cursor: pointer; padding: 0 0 6px 0; outline: none; transition: all 0.3s ease; text-shadow: 0 0 8px var(--green-glow); border-bottom: 2px solid var(--green-primary); font-weight: bold;">
+          Consola de Gestión de Inventario
+        </button>
+        <button type="button" id="tabAliensBtn" class="dashboard-tab-btn" style="background: none; border: none; font-family: var(--font-display); font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 0 0 6px 0; outline: none; transition: all 0.3s ease; border-bottom: 2px solid transparent;">
+          Base de Datos de Especies Aliens
+        </button>
       </div>
-      {% endif %}
+
+      <!-- CONTENIDO DE TAB 1: INVENTARIO DE FIGURAS -->
+      <div id="tabFiguresContent" style="display: block;">
+        {% if figuras %}
+        <table class="omni-hud-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr
+              style="border-bottom: 1px solid var(--border-green); font-family: var(--font-display); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+              <th style="padding: 12px 15px;">Figura</th>
+              <th style="padding: 12px 15px;">Alien</th>
+              <th style="padding: 12px 15px;">Serie</th>
+              <th style="padding: 12px 15px;">Precio</th>
+              <th style="padding: 12px 15px;">Fecha Adq.</th>
+              <th style="padding: 12px 15px; text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for figura in figuras %}
+            <tr class="table-row-hover"
+              style="border-bottom: 1px solid rgba(0,255,65,0.05); transition: var(--transition);">
+              <td style="padding: 15px;">
+                <div
+                  style="width: 50px; height: 50px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(0,255,65,0.2); background: radial-gradient(circle, var(--dark-3), var(--dark-4)); display: flex; align-items: center; justify-content: center;">
+                  <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}"
+                    style="max-width: 90%; max-height: 90%; object-fit: contain;" />
+                </div>
+              </td>
+              <td
+                style="padding: 15px; font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+                {{ figura.nombre }}
+              </td>
+              <td style="padding: 15px;">
+                <span
+                  class="figure-serie-badge {% if figura.serie == 'Ben 10' %}serie-classic{% elif figura.serie == 'Ben 10 Alien Force' %}serie-af{% else %}serie-ov{% endif %}"
+                  style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
+                  {{ figura.serie }}
+                </span>
+              </td>
+              <td style="padding: 15px; font-family: var(--font-body); font-weight: 600; color: var(--green-primary);">
+                ${{ figura.precio }} CLP
+              </td>
+              <td style="padding: 15px; color: var(--text-muted); font-size: 0.9rem;">
+                {{ figura.fecha_adquisicion|date:"d/m/Y" }}
+              </td>
+              <td style="padding: 15px; text-align: center;">
+                <div style="display: flex; gap: 8px; justify-content: center;">
+                  <a href="{% url 'coleccion' %}?editar={{ figura.id }}" class="btn-secondary"
+                    style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: var(--border-green);">
+                    Editar
+                  </a>
+                  <a href="{% url 'eliminar_figura' figura.id %}" class="btn-secondary"
+                    style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333;"
+                    onclick="return confirm('¿Seguro que deseas desintegrar a {{ figura.nombre }} de la base de datos galáctica?');">
+                    Eliminar
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-body);">
+          Base de datos vacía. Registra figuras en la colección para visualizar analíticas.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- CONTENIDO DE TAB 2: BASE DE DATOS DE ALIENS -->
+      <div id="tabAliensContent" style="display: none; flex-direction: column; gap: 20px;">
+        <!-- Contenedor con filtros y formulario en la misma fila -->
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid rgba(0, 255, 65, 0.05); padding-bottom: 15px; flex-wrap: wrap; gap: 15px;">
+          <!-- Filtros de Series -->
+          <div style="display: flex; gap: 12px; align-items: center; flex-grow: 1; max-width: 480px;">
+            <button type="button" class="sub-tab-filter active" data-filter="Ben 10" style="flex: 1; min-width: 110px; background: rgba(0, 255, 65, 0.08); border: 1px solid var(--green-primary); border-radius: 8px; padding: 10px 16px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: var(--green-primary); cursor: pointer; transition: all 0.25s ease; text-shadow: 0 0 8px var(--green-glow); text-align: center; letter-spacing: 0.5px; outline: none;">
+              CLÁSICO
+            </button>
+            <button type="button" class="sub-tab-filter" data-filter="Ben 10 Alien Force" style="background: none; border: 1px solid rgba(0, 162, 255, 0.3); border-radius: 8px; padding: 10px 16px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #00ccff; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
+              ALIEN FORCE
+            </button>
+            <button type="button" class="sub-tab-filter" data-filter="Ben 10 Omniverse" style="background: none; border: 1px solid rgba(216, 128, 255, 0.3); border-radius: 8px; padding: 10px 16px; font-family: var(--font-display); font-size: 0.8rem; font-weight: bold; color: #d880ff; cursor: pointer; transition: all 0.25s ease; flex: 1; min-width: 110px; text-align: center; letter-spacing: 0.5px; outline: none;">
+              OMNIVERSE
+            </button>
+          </div>
+
+          <!-- Formulario para añadir especie -->
+          <form method="POST" action="{% url 'dashboard' %}" style="display: flex; gap: 10px; align-items: center; margin: 0; flex-wrap: wrap;">
+            {% csrf_token %}
+            <input type="text" name="alien_nombre" placeholder="Nombre de nueva especie" required class="cta-input custom-input" style="font-size: 0.8rem; padding: 8px 12px; font-family: var(--font-body); width: 200px; margin: 0;" />
+            <select name="serie_default" class="cta-input custom-input select-custom" style="font-size: 0.8rem; padding: 8px 12px; font-family: var(--font-body); width: 180px; margin: 0; background-color: var(--dark-2);">
+              {% for val, label in serie_choices %}
+              <option value="{{ val }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary" style="font-size: 0.75rem; padding: 9px 18px; font-family: var(--font-display); cursor: pointer; letter-spacing: 0.5px;">
+              + AÑADIR ALIEN
+            </button>
+          </form>
+        </div>
+
+        <div class="hud-scrollbar" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+          {% if aliens %}
+          <table class="omni-hud-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr
+                style="border-bottom: 1px solid var(--border-green); font-family: var(--font-display); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+                <th style="padding: 12px 15px;">Nombre de la Especie</th>
+                <th style="padding: 12px 15px;">Serie de Origen por Defecto</th>
+                <th style="padding: 12px 15px; text-align: center;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for alien in aliens %}
+              <tr class="table-row-hover alien-row" data-serie="{{ alien.serie_default }}" style="border-bottom: 1px solid rgba(0,255,65,0.05); transition: var(--transition);">
+                <td style="padding: 15px; font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+                  {{ alien.nombre }}
+                </td>
+                <td style="padding: 15px;">
+                  <span class="figure-serie-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% else %}serie-ov{% endif %}" style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
+                    {{ alien.serie_default }}
+                  </span>
+                </td>
+                <td style="padding: 15px; text-align: center;">
+                  <div style="display: flex; gap: 8px; justify-content: center;">
+                    <a href="{% url 'eliminar_alien' alien.id %}" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333;" onclick="return confirm('¿Seguro que deseas eliminar el registro de {{ alien.nombre }} de las especies conocidas?');">
+                      Eliminar
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div style="text-align: center; padding: 30px; color: var(--text-muted); font-family: var(--font-body);">
+            No hay especies aliens registradas.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
     </div>
   </main>
 
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
   {% include 'collector/includes/profile_modal.html' %}
+
+  <!-- ===== TAB CONTROL SCRIPT ===== -->
+  <script src="{% static 'js/dashboard.js' %}?v=1"></script>
 
   <script src="{% static 'js/bg-particles.js' %}"></script>
   <script src="{% static 'js/profile-modal.js' %}"></script>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum, Avg, Max
 from .forms import FiguraForm, PerfilForm
-from .models import Figura, Perfil
+from .models import Figura, Perfil, Alien
 
 def coleccion(request):
     if request.method == 'POST':
@@ -16,13 +16,15 @@ def coleccion(request):
     figuras_af = Figura.objects.filter(serie='Ben 10 Alien Force')
     figuras_ov = Figura.objects.filter(serie='Ben 10 Omniverse')
     figuras_count = Figura.objects.count()
+    aliens = Alien.objects.all().order_by('nombre')
 
     return render(request, 'collector/coleccion.html', {
         'figuras_classic': figuras_classic,
         'figuras_af': figuras_af,
         'figuras_ov': figuras_ov,
         'figuras_count': figuras_count,
-        'form': form
+        'form': form,
+        'aliens': aliens
     })
 
 def editar_figura(request, id):
@@ -35,22 +37,38 @@ def editar_figura(request, id):
     return redirect('coleccion')
 
 def dashboard(request):
+    if request.method == 'POST':
+        # Agregar nuevo alien desde el panel
+        alien_nombre = request.POST.get('alien_nombre')
+        serie_default = request.POST.get('serie_default', 'Ben 10')
+        if alien_nombre:
+            Alien.objects.get_or_create(nombre=alien_nombre, defaults={'serie_default': serie_default})
+            return redirect(f'/dashboard/?tab=aliens&serie={serie_default}')
+
     total_figuras = Figura.objects.count()
     valor_total = Figura.objects.aggregate(Sum('precio'))['precio__sum'] or 0
     precio_promedio = Figura.objects.aggregate(Avg('precio'))['precio__avg'] or 0
     precio_maximo = Figura.objects.aggregate(Max('precio'))['precio__max'] or 0
 
-    # Calcular completitud de colecciones únicas por serie
-    unicos_classic = Figura.objects.filter(serie='Ben 10').values('nombre').distinct().count()
-    completitud_classic = int((unicos_classic / 11) * 100) if unicos_classic > 0 else 0
-    
-    unicos_af = Figura.objects.filter(serie='Ben 10 Alien Force').values('nombre').distinct().count()
-    completitud_af = int((unicos_af / 10) * 100) if unicos_af > 0 else 0
+    # Asegurar aliens cargados
+    if Alien.objects.count() == 0:
+        Alien.seed_default_aliens()
 
+    # Calcular completitud de colecciones únicas basadas en aliens disponibles
+    total_posibles_classic = Alien.objects.filter(serie_default='Ben 10').count()
+    unicos_classic = Figura.objects.filter(serie='Ben 10').values('nombre').distinct().count()
+    completitud_classic = int((unicos_classic / total_posibles_classic) * 100) if total_posibles_classic > 0 else 0
+    
+    total_posibles_af = Alien.objects.filter(serie_default='Ben 10 Alien Force').count()
+    unicos_af = Figura.objects.filter(serie='Ben 10 Alien Force').values('nombre').distinct().count()
+    completitud_af = int((unicos_af / total_posibles_af) * 100) if total_posibles_af > 0 else 0
+
+    total_posibles_ov = Alien.objects.filter(serie_default='Ben 10 Omniverse').count()
     unicos_ov = Figura.objects.filter(serie='Ben 10 Omniverse').values('nombre').distinct().count()
-    completitud_ov = int((unicos_ov / 21) * 100) if unicos_ov > 0 else 0
+    completitud_ov = int((unicos_ov / total_posibles_ov) * 100) if total_posibles_ov > 0 else 0
 
     figuras = Figura.objects.all()
+    aliens = Alien.objects.all().order_by('nombre')
 
     return render(request, 'collector/dashboard.html', {
         'total_figuras': total_figuras,
@@ -58,15 +76,26 @@ def dashboard(request):
         'precio_promedio': round(precio_promedio),
         'precio_maximo': precio_maximo,
         'completitud_classic': completitud_classic,
+        'total_posibles_classic': total_posibles_classic,
         'completitud_af': completitud_af,
+        'total_posibles_af': total_posibles_af,
         'completitud_ov': completitud_ov,
+        'total_posibles_ov': total_posibles_ov,
         'figuras': figuras,
+        'aliens': aliens,
+        'serie_choices': Figura.SERIE_CHOICES,
     })
 
 def eliminar_figura(request, id):
     figura = get_object_or_404(Figura, id=id)
     figura.delete()
     return redirect('dashboard')
+
+def eliminar_alien(request, id):
+    alien = get_object_or_404(Alien, id=id)
+    serie = alien.serie_default
+    alien.delete()
+    return redirect(f'/dashboard/?tab=aliens&serie={serie}')
 
 def home(request):
     total_classic = Figura.objects.filter(serie='Ben 10').count()

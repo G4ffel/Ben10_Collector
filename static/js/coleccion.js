@@ -9,19 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const imageInput = document.querySelector('input[type="file"]');
 
   // Campos del formulario
-  const nombreInput = document.querySelector('[name="nombre"]');
-  const precioInput = document.querySelector('[name="precio"]');
-  const fechaInput = document.querySelector('[name="fecha_adquisicion"]');
-  const serieSelect = document.querySelector('select[name="serie"]');
+  const nombreInput = document.getElementById('id_nombre') || document.querySelector('#omniFigureForm [name="nombre"]');
+  const precioInput = document.querySelector('#omniFigureForm [name="precio"]');
+  const fechaInput = document.querySelector('#omniFigureForm [name="fecha_adquisicion"]');
+  const serieSelect = document.querySelector('#omniFigureForm select[name="serie"]');
   const fileChosenName = document.getElementById('fileChosenName');
   const autocompleteInput = document.getElementById('alienAutocompleteInput');
   const autocompleteList = document.getElementById('alienAutocompleteList');
 
-  // Relación de aliens por serie
-  const aliensPorSerie = {
-    'Ben 10': ['Bestia', 'Cuatrobrazos', 'Materia Gris', 'XLR8', 'Ultra-T', 'Diamante', 'Insectoide', 'Acuático', 'Fantasmático', 'Cannonbolt', 'Fuego'],
-    'Ben 10 Alien Force': ['Goop', 'Fuego Pantanoso', 'Piedra', 'Frío', 'Humungosaurio', 'Cerebrón', 'Jetray', 'Mono Araña', 'Eco Eco', 'Alien X'],
-    'Ben 10 Omniverse': [] // En Omniverse se permiten todos
+  // Relación de aliens por serie cargada desde la base de datos
+  const aliensPorSerie = window.aliensPorSerieDb || {
+    'Ben 10': [],
+    'Ben 10 Alien Force': [],
+    'Ben 10 Omniverse': []
   };
 
   const renderAutocompleteList = (serieSelectedValue, searchQuery = '') => {
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Leemos las opciones del select nativo de Django para generar los li
     Array.from(nombreInput.options).forEach(option => {
       const alienName = option.value;
-      const perteneceSerie = (serieSelectedValue === 'Ben 10 Omniverse') || permitidos.includes(alienName);
+      const perteneceSerie = (permitidos.length === 0) || permitidos.includes(alienName);
       const coincideBusqueda = alienName.toLowerCase().includes(query);
 
       if (perteneceSerie && coincideBusqueda) {
@@ -65,10 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Control del dropdown autocomplete
   if (autocompleteInput) {
-    autocompleteInput.addEventListener('focus', () => {
+    const showAllOptions = () => {
       autocompleteList.style.display = 'block';
-      renderAutocompleteList(serieSelect.value, autocompleteInput.value);
-    });
+      renderAutocompleteList(serieSelect.value, ''); // Mostrar todas las opciones de la serie
+    };
+
+    autocompleteInput.addEventListener('focus', showAllOptions);
+    autocompleteInput.addEventListener('click', showAllOptions);
 
     autocompleteInput.addEventListener('input', (e) => {
       renderAutocompleteList(serieSelect.value, e.target.value);

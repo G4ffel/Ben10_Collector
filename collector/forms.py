@@ -2,13 +2,18 @@ from django import forms
 from .models import Figura, Perfil
 
 class FiguraForm(forms.ModelForm):
+    nombre = forms.ChoiceField(
+        widget=forms.Select(attrs={
+            'class': 'cta-input custom-input select-custom'
+        }),
+        label="Nombre del Alien / Figura",
+        required=True
+    )
+
     class Meta:
         model = Figura
         fields = ['nombre', 'precio', 'imagen', 'fecha_adquisicion', 'serie', 'estado', 'marca', 'tamano']
         widgets = {
-            'nombre': forms.Select(attrs={
-                'class': 'cta-input custom-input select-custom'
-            }),
             'precio': forms.NumberInput(attrs={
                 'class': 'cta-input custom-input',
                 'placeholder': 'Ej. 15000'
@@ -34,6 +39,15 @@ class FiguraForm(forms.ModelForm):
                 'class': 'cta-input custom-input select-custom'
             })
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from .models import Alien
+        if Alien.objects.count() == 0:
+            Alien.seed_default_aliens()
+        self.fields['nombre'].choices = [
+            (alien.nombre, alien.nombre) for alien in Alien.objects.all().order_by('nombre')
+        ]
 
 
 class PerfilForm(forms.ModelForm):

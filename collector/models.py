@@ -55,7 +55,6 @@ class Figura(models.Model):
 
     nombre = models.CharField(
         max_length=100, 
-        choices=ALIEN_CHOICES, 
         default='Fuego',
         verbose_name="Nombre del Alien"
     )
@@ -94,6 +93,53 @@ class Figura(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.serie})"
+
+
+class Alien(models.Model):
+    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre del Alien")
+    serie_default = models.CharField(
+        max_length=50, 
+        choices=Figura.SERIE_CHOICES, 
+        default='Ben 10', 
+        verbose_name="Serie de origen por defecto"
+    )
+
+    class Meta:
+        verbose_name = "Alien"
+        verbose_name_plural = "Aliens"
+        ordering = ['nombre']
+
+    def __str__(self):
+        return f"{self.nombre} ({self.serie_default})"
+
+    @classmethod
+    def seed_default_aliens(cls):
+        initial_aliens = [
+            ('Bestia', 'Ben 10'),
+            ('Cuatrobrazos', 'Ben 10'),
+            ('Materia Gris', 'Ben 10'),
+            ('XLR8', 'Ben 10'),
+            ('Ultra-T', 'Ben 10'),
+            ('Diamante', 'Ben 10'),
+            ('Insectoide', 'Ben 10'),
+            ('Acuático', 'Ben 10'),
+            ('Fantasmático', 'Ben 10'),
+            ('Cannonbolt', 'Ben 10'),
+            ('Fuego', 'Ben 10'),
+            
+            ('Goop', 'Ben 10 Alien Force'),
+            ('Fuego Pantanoso', 'Ben 10 Alien Force'),
+            ('Piedra', 'Ben 10 Alien Force'),
+            ('Frío', 'Ben 10 Alien Force'),
+            ('Humungosaurio', 'Ben 10 Alien Force'),
+            ('Cerebrón', 'Ben 10 Alien Force'),
+            ('Jetray', 'Ben 10 Alien Force'),
+            ('Mono Araña', 'Ben 10 Alien Force'),
+            ('Eco Eco', 'Ben 10 Alien Force'),
+            ('Alien X', 'Ben 10 Alien Force'),
+        ]
+        for name, series in initial_aliens:
+            cls.objects.get_or_create(nombre=name, defaults={'serie_default': series})
 
 
 class Perfil(models.Model):

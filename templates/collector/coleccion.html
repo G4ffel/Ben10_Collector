@@ -351,14 +351,39 @@
   {% include 'collector/includes/detail_modal.html' %}
 
   <!-- ===== JAVASCRIPT DE CONTROL ===== -->
-  <script src="{% static 'js/coleccion.js' %}"></script>
+  <script>
+    window.aliensPorSerieDb = {
+      'Ben 10': [
+        {% for alien in aliens %}
+          {% if alien.serie_default == 'Ben 10' %}
+            "{{ alien.nombre|escapejs }}",
+          {% endif %}
+        {% endfor %}
+      ],
+      'Ben 10 Alien Force': [
+        {% for alien in aliens %}
+          {% if alien.serie_default == 'Ben 10 Alien Force' %}
+            "{{ alien.nombre|escapejs }}",
+          {% endif %}
+        {% endfor %}
+      ],
+      'Ben 10 Omniverse': [
+        {% for alien in aliens %}
+          {% if alien.serie_default == 'Ben 10 Omniverse' %}
+            "{{ alien.nombre|escapejs }}",
+          {% endif %}
+        {% endfor %}
+      ]
+    };
+  </script>
+  <script src="{% static 'js/coleccion.js' %}?v=3"></script>
 
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
   {% include 'collector/includes/profile_modal.html' %}
 
-  <script src="{% static 'js/profile-modal.js' %}"></script>
+  <script src="{% static 'js/profile-modal.js' %}?v=3"></script>
 
-  <script src="{% static 'js/bg-particles.js' %}"></script>
+  <script src="{% static 'js/bg-particles.js' %}?v=3"></script>
 </body>
 
 </html>
