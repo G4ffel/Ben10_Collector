@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!data.figuras || data.figuras.length === 0) {
             if (favFiguresEmpty) favFiguresEmpty.style.display = 'block';
             if (favFiguresSelectorGrid) {
-              favFiguresSelectorGrid.style.display = 'grid';
+              favFiguresSelectorGrid.style.display = 'flex';
               favFiguresSelectorGrid.innerHTML = '';
               // Recrear botón vaciar
               const removeBtn = createRemoveButton();
@@ -252,42 +252,92 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (favFiguresSelectorGrid) {
-            favFiguresSelectorGrid.style.display = 'grid';
+            favFiguresSelectorGrid.style.display = 'flex';
             favFiguresSelectorGrid.innerHTML = '';
 
-            // Botón vaciar al inicio
-            const removeBtn = createRemoveButton();
-            favFiguresSelectorGrid.appendChild(removeBtn);
+            // Agrupar figuras por serie
+            const groups = {
+              'Ben 10': [],
+              'Ben 10 Alien Force': [],
+              'Ben 10 Omniverse': []
+            };
 
             data.figuras.forEach(fig => {
-              const opt = document.createElement('div');
-              opt.className = 'avatar-option-quick';
-              opt.setAttribute('data-fig-id', fig.id);
-              opt.setAttribute('title', `${fig.nombre} (${fig.serie})`);
-
-              // Estilos en línea para evitar caché de CSS
-              opt.style.borderRadius = '50%';
-              opt.style.overflow = 'hidden';
-              opt.style.position = 'relative';
-              opt.style.boxSizing = 'border-box';
-
-              const img = document.createElement('img');
-              img.src = fig.imagen_url;
-              img.alt = fig.nombre;
-              img.style.position = 'absolute';
-              img.style.top = '0';
-              img.style.left = '0';
-              img.style.width = '100%';
-              img.style.height = '100%';
-              img.style.objectFit = 'cover';
-
-              opt.appendChild(img);
-              favFiguresSelectorGrid.appendChild(opt);
-
-              opt.addEventListener('click', () => {
-                selectFavFigureForSlot(fig.id, fig.imagen_url, fig.nombre);
-              });
+              if (groups[fig.serie]) {
+                groups[fig.serie].push(fig);
+              } else {
+                groups[fig.serie] = [fig];
+              }
             });
+
+            for (const [serieName, figures] of Object.entries(groups)) {
+              if (figures.length === 0) continue;
+
+              // Cabecera de la serie
+              let displayName = serieName.toUpperCase();
+              if (displayName === 'BEN 10') {
+                displayName = 'BEN 10 CLÁSICO';
+              }
+
+              const header = document.createElement('h4');
+              header.textContent = displayName;
+              header.style.fontFamily = 'var(--font-display)';
+              header.style.fontSize = '0.7rem';
+              header.style.color = 'var(--green-primary)';
+              header.style.letterSpacing = '1.5px';
+              header.style.margin = '16px 0 8px 0';
+              header.style.borderBottom = '1px solid rgba(0, 255, 65, 0.15)';
+              header.style.paddingBottom = '4px';
+              header.style.textShadow = '0 0 5px var(--green-glow)';
+              header.style.width = '100%';
+
+              favFiguresSelectorGrid.appendChild(header);
+
+              // Grid de figuras para esta serie
+              const grid = document.createElement('div');
+              grid.style.display = 'grid';
+              grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+              grid.style.justifyItems = 'center';
+              grid.style.gap = '14px';
+              grid.style.width = '100%';
+
+              figures.forEach(fig => {
+                const opt = document.createElement('div');
+                opt.className = 'avatar-option-quick';
+                opt.setAttribute('data-fig-id', fig.id);
+                opt.setAttribute('title', `${fig.nombre} (${fig.serie})`);
+
+                opt.style.borderRadius = '50%';
+                opt.style.overflow = 'hidden';
+                opt.style.position = 'relative';
+                opt.style.boxSizing = 'border-box';
+
+                const img = document.createElement('img');
+                img.src = fig.imagen_url;
+                img.alt = fig.nombre;
+                img.style.position = 'absolute';
+                img.style.top = '0';
+                img.style.left = '0';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+
+                opt.appendChild(img);
+                grid.appendChild(opt);
+
+                opt.addEventListener('click', () => {
+                  selectFavFigureForSlot(fig.id, fig.imagen_url, fig.nombre);
+                });
+              });
+
+              favFiguresSelectorGrid.appendChild(grid);
+            }
+
+            // Botón vaciar al final
+            const removeBtn = createRemoveButton();
+            removeBtn.style.marginTop = '18px';
+            removeBtn.style.marginBottom = '6px';
+            favFiguresSelectorGrid.appendChild(removeBtn);
           }
         })
         .catch(err => {
@@ -298,33 +348,48 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function createRemoveButton() {
-    const btn = document.createElement('div');
-    btn.className = 'avatar-option-quick remove-fav-fig-btn';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'remove-fav-fig-btn';
     btn.setAttribute('data-fig-id', 'None');
     btn.setAttribute('title', 'Vaciar espacio');
 
-    // Estilos en línea para evitar caché de CSS
-    btn.style.borderRadius = '50%';
-    btn.style.overflow = 'hidden';
-    btn.style.position = 'relative';
-    btn.style.boxSizing = 'border-box';
-    btn.style.border = '1px dashed rgba(255, 0, 0, 0.3)';
-    btn.style.background = 'rgba(255, 0, 0, 0.04)';
+    // Estilos de botón HUD completo
+    btn.style.width = '100%';
+    btn.style.background = 'rgba(255, 77, 77, 0.05)';
+    btn.style.border = '1px dashed rgba(255, 77, 77, 0.3)';
+    btn.style.borderRadius = '8px';
+    btn.style.padding = '10px';
+    btn.style.marginBottom = '12px';
+    btn.style.color = '#ff6666';
+    btn.style.fontFamily = 'var(--font-display)';
+    btn.style.fontSize = '0.7rem';
+    btn.style.letterSpacing = '1px';
     btn.style.display = 'flex';
-    btn.style.flexDirection = 'column';
     btn.style.alignItems = 'center';
     btn.style.justifyContent = 'center';
-    btn.style.textAlign = 'center';
+    btn.style.gap = '8px';
     btn.style.cursor = 'pointer';
+    btn.style.transition = 'all 0.2s ease';
+    btn.style.outline = 'none';
+    btn.style.boxSizing = 'border-box';
 
-    const span = document.createElement('span');
-    span.style.fontFamily = 'var(--font-display)';
-    span.style.fontSize = '0.7rem';
-    span.style.color = 'rgba(255, 0, 0, 0.7)';
-    span.style.fontWeight = 'bold';
-    span.textContent = '✕ VACIAR';
+    // Hover events
+    btn.addEventListener('mouseenter', () => {
+      btn.style.background = 'rgba(255, 77, 77, 0.12)';
+      btn.style.borderColor = 'rgba(255, 77, 77, 0.6)';
+      btn.style.color = '#ff8888';
+      btn.style.boxShadow = '0 0 10px rgba(255, 77, 77, 0.2)';
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.background = 'rgba(255, 77, 77, 0.05)';
+      btn.style.borderColor = 'rgba(255, 77, 77, 0.3)';
+      btn.style.color = '#ff6666';
+      btn.style.boxShadow = 'none';
+    });
 
-    btn.appendChild(span);
+    btn.textContent = '✕ VACIAR RANURA SELECCIONADA';
+
     btn.addEventListener('click', () => {
       selectFavFigureForSlot('None', '', 'Slot Vacío');
     });
