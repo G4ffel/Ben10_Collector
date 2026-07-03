@@ -263,6 +263,27 @@
             {% endfor %}
           </tbody>
         </table>
+
+        {% if figuras.has_other_pages %}
+        <div class="pagination-omni" style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; align-items: center;">
+          {% if figuras.has_previous %}
+            <a href="?page={{ figuras.previous_page_number }}{% if request.GET.tab %}&tab={{ request.GET.tab }}{% endif %}" class="btn-secondary" style="padding: 8px 16px; font-size: 0.8rem; cursor: pointer; border-color: var(--border-green); text-decoration: none; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); transition: var(--transition);">
+              « ANTERIOR
+            </a>
+          {% endif %}
+          
+          <span style="font-family: var(--font-display); font-size: 0.85rem; color: var(--text-secondary); letter-spacing: 1px;">
+            PÁGINA <span class="green-text" style="font-weight: bold; text-shadow: 0 0 5px var(--green-glow);">{{ figuras.number }}</span> DE {{ figuras.paginator.num_pages }}
+          </span>
+          
+          {% if figuras.has_next %}
+            <a href="?page={{ figuras.next_page_number }}{% if request.GET.tab %}&tab={{ request.GET.tab }}{% endif %}" class="btn-secondary" style="padding: 8px 16px; font-size: 0.8rem; cursor: pointer; border-color: var(--border-green); text-decoration: none; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); transition: var(--transition);">
+              SIGUIENTE »
+            </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
         {% else %}
         <div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-body);">
           Base de datos vacía. Registra figuras en la colección para visualizar analíticas.

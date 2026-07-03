@@ -184,10 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const estadoSelect = document.querySelector('select[name="estado"]');
       const marcaSelect = document.querySelector('select[name="marca"]');
       const tamanoSelect = document.querySelector('select[name="tamano"]');
+      const subcategoriaSelect = document.querySelector('select[name="subcategoria"]');
+      const subcategoria = btn.getAttribute('data-subcategoria');
 
       if (estadoSelect) estadoSelect.value = estado;
       if (marcaSelect) marcaSelect.value = marca;
       if (tamanoSelect) tamanoSelect.value = tamano;
+      if (subcategoriaSelect) subcategoriaSelect.value = subcategoria || '';
 
       // Al editar, la imagen es opcional (se mantiene la existente)
       if (imageInput) imageInput.required = false;
@@ -230,6 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const estado = card.getAttribute('data-estado');
       const marca = card.getAttribute('data-marca');
       const tamano = card.getAttribute('data-tamano');
+      const subcategoria = card.getAttribute('data-subcategoria');
       const imagen = card.getAttribute('data-imagen');
 
       // Rellenar modal
@@ -242,6 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('detailAlienEstado').textContent = estado;
       document.getElementById('detailAlienMarca').textContent = marca;
       document.getElementById('detailAlienTamano').textContent = tamano;
+
+
 
       // Personalizar colores según la serie para estética Premium
       const detailHeader = document.getElementById('detailModalHeader');

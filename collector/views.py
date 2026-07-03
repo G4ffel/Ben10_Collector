@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum, Avg, Max
+from django.core.paginator import Paginator
 from .forms import FiguraForm, PerfilForm
 from .models import Figura, Perfil, Alien
 
@@ -20,6 +21,31 @@ def coleccion(request):
     figuras_count = Figura.objects.count()
     aliens = Alien.objects.all().order_by('nombre')
 
+    def get_grouped_figures(queryset):
+        grouped = []
+        std = queryset.filter(subcategoria='')
+        if std.exists():
+            grouped.append(('', std))
+        for sub_val, sub_label in Figura.SUBCATEGORIA_CHOICES:
+            if sub_val == '':
+                continue
+            sub_qs = queryset.filter(subcategoria=sub_val)
+            if sub_qs.exists():
+                grouped.append((sub_label, sub_qs))
+        return grouped
+
+    figuras_classic_grouped = get_grouped_figures(figuras_classic)
+    figuras_af_grouped = get_grouped_figures(figuras_af)
+    figuras_ov_grouped = get_grouped_figures(figuras_ov)
+    figuras_personajes_grouped = get_grouped_figures(figuras_personajes)
+    figuras_villanos_grouped = get_grouped_figures(figuras_villanos)
+
+    figuras_classic_count = figuras_classic.count()
+    figuras_af_count = figuras_af.count()
+    figuras_ov_count = figuras_ov.count()
+    figuras_personajes_count = figuras_personajes.count()
+    figuras_villanos_count = figuras_villanos.count()
+
     aliens_por_serie = {
         'Ben 10': list(aliens.filter(serie_default='Ben 10').values_list('nombre', flat=True)),
         'Ben 10 Alien Force': list(aliens.filter(serie_default='Ben 10 Alien Force').values_list('nombre', flat=True)),
@@ -29,11 +55,16 @@ def coleccion(request):
     }
 
     return render(request, 'collector/coleccion.html', {
-        'figuras_classic': figuras_classic,
-        'figuras_af': figuras_af,
-        'figuras_ov': figuras_ov,
-        'figuras_villanos': figuras_villanos,
-        'figuras_personajes': figuras_personajes,
+        'figuras_classic_grouped': figuras_classic_grouped,
+        'figuras_af_grouped': figuras_af_grouped,
+        'figuras_ov_grouped': figuras_ov_grouped,
+        'figuras_villanos_grouped': figuras_villanos_grouped,
+        'figuras_personajes_grouped': figuras_personajes_grouped,
+        'figuras_classic_count': figuras_classic_count,
+        'figuras_af_count': figuras_af_count,
+        'figuras_ov_count': figuras_ov_count,
+        'figuras_personajes_count': figuras_personajes_count,
+        'figuras_villanos_count': figuras_villanos_count,
         'figuras_count': figuras_count,
         'form': form,
         'aliens': aliens,
@@ -88,7 +119,11 @@ def dashboard(request):
     unicos_personajes = Figura.objects.filter(serie='Personajes').values('nombre').distinct().count()
     completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
 
-    figuras = Figura.objects.all().order_by('-precio')
+    figuras_list = Figura.objects.all().order_by('-precio')
+    paginator = Paginator(figuras_list, 10)
+    page_number = request.GET.get('page')
+    figuras = paginator.get_page(page_number)
+
     aliens = Alien.objects.all().order_by('nombre')
 
     return render(request, 'collector/dashboard.html', {

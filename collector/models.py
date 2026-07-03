@@ -55,6 +55,13 @@ class Figura(models.Model):
         ('pequeno', 'Pequeño'),
     ]
 
+    SUBCATEGORIA_CHOICES = [
+        ('', 'Ninguna / Estándar'),
+        ('Alienígenas Desbloqueados', 'Alienígenas Desbloqueados'),
+        ('Supremos', 'Supremos'),
+        ('Ultimate Alien', 'Ultimate Alien'),
+    ]
+
     nombre = models.CharField(
         max_length=100, 
         default='Fuego',
@@ -86,6 +93,13 @@ class Figura(models.Model):
         choices=TAMANO_CHOICES,
         default='mediano',
         verbose_name="Tamaño"
+    )
+    subcategoria = models.CharField(
+        max_length=50,
+        choices=SUBCATEGORIA_CHOICES,
+        default='',
+        blank=True,
+        verbose_name="Subcategoría"
     )
 
     class Meta:

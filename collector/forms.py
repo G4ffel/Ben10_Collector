@@ -12,7 +12,7 @@ class FiguraForm(forms.ModelForm):
 
     class Meta:
         model = Figura
-        fields = ['nombre', 'precio', 'imagen', 'fecha_adquisicion', 'serie', 'estado', 'marca', 'tamano']
+        fields = ['nombre', 'precio', 'imagen', 'fecha_adquisicion', 'serie', 'estado', 'marca', 'tamano', 'subcategoria']
         widgets = {
             'precio': forms.NumberInput(attrs={
                 'class': 'cta-input custom-input',
@@ -36,6 +36,9 @@ class FiguraForm(forms.ModelForm):
                 'class': 'cta-input custom-input select-custom'
             }),
             'tamano': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'subcategoria': forms.Select(attrs={
                 'class': 'cta-input custom-input select-custom'
             })
         }
