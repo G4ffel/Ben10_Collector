@@ -245,3 +245,52 @@ class Perfil(models.Model):
     def __str__(self):
         return self.nombre
 
+
+class WishlistItem(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name="Nombre del Alien")
+    serie = models.CharField(
+        max_length=50, 
+        choices=Figura.SERIE_CHOICES, 
+        default='Ben 10',
+        verbose_name="Serie de origen"
+    )
+    precio = models.IntegerField(verbose_name="Precio (CLP)", default=0, blank=True, null=True)
+    imagen = models.FileField(upload_to='figuras/', verbose_name="Imagen de la Figura", blank=True, null=True)
+    fecha_adquisicion = models.DateField(verbose_name="Fecha de Adquisición", blank=True, null=True)
+    estado = models.CharField(
+        max_length=20,
+        choices=Figura.ESTADO_CHOICES,
+        default='excelente',
+        verbose_name="Estado",
+        blank=True
+    )
+    marca = models.CharField(
+        max_length=20,
+        choices=Figura.MARCA_CHOICES,
+        default='original',
+        verbose_name="Marca",
+        blank=True
+    )
+    tamano = models.CharField(
+        max_length=20,
+        choices=Figura.TAMANO_CHOICES,
+        default='mediano',
+        verbose_name="Tamaño",
+        blank=True
+    )
+    subcategoria = models.CharField(
+        max_length=50,
+        choices=Figura.SUBCATEGORIA_CHOICES,
+        default='',
+        blank=True,
+        verbose_name="Subcategoría"
+    )
+    fecha_agregado = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Agregado")
+
+    class Meta:
+        verbose_name = "Item de Wishlist"
+        verbose_name_plural = "Items de Wishlist"
+        ordering = ['-fecha_agregado']
+
+    def __str__(self):
+        return f"{self.nombre} ({self.serie}) [Wishlist]"

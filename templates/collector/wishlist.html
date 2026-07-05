@@ -1,0 +1,579 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wishlist de Aliens | Ben 10</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+
+<body>
+
+  <!-- ===== BACKGROUND ANIMADO GLOBAL ===== -->
+  <div class="global-bg">
+    <div class="energy-ring ring-1"></div>
+    <div class="energy-ring ring-2"></div>
+    <div class="energy-ring ring-3"></div>
+    <div class="particles-container" id="global-particles"></div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo">
+        <div class="omnitrix-mini"></div>
+        <span class="logo-text">BEN <span class="logo-num">10</span></span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="{% url 'home' %}" class="nav-link">Inicio</a></li>
+        <li><a href="{% url 'coleccion' %}" class="nav-link">Colección</a></li>
+        <li><a href="{% url 'wishlist' %}" class="nav-link active">Wishlist</a></li>
+        <li><a href="{% url 'dashboard' %}" class="nav-link">Panel</a></li>
+      </ul>
+      <button class="nav-profile-btn" id="openProfileBtn">
+        <img src="{{ perfil.avatar_url }}" class="nav-profile-avatar-img" alt="Avatar">
+        <span class="nav-profile-name">{{ perfil.nombre }}</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== WISHLIST CONTAINER ===== -->
+  <main class="collection-container container" style="padding-top: 130px; padding-bottom: 80px;">
+
+    <!-- BARRA DE ACCIONES SUPERIOR -->
+    <div class="collection-actions-bar"
+      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border-green); padding-bottom: 15px;">
+      <h2 class="sub-title-omni" style="margin-bottom: 0; border: none; padding-left: 0;">
+        Aliens deseados (<span class="green-text">{{ wishlist_items|length }}</span>)
+      </h2>
+      <button class="btn-primary" id="openAddWishlistBtn" style="cursor: pointer;">
+        + Agregar Alien
+      </button>
+    </div>
+
+    <!-- LISTADO DE WISHLIST -->
+    <div class="figures-list-container">
+      {% if wishlist_items %}
+      <div class="figures-grid-omni">
+        {% for item in wishlist_items %}
+        <div class="figure-card-omni wishlist-card" style="position: relative; display: flex; flex-direction: column; height: 100%; border: 1px solid rgba(0, 255, 65, 0.15); transition: var(--transition);"
+          data-id="{{ item.id }}"
+          data-nombre="{{ item.nombre }}"
+          data-serie="{{ item.serie }}">
+          
+          <div class="figure-img-wrap" style="border-bottom: none; display: flex; align-items: center; justify-content: center; height: 180px; background: radial-gradient(circle, rgba(0, 255, 65, 0.05), transparent 70%); position: relative; overflow: hidden;">
+            {% if item.imagen %}
+              <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" 
+                style="width: 100%; height: 100%; object-fit: contain; padding: 10px;" />
+            {% else %}
+              <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Wanted" 
+                style="width: 80px; height: 80px; filter: grayscale(1) opacity(0.2) drop-shadow(0 0 10px rgba(0, 255, 65, 0.15)); transition: var(--transition);" 
+                class="wishlist-placeholder-img" />
+            {% endif %}
+          </div>
+
+          <span class="figure-serie-badge {% if item.serie == 'Ben 10' %}serie-classic{% elif item.serie == 'Ben 10 Alien Force' %}serie-af{% elif item.serie == 'Ben 10 Omniverse' %}serie-ov{% elif item.serie == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}">
+            {{ item.serie }}
+          </span>
+
+          <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+            <div>
+              <h3 style="margin-bottom: 5px;">{{ item.nombre }}</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-body);">Deseado desde: {{ item.fecha_agregado|date:"d/m/Y" }}</p>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
+              <button class="btn-primary move-to-collection-btn" 
+                style="width: 100%; justify-content: center; font-size: 0.8rem; padding: 10px 14px; cursor: pointer;"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-serie="{{ item.serie }}"
+                data-precio="{{ item.precio }}"
+                data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                data-estado="{{ item.estado }}"
+                data-marca="{{ item.marca }}"
+                data-tamano="{{ item.tamano }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{% if item.imagen %}{{ item.imagen.url }}{% endif %}">
+                Coleccionar
+              </button>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="btn-secondary edit-wishlist-btn" 
+                  style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 8px 12px; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); outline: none; box-shadow: none;"
+                  data-id="{{ item.id }}"
+                  data-nombre="{{ item.nombre }}"
+                  data-serie="{{ item.serie }}"
+                  data-precio="{{ item.precio }}"
+                  data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                  data-estado="{{ item.estado }}"
+                  data-marca="{{ item.marca }}"
+                  data-tamano="{{ item.tamano }}"
+                  data-subcategoria="{{ item.subcategoria }}"
+                  data-imagen="{% if item.imagen %}{{ item.imagen.url }}{% endif %}">
+                  Editar
+                </button>
+                <a href="{% url 'eliminar_de_wishlist' item.id %}" class="btn-secondary" 
+                  style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 8px 12px; cursor: pointer; border-color: rgba(255, 51, 51, 0.3); color: rgba(255, 232, 232, 0.75); display: inline-flex; align-items: center; box-shadow: none;"
+                  onmouseover="this.style.borderColor='rgba(255, 51, 51, 0.8)'; this.style.color='#ffdddd'; this.style.backgroundColor='rgba(255, 51, 51, 0.05)'"
+                  onmouseout="this.style.borderColor='rgba(255, 51, 51, 0.3)'; this.style.color='rgba(255, 232, 232, 0.75)'; this.style.backgroundColor='transparent'">
+                  Quitar
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state-omni">
+        <div class="empty-icon-omni" style="background: url('/media/omnitrix/Ben_10_Omnitrix.png') center/contain no-repeat; filter: grayscale(1) opacity(0.15); width: 85px; height: 85px; margin: 0 auto 20px; animation: omni-pulse 3s infinite;"></div>
+        <h3>Wishlist vacía</h3>
+        <p>No tienes aliens en tu lista de deseos. ¡Haz clic en el botón de arriba para añadir un alien que quieras conseguir!</p>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <!-- ===== MODAL AGREGAR A WISHLIST ===== -->
+  <div class="transform-modal" id="wishlistAddModal">
+    <div class="modal-overlay" id="wishlistAddOverlay"></div>
+    <div class="modal-content" style="max-width: 950px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
+      <style>
+        @keyframes omni-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        #wishlistAddForm select.select-custom,
+        #wishlistAddForm select[name="serie"] {
+          background: transparent !important;
+          border: none !important;
+          font-family: var(--font-display) !important;
+          font-size: 1.15rem !important;
+          font-weight: 700 !important;
+          color: #ffffff !important;
+          text-transform: uppercase !important;
+          outline: none !important;
+          width: 100% !important;
+          cursor: pointer !important;
+          padding: 0 !important;
+          box-shadow: none !important;
+        }
+        #wishlistAddForm select option,
+        #wishlistEditForm select option,
+        #moveToCollectionForm select option {
+          background-color: #0b150b !important;
+          color: #ffffff !important;
+          font-family: var(--font-body) !important;
+          font-size: 0.95rem !important;
+        }
+        .autocomplete-list-omni li,
+        .custom-select-options-list li {
+          padding: 12px 18px !important;
+          cursor: pointer !important;
+          font-family: var(--font-display) !important;
+          font-size: 0.95rem !important;
+          color: #ffffff !important;
+          text-transform: uppercase !important;
+          transition: background 0.25s ease, color 0.25s ease, text-shadow 0.25s ease !important;
+          border-bottom: 1px solid rgba(0, 255, 65, 0.05) !important;
+        }
+        .autocomplete-list-omni li:last-child,
+        .custom-select-options-list li:last-child {
+          border-bottom: none !important;
+        }
+        .autocomplete-list-omni li:hover,
+        .custom-select-options-list li:hover {
+          background: rgba(0, 255, 65, 0.15) !important;
+          color: var(--green-primary) !important;
+          text-shadow: 0 0 8px var(--green-glow) !important;
+        }
+        .autocomplete-list-omni::-webkit-scrollbar,
+        .custom-select-options-list::-webkit-scrollbar {
+          width: 8px !important;
+        }
+        .autocomplete-list-omni::-webkit-scrollbar-track,
+        .custom-select-options-list::-webkit-scrollbar-track {
+          background: transparent !important;
+        }
+        .autocomplete-list-omni::-webkit-scrollbar-thumb,
+        .custom-select-options-list::-webkit-scrollbar-thumb {
+          background: var(--green-primary) !important;
+          border-radius: 8px !important;
+          border: 2px solid var(--dark-2) !important;
+        }
+        .autocomplete-list-omni::-webkit-scrollbar-thumb:hover,
+        .custom-select-options-list::-webkit-scrollbar-thumb:hover {
+          background: #39ff14 !important;
+        }
+      </style>
+      <div class="form-header-omni" style="margin-bottom: 0px; border-bottom: 1px solid var(--border-green); padding-bottom: 18px; display: flex; align-items: center; gap: 15px; width: 100%;">
+        <div class="omni-radar" style="width: 16px; height: 16px;"></div>
+        <h2 id="wishlistAddModalTitle" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">REGISTRO DE WISHLIST</h2>
+        <button type="button" id="wishlistAddCloseX" style="margin-left: auto; background: none; border: none; color: var(--green-primary); font-size: 1.8rem; cursor: pointer; outline: none; transition: transform 0.2s ease, color 0.2s ease;">✕</button>
+      </div>
+
+      <form method="POST" class="omni-form-fields" id="wishlistAddForm" action="{% url 'agregar_a_wishlist' %}" style="margin: 0; padding: 0; width: 100%;">
+        {% csrf_token %}
+
+        <div class="detail-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; align-items: stretch; margin-bottom: 24px;">
+          
+          <!-- Lado Izquierdo: Holograma Omnitrix Base de Datos -->
+          <div class="detail-img-wrap" style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); min-height: 280px; position: relative;">
+            <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Omnitrix Database" style="width: 100px; height: 100px; filter: drop-shadow(0 0 12px var(--green-primary)); animation: omni-spin 25s linear infinite;" />
+            <span style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); letter-spacing: 2px; margin-top: 20px; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow); font-weight: bold;">Base de Datos Omnitrix</span>
+          </div>
+
+          <!-- Lado Derecho: HUD Inputs -->
+          <div class="detail-info-wrap" style="display: flex; flex-direction: column; gap: 14px; justify-content: center;">
+            
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+              <label style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SERIE DE ORIGEN</label>
+              
+              <div class="custom-select-omni" id="wishlistCustomSerieSelect" style="position: relative; width: 100%;">
+                <div class="custom-select-trigger" id="wishlistCustomSerieTrigger" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: #ffffff; text-transform: uppercase;">
+                  <span id="wishlistCustomSerieText">Ben 10</span>
+                  <span style="font-size: 0.8rem; color: var(--green-primary); text-shadow: 0 0 5px var(--green-glow); margin-left: 10px;">▼</span>
+                </div>
+                <ul class="custom-select-options-list" id="wishlistCustomSerieOptions" style="display: none; position: absolute; top: 100%; left: -18px; right: -18px; background: var(--dark-2); border: 1px solid var(--border-green); border-radius: 8px; max-height: 220px; overflow-y: auto; z-index: 99; margin: 12px 0 0 0; padding: 0; list-style: none; box-shadow: 0 5px 25px rgba(0, 255, 65, 0.25);">
+                  <li data-value="Ben 10">Ben 10</li>
+                  <li data-value="Ben 10 Alien Force">Ben 10 Alien Force</li>
+                  <li data-value="Ben 10 Omniverse">Ben 10 Omniverse</li>
+                  <li data-value="Personajes">Personajes</li>
+                  <li data-value="Villanos">Villanos</li>
+                </ul>
+              </div>
+
+              <div style="display: none;">
+                {{ form_wishlist.serie }}
+              </div>
+            </div>
+
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+              <label for="wishlistAlienInput" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">NOMBRE DEL ALIEN</label>
+              <div class="custom-autocomplete-wrapper" style="position: relative; width: 100%;">
+                <input type="text" id="wishlistAlienInput"
+                  placeholder="Escribe o selecciona alien..." autocomplete="off"
+                  style="width: 100%; cursor: pointer; background: transparent !important; border: none !important; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--green-primary); text-shadow: 0 0 10px var(--green-glow); outline: none; padding: 0 !important; margin: 0; box-shadow: none !important;" />
+                <ul id="wishlistAlienList" class="autocomplete-list-omni"
+                  style="display: none; position: absolute; top: 100%; left: -18px; right: -18px; background: var(--dark-2); border: 1px solid var(--border-green); border-radius: 8px; max-height: 180px; overflow-y: auto; z-index: 99; margin: 12px 0 0 0; padding: 0; list-style: none; box-shadow: 0 5px 25px rgba(0, 255, 65, 0.25);">
+                  <!-- Generado dinámicamente -->
+                </ul>
+              </div>
+              <div style="display: none;">
+                {{ form_wishlist.nombre }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; width: 100%;">
+          <button type="button" class="btn-secondary" id="wishlistAddCancel"
+            style="flex: 1; justify-content: center; padding: 14px 20px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
+            CANCELAR
+          </button>
+          <button type="submit" class="btn-primary" id="wishlistAddSubmitBtn"
+            style="flex: 2; justify-content: center; padding: 14px 20px; cursor: pointer; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;">
+            AÑADIR A WISHLIST
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL CONFIGURAR Y MOVER A LA COLECCIÓN ===== -->
+  <div class="transform-modal" id="moveToCollectionModal">
+    <div class="modal-overlay" id="moveToCollectionOverlay"></div>
+    <div class="modal-content" style="max-width: 950px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
+      <div class="form-header-omni" style="margin-bottom: 0px; border-bottom: 1px solid var(--border-green); padding-bottom: 18px; display: flex; align-items: center; gap: 15px; width: 100%;">
+        <div class="omni-radar" style="width: 16px; height: 16px;"></div>
+        <h2 id="moveToCollectionTitle" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">DETALLE DE ALIEN</h2>
+        <button type="button" id="moveToCollectionCloseX" style="margin-left: auto; background: none; border: none; color: var(--green-primary); font-size: 1.8rem; cursor: pointer; outline: none; transition: transform 0.2s ease, color 0.2s ease;">✕</button>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data" id="moveToCollectionForm" style="margin: 0; padding: 0; width: 100%;">
+        {% csrf_token %}
+
+        <!-- Campos ocultos de nombre y serie que se rellenan mediante JS y el backend -->
+        <input type="hidden" name="nombre" id="moveAlienNombreVal" value="" />
+        <input type="hidden" name="serie" id="moveAlienSerieVal" value="" />
+
+        <div class="detail-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; align-items: stretch; margin-bottom: 24px;">
+          
+          <!-- Imagen del Alien / Selector y preview -->
+          <div class="detail-img-wrap" id="moveAlienImgWrap" 
+            style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); transition: var(--transition); cursor: pointer; position: relative; min-height: 320px;"
+            onmouseover="this.style.borderColor='var(--green-primary)'; this.style.boxShadow='0 0 40px rgba(0, 255, 65, 0.3)'"
+            onmouseout="this.style.borderColor='var(--border-green)'; this.style.boxShadow='0 0 30px rgba(0, 255, 65, 0.15)'">
+            <div id="imageUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; text-align: center;">
+              <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Omnitrix" style="width: 75px; height: 75px; filter: drop-shadow(0 0 8px var(--green-primary)); margin-bottom: 10px; transition: var(--transition);" />
+              <span style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 10px var(--green-glow);">Seleccionar Imagen</span>
+              <span style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-secondary);">Haz clic aquí para subir una foto de la figura del alien</span>
+            </div>
+            
+            <img id="moveAlienPreviewImg" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: transparent;" />
+            
+            <input type="file" name="imagen" accept="image/*" id="moveFileImage" style="display: none;" required />
+            
+            <div id="filenameOverlay" style="display: none; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(5, 12, 5, 0.92); border-top: 1px solid var(--border-green); padding: 8px 12px; text-align: center; z-index: 10;">
+              <span id="moveFileChosenName" style="color: var(--green-primary); font-family: var(--font-body); font-size: 0.85rem; text-shadow: 0 0 5px var(--green-glow); word-break: break-all; font-weight: 500;">Sin archivo</span>
+            </div>
+          </div>
+
+          <!-- Información del Alien (HUD Boxes para entrada de datos) -->
+          <div class="detail-info-wrap" style="display: flex; flex-direction: column; gap: 14px;">
+            
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+              <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">SERIE DE ORIGEN</span>
+              <span id="displayAlienSerie" style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: #ffffff; text-transform: uppercase;">-</span>
+            </div>
+
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+              <label for="id_precio" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">PRECIO DE ADQUISICIÓN</label>
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">$</span>
+                <input type="number" name="precio" id="id_precio" required placeholder="8000" min="0"
+                  style="background: transparent; border: none; font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary); outline: none; width: 100%; padding: 0; margin: 0;" />
+                <span style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">CLP</span>
+              </div>
+              {% if form_figura.precio.errors %}
+                <span style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form_figura.precio.errors.0 }}</span>
+              {% endif %}
+            </div>
+
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+              <label for="id_fecha_adquisicion" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">FECHA DE ADQUISICIÓN</label>
+              <input type="date" name="fecha_adquisicion" id="id_fecha_adquisicion" required
+                style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.15rem; color: var(--text-secondary); font-weight: 600; outline: none; width: 100%; color-scheme: dark; padding: 0;" />
+              {% if form_figura.fecha_adquisicion.errors %}
+                <span style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form_figura.fecha_adquisicion.errors.0 }}</span>
+              {% endif %}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="id_estado" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">ESTADO</label>
+                <select name="estado" id="id_estado" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="excelente" style="background: var(--dark-2);">Excelente</option>
+                  <option value="bueno" style="background: var(--dark-2);">Bueno</option>
+                  <option value="medio" style="background: var(--dark-2);">Medio</option>
+                  <option value="malo" style="background: var(--dark-2);">Malo</option>
+                </select>
+              </div>
+
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="id_marca" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">MARCA</label>
+                <select name="marca" id="id_marca" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="original" style="background: var(--dark-2);">Original</option>
+                  <option value="fake" style="background: var(--dark-2);">Fake</option>
+                  <option value="bandai" style="background: var(--dark-2);">Bandai</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="id_tamano" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">TAMAÑO</label>
+                <select name="tamano" id="id_tamano" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="grande" style="background: var(--dark-2);">Grande</option>
+                  <option value="mediano" style="background: var(--dark-2);">Mediano</option>
+                  <option value="pequeno" style="background: var(--dark-2);">Pequeño</option>
+                </select>
+              </div>
+
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="id_subcategoria" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">SUBCATEGORÍA</label>
+                <select name="subcategoria" id="id_subcategoria" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="" style="background: var(--dark-2);">Ninguna / Estándar</option>
+                  <option value="Alienígenas Desbloqueados" style="background: var(--dark-2);">Alienígenas Desbloqueados</option>
+                  <option value="Supremos" style="background: var(--dark-2);">Supremos</option>
+                  <option value="Ultimate Alien" style="background: var(--dark-2);">Ultimate Alien</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; width: 100%;">
+          <button type="button" class="btn-secondary" id="moveToCollectionCancel"
+            style="flex: 1; justify-content: center; padding: 14px 20px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
+            CANCELAR
+          </button>
+          <button type="submit" class="btn-primary"
+            style="flex: 2; justify-content: center; padding: 14px 20px; cursor: pointer; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;">
+            CONFIRMAR ADQUISICIÓN
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL CONFIGURAR Y EDITAR EN WISHLIST ===== -->
+  <div class="transform-modal" id="wishlistEditModal">
+    <div class="modal-overlay" id="wishlistEditOverlay"></div>
+    <div class="modal-content" style="max-width: 950px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
+      <div class="form-header-omni" style="margin-bottom: 0px; border-bottom: 1px solid var(--border-green); padding-bottom: 18px; display: flex; align-items: center; gap: 15px; width: 100%;">
+        <div class="omni-radar" style="width: 16px; height: 16px;"></div>
+        <h2 id="wishlistEditTitle" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">DETALLE DE ALIEN</h2>
+        <button type="button" id="wishlistEditCloseX" style="margin-left: auto; background: none; border: none; color: var(--green-primary); font-size: 1.8rem; cursor: pointer; outline: none; transition: transform 0.2s ease, color 0.2s ease;">✕</button>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data" id="wishlistEditForm" style="margin: 0; padding: 0; width: 100%;">
+        {% csrf_token %}
+
+        <!-- Campos ocultos que se rellenan via JS -->
+        <input type="hidden" name="nombre" id="editAlienNombreVal" value="" />
+        <input type="hidden" name="serie" id="editAlienSerieVal" value="" />
+
+        <div class="detail-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; align-items: stretch; margin-bottom: 24px;">
+          
+          <!-- Imagen del Alien / Selector y preview -->
+          <div class="detail-img-wrap" id="editAlienImgWrap" 
+            style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); transition: var(--transition); cursor: pointer; position: relative; min-height: 320px;"
+            onmouseover="this.style.borderColor='var(--green-primary)'; this.style.boxShadow='0 0 40px rgba(0, 255, 65, 0.3)'"
+            onmouseout="this.style.borderColor='var(--border-green)'; this.style.boxShadow='0 0 30px rgba(0, 255, 65, 0.15)'">
+            <div id="editImageUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; text-align: center;">
+              <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Omnitrix" style="width: 75px; height: 75px; filter: drop-shadow(0 0 8px var(--green-primary)); margin-bottom: 10px; transition: var(--transition);" />
+              <span style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 10px var(--green-glow);">Seleccionar Imagen</span>
+              <span style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-secondary);">Haz clic aquí para subir una foto de la figura del alien</span>
+            </div>
+            
+            <img id="editAlienPreviewImg" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: transparent;" />
+            
+            <input type="file" name="imagen" accept="image/*" id="editFileImage" style="display: none;" />
+            
+            <div id="editFilenameOverlay" style="display: none; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(5, 12, 5, 0.92); border-top: 1px solid var(--border-green); padding: 8px 12px; text-align: center; z-index: 10;">
+              <span id="editFileChosenName" style="color: var(--green-primary); font-family: var(--font-body); font-size: 0.85rem; text-shadow: 0 0 5px var(--green-glow); word-break: break-all; font-weight: 500;">Sin archivo</span>
+            </div>
+          </div>
+
+          <!-- Información del Alien (HUD Boxes para entrada de datos) -->
+          <div class="detail-info-wrap" style="display: flex; flex-direction: column; gap: 14px;">
+            
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 12px 18px; transition: var(--transition);">
+              <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">SERIE DE ORIGEN</span>
+              <span id="editDisplayAlienSerie" style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: #ffffff; text-transform: uppercase;">-</span>
+            </div>
+
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+              <label for="edit_id_precio" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">PRECIO DE ADQUISICIÓN</label>
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">$</span>
+                <input type="number" name="precio" id="edit_id_precio" placeholder="8000" min="0"
+                  style="background: transparent; border: none; font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary); outline: none; width: 100%; padding: 0; margin: 0;" />
+                <span style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">CLP</span>
+              </div>
+            </div>
+
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+              <label for="edit_id_fecha_adquisicion" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">FECHA DE ADQUISICIÓN</label>
+              <input type="date" name="fecha_adquisicion" id="edit_id_fecha_adquisicion"
+                style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.15rem; color: var(--text-secondary); font-weight: 600; outline: none; width: 100%; color-scheme: dark; padding: 0;" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="edit_id_estado" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">ESTADO</label>
+                <select name="estado" id="edit_id_estado" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="excelente" style="background: var(--dark-2);">Excelente</option>
+                  <option value="bueno" style="background: var(--dark-2);">Bueno</option>
+                  <option value="medio" style="background: var(--dark-2);">Medio</option>
+                  <option value="malo" style="background: var(--dark-2);">Malo</option>
+                </select>
+              </div>
+
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="edit_id_marca" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">MARCA</label>
+                <select name="marca" id="edit_id_marca" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="original" style="background: var(--dark-2);">Original</option>
+                  <option value="fake" style="background: var(--dark-2);">Fake</option>
+                  <option value="bandai" style="background: var(--dark-2);">Bandai</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="edit_id_tamano" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">TAMAÑO</label>
+                <select name="tamano" id="edit_id_tamano" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="grande" style="background: var(--dark-2);">Grande</option>
+                  <option value="mediano" style="background: var(--dark-2);">Mediano</option>
+                  <option value="pequeno" style="background: var(--dark-2);">Pequeño</option>
+                </select>
+              </div>
+
+              <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; transition: var(--transition); display: flex; flex-direction: column;">
+                <label for="edit_id_subcategoria" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 2px; cursor: pointer;">SUBCATEGORÍA</label>
+                <select name="subcategoria" id="edit_id_subcategoria" style="background: transparent; border: none; font-family: var(--font-body); font-size: 1.1rem; color: #ffffff; font-weight: 600; outline: none; width: 100%; cursor: pointer; padding: 0;">
+                  <option value="" style="background: var(--dark-2);">Ninguna / Estándar</option>
+                  <option value="Alienígenas Desbloqueados" style="background: var(--dark-2);">Alienígenas Desbloqueados</option>
+                  <option value="Supremos" style="background: var(--dark-2);">Supremos</option>
+                  <option value="Ultimate Alien" style="background: var(--dark-2);">Ultimate Alien</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; width: 100%;">
+          <button type="button" class="btn-secondary" id="wishlistEditCancel"
+            style="flex: 1; justify-content: center; padding: 14px 20px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
+            CANCELAR
+          </button>
+          <button type="submit" class="btn-primary"
+            style="flex: 2; justify-content: center; padding: 14px 20px; cursor: pointer; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;">
+            GUARDAR
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
+  {% include 'collector/includes/profile_modal.html' %}
+
+  <!-- ===== DATOS PARA JAVASCRIPT ===== -->
+  {{ aliens_por_serie|json_script:"aliens-por-serie-data" }}
+
+  <!-- Inyección de ID con error si existió fallo en validación -->
+  {% if error_moving_id %}
+    <span id="error-moving-id-marker" data-id="{{ error_moving_id }}" style="display: none;"></span>
+  {% endif %}
+
+  <script src="{% static 'js/bg-particles.js' %}"></script>
+  <script src="{% static 'js/profile-modal.js' %}"></script>
+  <script src="{% static 'js/wishlist.js' %}"></script>
+  
+  <script>
+    // Al pasar el mouse por las tarjetas de wishlist, darles un efecto de brillo verde fluorescente al holograma
+    document.querySelectorAll('.wishlist-card').forEach(card => {
+      const placeholder = card.querySelector('.wishlist-placeholder-img');
+      card.addEventListener('mouseenter', () => {
+        if(placeholder) {
+          placeholder.style.filter = 'none opacity(0.85) drop-shadow(0 0 15px var(--green-primary))';
+          placeholder.style.transform = 'scale(1.15) rotate(5deg)';
+        }
+      });
+      card.addEventListener('mouseleave', () => {
+        if(placeholder) {
+          placeholder.style.filter = 'grayscale(1) opacity(0.2) drop-shadow(0 0 10px rgba(0, 255, 65, 0.15))';
+          placeholder.style.transform = 'scale(1) rotate(0deg)';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

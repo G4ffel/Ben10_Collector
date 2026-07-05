@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum, Avg, Max
 from django.core.paginator import Paginator
-from .forms import FiguraForm, PerfilForm
-from .models import Figura, Perfil, Alien
+from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm
+from .models import Figura, Perfil, Alien, WishlistItem
 
 def coleccion(request):
     if request.method == 'POST':
@@ -202,6 +202,91 @@ def api_figuras(request):
             'tamano_display': f.get_tamano_display()
         })
     return JsonResponse({'figuras': data})
+
+
+def wishlist(request):
+    wishlist_items = WishlistItem.objects.all().order_by('-fecha_agregado')
+    aliens = Alien.objects.all().order_by('nombre')
+    aliens_por_serie = {
+        'Ben 10': list(aliens.filter(serie_default='Ben 10').values_list('nombre', flat=True)),
+        'Ben 10 Alien Force': list(aliens.filter(serie_default='Ben 10 Alien Force').values_list('nombre', flat=True)),
+        'Ben 10 Omniverse': list(aliens.filter(serie_default='Ben 10 Omniverse').values_list('nombre', flat=True)),
+        'Personajes': list(aliens.filter(serie_default='Personajes').values_list('nombre', flat=True)),
+        'Villanos': list(aliens.filter(serie_default='Villanos').values_list('nombre', flat=True)),
+    }
+    form_wishlist = WishlistItemForm()
+    form_figura = FiguraForm()
+    form_wishlist_edit = WishlistEditForm()
+
+    return render(request, 'collector/wishlist.html', {
+        'wishlist_items': wishlist_items,
+        'form_wishlist': form_wishlist,
+        'form_figura': form_figura,
+        'form_wishlist_edit': form_wishlist_edit,
+        'aliens_por_serie': aliens_por_serie,
+    })
+
+
+def agregar_a_wishlist(request):
+    if request.method == 'POST':
+        form = WishlistItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+    return redirect('wishlist')
+
+
+def eliminar_de_wishlist(request, id):
+    item = get_object_or_404(WishlistItem, id=id)
+    item.delete()
+    return redirect('wishlist')
+
+
+def editar_wishlist(request, id):
+    item = get_object_or_404(WishlistItem, id=id)
+    if request.method == 'POST':
+        form = WishlistEditForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+    return redirect('wishlist')
+
+
+
+def mover_a_coleccion(request, wishlist_id):
+    wishlist_item = get_object_or_404(WishlistItem, id=wishlist_id)
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        post_data['nombre'] = wishlist_item.nombre
+        post_data['serie'] = wishlist_item.serie
+        
+        files = request.FILES.copy()
+        if not files.get('imagen') and wishlist_item.imagen:
+            files['imagen'] = wishlist_item.imagen
+            
+        form = FiguraForm(post_data, files)
+        if form.is_valid():
+            form.save()
+            wishlist_item.delete()
+            return redirect('coleccion')
+        else:
+            wishlist_items = WishlistItem.objects.all().order_by('-fecha_agregado')
+            aliens = Alien.objects.all().order_by('nombre')
+            aliens_por_serie = {
+                'Ben 10': list(aliens.filter(serie_default='Ben 10').values_list('nombre', flat=True)),
+                'Ben 10 Alien Force': list(aliens.filter(serie_default='Ben 10 Alien Force').values_list('nombre', flat=True)),
+                'Ben 10 Omniverse': list(aliens.filter(serie_default='Ben 10 Omniverse').values_list('nombre', flat=True)),
+                'Personajes': list(aliens.filter(serie_default='Personajes').values_list('nombre', flat=True)),
+                'Villanos': list(aliens.filter(serie_default='Villanos').values_list('nombre', flat=True)),
+            }
+            form_wishlist = WishlistItemForm()
+            return render(request, 'collector/wishlist.html', {
+                'wishlist_items': wishlist_items,
+                'form_wishlist': form_wishlist,
+                'form_figura': form,
+                'aliens_por_serie': aliens_por_serie,
+                'error_moving_id': wishlist_id,
+            })
+    return redirect('wishlist')
+
 
 
 
