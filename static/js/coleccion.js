@@ -46,10 +46,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let primerVisible = null;
     let valorActualValido = false;
 
+    // Map objects to names if needed
+    const permitidosNombres = permitidos.map(a => typeof a === 'string' ? a : a.nombre);
+
     // Leemos las opciones del select nativo de Django para generar los li
     Array.from(nombreInput.options).forEach(option => {
       const alienName = option.value;
-      const perteneceSerie = (permitidos.length === 0) || permitidos.includes(alienName);
+      const perteneceSerie = (permitidosNombres.length === 0) || permitidosNombres.includes(alienName);
       const coincideBusqueda = alienName.toLowerCase().includes(query);
 
       if (perteneceSerie && coincideBusqueda) {

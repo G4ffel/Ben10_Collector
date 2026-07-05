@@ -38,18 +38,42 @@ document.addEventListener('DOMContentLoaded', () => {
     let primerVisible = null;
     let valorActualValido = false;
 
+    // Map objects to names
+    const permitidosNombres = permitidos.map(a => typeof a === 'string' ? a : a.nombre);
+
     Array.from(nombreSelect.options).forEach(option => {
       const alienName = option.value;
-      const perteneceSerie = (permitidos.length === 0) || permitidos.includes(alienName);
+      const perteneceSerie = (permitidosNombres.length === 0) || permitidosNombres.includes(alienName);
       const coincideBusqueda = alienName.toLowerCase().includes(query);
 
       if (perteneceSerie && coincideBusqueda) {
         const li = document.createElement('li');
         li.textContent = alienName;
+
+        const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre === alienName));
+        const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
+
         li.addEventListener('click', () => {
           if (autocompleteInput) autocompleteInput.value = alienName;
           nombreSelect.value = alienName;
           autocompleteList.style.display = 'none';
+
+          const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
+          if (previewImg) {
+            previewImg.src = defaultImgUrl;
+            if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
+              previewImg.style.animation = 'none';
+              previewImg.style.width = '100%';
+              previewImg.style.height = '100%';
+              previewImg.style.objectFit = 'contain';
+              previewImg.style.padding = '20px';
+            } else {
+              previewImg.style.animation = 'omni-spin 25s linear infinite';
+              previewImg.style.width = '100px';
+              previewImg.style.height = '100px';
+              previewImg.style.padding = '0';
+            }
+          }
         });
         autocompleteList.appendChild(li);
 
@@ -62,6 +86,26 @@ document.addEventListener('DOMContentLoaded', () => {
       nombreSelect.value = primerVisible;
       if (document.activeElement !== autocompleteInput && autocompleteInput) {
         autocompleteInput.value = primerVisible;
+      }
+    }
+
+    const currentName = nombreSelect.value;
+    const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre === currentName));
+    const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
+    const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
+    if (previewImg) {
+      previewImg.src = defaultImgUrl;
+      if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
+        previewImg.style.animation = 'none';
+        previewImg.style.width = '100%';
+        previewImg.style.height = '100%';
+        previewImg.style.objectFit = 'contain';
+        previewImg.style.padding = '20px';
+      } else {
+        previewImg.style.animation = 'omni-spin 25s linear infinite';
+        previewImg.style.width = '100px';
+        previewImg.style.height = '100px';
+        previewImg.style.padding = '0';
       }
     }
   };

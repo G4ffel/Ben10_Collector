@@ -68,7 +68,7 @@ class Figura(models.Model):
         verbose_name="Nombre del Alien"
     )
     precio = models.IntegerField(verbose_name="Precio (CLP)")
-    imagen = models.FileField(upload_to='figuras/', verbose_name="Imagen de la Figura")
+    imagen = models.FileField(upload_to='figuras/', blank=True, null=True, verbose_name="Imagen de la Figura")
     fecha_adquisicion = models.DateField(verbose_name="Fecha de Adquisición")
     serie = models.CharField(
         max_length=50, 
@@ -118,6 +118,13 @@ class Alien(models.Model):
         choices=Figura.SERIE_CHOICES, 
         default='Ben 10', 
         verbose_name="Serie de origen por defecto"
+    )
+
+    imagen = models.FileField(
+        upload_to='aliens_db/', 
+        blank=True, 
+        null=True, 
+        verbose_name="Imagen por defecto"
     )
 
     class Meta:

@@ -4,11 +4,33 @@ from django.core.paginator import Paginator
 from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm
 from .models import Figura, Perfil, Alien, WishlistItem
 
+def get_aliens_por_serie_data():
+    aliens = Alien.objects.all().order_by('nombre')
+    aliens_por_serie = {}
+    for s in ['Ben 10', 'Ben 10 Alien Force', 'Ben 10 Omniverse', 'Personajes', 'Villanos']:
+        list_aliens = []
+        for alien in aliens.filter(serie_default=s):
+            img_url = alien.imagen.url if alien.imagen else '/media/omnitrix/Ben_10_Omnitrix.png'
+            list_aliens.append({
+                'nombre': alien.nombre,
+                'imagen_url': img_url
+            })
+        aliens_por_serie[s] = list_aliens
+    return aliens_por_serie
+
 def coleccion(request):
     if request.method == 'POST':
         form = FiguraForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            figura = form.save(commit=False)
+            if not figura.imagen:
+                try:
+                    alien_db = Alien.objects.get(nombre=figura.nombre)
+                    if alien_db.imagen:
+                        figura.imagen = alien_db.imagen
+                except Alien.DoesNotExist:
+                    pass
+            figura.save()
             return redirect('coleccion')
     else:
         form = FiguraForm()
@@ -46,13 +68,7 @@ def coleccion(request):
     figuras_personajes_count = figuras_personajes.count()
     figuras_villanos_count = figuras_villanos.count()
 
-    aliens_por_serie = {
-        'Ben 10': list(aliens.filter(serie_default='Ben 10').values_list('nombre', flat=True)),
-        'Ben 10 Alien Force': list(aliens.filter(serie_default='Ben 10 Alien Force').values_list('nombre', flat=True)),
-        'Ben 10 Omniverse': list(aliens.filter(serie_default='Ben 10 Omniverse').values_list('nombre', flat=True)),
-        'Personajes': list(aliens.filter(serie_default='Personajes').values_list('nombre', flat=True)),
-        'Villanos': list(aliens.filter(serie_default='Villanos').values_list('nombre', flat=True)),
-    }
+    aliens_por_serie = get_aliens_por_serie_data()
 
     return render(request, 'collector/coleccion.html', {
         'figuras_classic_grouped': figuras_classic_grouped,
@@ -82,11 +98,26 @@ def editar_figura(request, id):
 
 def dashboard(request):
     if request.method == 'POST':
-        # Agregar nuevo alien desde el panel
+        # Agregar o editar alien desde el panel
+        alien_id = request.POST.get('alien_id')
         alien_nombre = request.POST.get('alien_nombre')
         serie_default = request.POST.get('serie_default', 'Ben 10')
-        if alien_nombre:
-            Alien.objects.get_or_create(nombre=alien_nombre, defaults={'serie_default': serie_default})
+        alien_imagen = request.FILES.get('alien_imagen')
+
+        if alien_id:
+            alien = get_object_or_404(Alien, id=alien_id)
+            if alien_nombre:
+                alien.nombre = alien_nombre
+            alien.serie_default = serie_default
+            if alien_imagen:
+                alien.imagen = alien_imagen
+            alien.save()
+            return redirect(f'/dashboard/?tab=aliens&serie={serie_default}')
+        elif alien_nombre:
+            alien, created = Alien.objects.get_or_create(nombre=alien_nombre, defaults={'serie_default': serie_default})
+            if alien_imagen:
+                alien.imagen = alien_imagen
+                alien.save()
             return redirect(f'/dashboard/?tab=aliens&serie={serie_default}')
 
     total_figuras = Figura.objects.count()
@@ -206,14 +237,7 @@ def api_figuras(request):
 
 def wishlist(request):
     wishlist_items = WishlistItem.objects.all().order_by('-fecha_agregado')
-    aliens = Alien.objects.all().order_by('nombre')
-    aliens_por_serie = {
-        'Ben 10': list(aliens.filter(serie_default='Ben 10').values_list('nombre', flat=True)),
-        'Ben 10 Alien Force': list(aliens.filter(serie_default='Ben 10 Alien Force').values_list('nombre', flat=True)),
-        'Ben 10 Omniverse': list(aliens.filter(serie_default='Ben 10 Omniverse').values_list('nombre', flat=True)),
-        'Personajes': list(aliens.filter(serie_default='Personajes').values_list('nombre', flat=True)),
-        'Villanos': list(aliens.filter(serie_default='Villanos').values_list('nombre', flat=True)),
-    }
+    aliens_por_serie = get_aliens_por_serie_data()
     form_wishlist = WishlistItemForm()
     form_figura = FiguraForm()
     form_wishlist_edit = WishlistEditForm()
@@ -231,7 +255,14 @@ def agregar_a_wishlist(request):
     if request.method == 'POST':
         form = WishlistItemForm(request.POST)
         if form.is_valid():
-            form.save()
+            item = form.save(commit=False)
+            try:
+                alien_db = Alien.objects.get(nombre=item.nombre)
+                if alien_db.imagen:
+                    item.imagen = alien_db.imagen
+            except Alien.DoesNotExist:
+                pass
+            item.save()
     return redirect('wishlist')
 
 
@@ -264,19 +295,21 @@ def mover_a_coleccion(request, wishlist_id):
             
         form = FiguraForm(post_data, files)
         if form.is_valid():
-            form.save()
+            figura = form.save(commit=False)
+            # If still no image (neither uploaded nor copied from wishlist), copy default from database
+            if not figura.imagen:
+                try:
+                    alien_db = Alien.objects.get(nombre=figura.nombre)
+                    if alien_db.imagen:
+                        figura.imagen = alien_db.imagen
+                except Alien.DoesNotExist:
+                    pass
+            figura.save()
             wishlist_item.delete()
             return redirect('coleccion')
         else:
             wishlist_items = WishlistItem.objects.all().order_by('-fecha_agregado')
-            aliens = Alien.objects.all().order_by('nombre')
-            aliens_por_serie = {
-                'Ben 10': list(aliens.filter(serie_default='Ben 10').values_list('nombre', flat=True)),
-                'Ben 10 Alien Force': list(aliens.filter(serie_default='Ben 10 Alien Force').values_list('nombre', flat=True)),
-                'Ben 10 Omniverse': list(aliens.filter(serie_default='Ben 10 Omniverse').values_list('nombre', flat=True)),
-                'Personajes': list(aliens.filter(serie_default='Personajes').values_list('nombre', flat=True)),
-                'Villanos': list(aliens.filter(serie_default='Villanos').values_list('nombre', flat=True)),
-            }
+            aliens_por_serie = get_aliens_por_serie_data()
             form_wishlist = WishlistItemForm()
             return render(request, 'collector/wishlist.html', {
                 'wishlist_items': wishlist_items,

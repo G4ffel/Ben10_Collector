@@ -321,14 +321,25 @@
               <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: var(--green-primary); box-shadow: 0 0 8px var(--green-glow);"></span>
               <span style="font-family: var(--font-display); font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase;">Registrar Nueva Especie:</span>
             </div>
-            <form method="POST" action="{% url 'dashboard' %}" style="display: flex; gap: 12px; align-items: center; margin: 0; flex-wrap: wrap; flex-grow: 1; justify-content: flex-end;">
+            <form method="POST" action="{% url 'dashboard' %}" enctype="multipart/form-data" style="display: flex; gap: 12px; align-items: center; margin: 0; flex-wrap: wrap; flex-grow: 1; justify-content: flex-end;">
               {% csrf_token %}
+              <input type="hidden" name="alien_id" id="dashboardAlienIdInput" value="" />
+              
               <input type="text" name="alien_nombre" placeholder="Nombre de nueva especie" required class="cta-input custom-input" style="font-size: 0.8rem; padding: 10px 16px; font-family: var(--font-body); width: 220px; margin: 0;" />
-              <select name="serie_default" class="cta-input custom-input select-custom" style="font-size: 0.8rem; padding: 10px 16px; font-family: var(--font-body); width: 200px; margin: 0; background-color: var(--dark-2);">
+              
+              <select name="serie_default" class="cta-input custom-input select-custom" style="font-size: 0.8rem; padding: 10px 16px; font-family: var(--font-body); width: 150px; margin: 0; background-color: var(--dark-2);">
                 {% for val, label in serie_choices %}
                 <option value="{{ val }}">{{ label }}</option>
                 {% endfor %}
               </select>
+              
+              <div class="file-input-wrapper" style="margin: 0; display: inline-flex; align-items: center;">
+                <input type="file" name="alien_imagen" id="dashboardAlienImage" accept="image/*" class="file-input-custom" onchange="updateDashboardAlienFileLabel(this);" />
+                <label for="dashboardAlienImage" id="dashboardAlienImageLabel" class="file-label-custom-btn" style="margin: 0; padding: 10px 16px; font-size: 0.75rem; font-family: var(--font-display); letter-spacing: 0.5px; border-radius: 8px; width: 160px; display: inline-flex; align-items: center; justify-content: center; transition: var(--transition); white-space: nowrap;">
+                  FOTO ALIEN
+                </label>
+              </div>
+
               <button type="submit" class="btn-primary" style="font-size: 0.75rem; padding: 10px 20px; font-family: var(--font-display); cursor: pointer; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
                 <span>+ AÑADIR ALIEN</span>
               </button>
@@ -350,8 +361,17 @@
             <tbody>
               {% for alien in aliens %}
               <tr class="table-row-hover alien-row" data-serie="{{ alien.serie_default }}" style="border-bottom: 1px solid rgba(0,255,65,0.05); transition: var(--transition);">
-                <td style="padding: 15px; font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
-                  {{ alien.nombre }}
+                <td style="padding: 15px; display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(0, 255, 65, 0.2); background: radial-gradient(circle, var(--dark-3), var(--dark-4)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 10px rgba(0, 255, 65, 0.05);">
+                    {% if alien.imagen %}
+                      <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                    {% else %}
+                      <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="No image" style="max-width: 65%; max-height: 65%; filter: grayscale(1) opacity(0.35);" />
+                    {% endif %}
+                  </div>
+                  <span style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+                    {{ alien.nombre }}
+                  </span>
                 </td>
                 <td style="padding: 15px;">
                   <span class="figure-serie-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% elif alien.serie_default == 'Ben 10 Omniverse' %}serie-ov{% elif alien.serie_default == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}" style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
@@ -359,8 +379,16 @@
                   </span>
                 </td>
                 <td style="padding: 15px; text-align: center;">
-                  <div style="display: flex; gap: 8px; justify-content: center;">
-                    <a href="{% url 'eliminar_alien' alien.id %}" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333;" onclick="return confirm('¿Seguro que deseas eliminar el registro de {{ alien.nombre }} de las especies conocidas?');">
+                  <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                    <button type="button" class="btn-secondary edit-alien-db-btn" 
+                      style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display);"
+                      data-id="{{ alien.id }}"
+                      data-nombre="{{ alien.nombre }}"
+                      data-serie="{{ alien.serie_default }}"
+                      data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% endif %}">
+                      Editar
+                    </button>
+                    <a href="{% url 'eliminar_alien' alien.id %}" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333; font-family: var(--font-display);" onclick="return confirm('¿Seguro que deseas eliminar el registro de {{ alien.nombre }} de las especies conocidas?');">
                       Eliminar
                     </a>
                   </div>
@@ -385,6 +413,72 @@
 
   <!-- ===== TAB CONTROL SCRIPT ===== -->
   <script src="{% static 'js/dashboard.js' %}?v=1"></script>
+
+  <script>
+    function updateDashboardAlienFileLabel(input) {
+      const label = document.getElementById('dashboardAlienImageLabel');
+      if (label) {
+        if (input.files && input.files[0]) {
+          label.textContent = "✓ CARGADA";
+          label.style.borderColor = "var(--green-primary)";
+          label.style.color = "var(--dark-1)";
+          label.style.background = "linear-gradient(135deg, var(--green-primary), var(--green-mid))";
+          label.style.boxShadow = "0 0 15px var(--green-glow)";
+        } else {
+          label.textContent = "FOTO ALIEN";
+          label.style.borderColor = "var(--border-green)";
+          label.style.color = "var(--green-primary)";
+          label.style.background = "var(--dark-3)";
+          label.style.boxShadow = "none";
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.edit-alien-db-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const nombre = btn.getAttribute('data-nombre');
+          const serie = btn.getAttribute('data-serie');
+          const imagenUrl = btn.getAttribute('data-imagen');
+
+          const form = document.querySelector('form[action="{% url 'dashboard' %}"]');
+          if (form) {
+            const idInput = document.getElementById('dashboardAlienIdInput');
+            if (idInput) idInput.value = id;
+            
+            const nameInput = form.querySelector('input[name="alien_nombre"]');
+            if (nameInput) nameInput.value = nombre;
+            
+            const serieSelect = form.querySelector('select[name="serie_default"]');
+            if (serieSelect) serieSelect.value = serie;
+
+            const submitBtnSpan = form.querySelector('button[type="submit"] span');
+            if (submitBtnSpan) submitBtnSpan.textContent = "GUARDAR CAMBIOS";
+
+            const label = document.getElementById('dashboardAlienImageLabel');
+            if (label) {
+              if (imagenUrl) {
+                label.textContent = "CAMBIAR FOTO";
+                label.style.borderColor = "var(--green-primary)";
+                label.style.color = "var(--green-primary)";
+                label.style.background = "rgba(0, 255, 65, 0.08)";
+                label.style.boxShadow = "none";
+              } else {
+                label.textContent = "FOTO ALIEN";
+                label.style.borderColor = "var(--border-green)";
+                label.style.color = "var(--green-primary)";
+                label.style.background = "var(--dark-3)";
+                label.style.boxShadow = "none";
+              }
+            }
+
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      });
+    });
+  </script>
 
   <script src="{% static 'js/bg-particles.js' %}"></script>
   <script src="{% static 'js/profile-modal.js' %}"></script>
