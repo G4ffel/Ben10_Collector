@@ -59,19 +59,26 @@ document.addEventListener('DOMContentLoaded', () => {
           autocompleteList.style.display = 'none';
 
           const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
+          const previewText = document.getElementById('wishlistAddAlienPreviewText');
           if (previewImg) {
             previewImg.src = defaultImgUrl;
             if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
               previewImg.style.animation = 'none';
               previewImg.style.width = '100%';
               previewImg.style.height = '100%';
-              previewImg.style.objectFit = 'contain';
-              previewImg.style.padding = '20px';
+              previewImg.style.objectFit = 'cover';
+              previewImg.style.borderRadius = '0';
+              previewImg.style.padding = '0';
+              previewImg.style.mixBlendMode = 'normal';
+              if (previewText) previewText.style.display = 'none';
             } else {
               previewImg.style.animation = 'omni-spin 25s linear infinite';
               previewImg.style.width = '100px';
               previewImg.style.height = '100px';
               previewImg.style.padding = '0';
+              previewImg.style.borderRadius = '0';
+              previewImg.style.mixBlendMode = 'normal';
+              if (previewText) previewText.style.display = 'block';
             }
           }
         });
@@ -93,19 +100,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre === currentName));
     const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
     const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
+    const previewText = document.getElementById('wishlistAddAlienPreviewText');
     if (previewImg) {
       previewImg.src = defaultImgUrl;
       if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
         previewImg.style.animation = 'none';
         previewImg.style.width = '100%';
         previewImg.style.height = '100%';
-        previewImg.style.objectFit = 'contain';
-        previewImg.style.padding = '20px';
+        previewImg.style.objectFit = 'cover';
+        previewImg.style.borderRadius = '0';
+        previewImg.style.padding = '0';
+        previewImg.style.mixBlendMode = 'normal';
+        if (previewText) previewText.style.display = 'none';
       } else {
         previewImg.style.animation = 'omni-spin 25s linear infinite';
         previewImg.style.width = '100px';
         previewImg.style.height = '100px';
         previewImg.style.padding = '0';
+        previewImg.style.borderRadius = '0';
+        previewImg.style.mixBlendMode = 'normal';
+        if (previewText) previewText.style.display = 'block';
       }
     }
   };

@@ -71,10 +71,10 @@
           data-nombre="{{ item.nombre }}"
           data-serie="{{ item.serie }}">
           
-          <div class="figure-img-wrap" style="border-bottom: none; display: flex; align-items: center; justify-content: center; height: 180px; background: radial-gradient(circle, rgba(0, 255, 65, 0.05), transparent 70%); position: relative; overflow: hidden;">
+          <div class="figure-img-wrap" style="border-bottom: none; display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1 / 1; background: radial-gradient(circle, rgba(0, 255, 65, 0.05), transparent 70%); position: relative; overflow: hidden;">
             {% if item.imagen %}
               <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" 
-                style="width: 100%; height: 100%; object-fit: contain; padding: 10px;" />
+                style="width: 100%; height: 100%; object-fit: cover; padding: 0;" />
             {% else %}
               <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Wanted" 
                 style="width: 80px; height: 80px; filter: grayscale(1) opacity(0.2) drop-shadow(0 0 10px rgba(0, 255, 65, 0.15)); transition: var(--transition);" 
@@ -147,7 +147,7 @@
   <!-- ===== MODAL AGREGAR A WISHLIST ===== -->
   <div class="transform-modal" id="wishlistAddModal">
     <div class="modal-overlay" id="wishlistAddOverlay"></div>
-    <div class="modal-content" style="max-width: 950px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
+    <div class="modal-content" style="max-width: 810px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
       <style>
         @keyframes omni-spin {
           from { transform: rotate(0deg); }
@@ -225,12 +225,12 @@
       <form method="POST" class="omni-form-fields" id="wishlistAddForm" action="{% url 'agregar_a_wishlist' %}" style="margin: 0; padding: 0; width: 100%;">
         {% csrf_token %}
 
-        <div class="detail-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; align-items: stretch; margin-bottom: 24px;">
+        <div class="detail-container" style="display: grid; grid-template-columns: 350px 350px; gap: 30px; width: 100%; align-items: center; justify-content: center; margin-bottom: 24px;">
           
           <!-- Lado Izquierdo: Holograma Omnitrix Base de Datos -->
-          <div class="detail-img-wrap" style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); min-height: 280px; position: relative;">
+          <div class="detail-img-wrap" style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; width: 350px; height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); position: relative; flex-shrink: 0; aspect-ratio: 1 / 1;">
             <img src="/media/omnitrix/Ben_10_Omnitrix.png" id="wishlistAddAlienPreviewImg" alt="Omnitrix Database" style="width: 100px; height: 100px; filter: drop-shadow(0 0 12px var(--green-primary)); animation: omni-spin 25s linear infinite;" />
-            <span style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); letter-spacing: 2px; margin-top: 20px; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow); font-weight: bold;">Base de Datos Omnitrix</span>
+            <span id="wishlistAddAlienPreviewText" style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); letter-spacing: 2px; margin-top: 20px; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow); font-weight: bold;">Base de Datos Omnitrix</span>
           </div>
 
           <!-- Lado Derecho: HUD Inputs -->
@@ -277,7 +277,7 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 12px; width: 100%;">
+        <div style="display: flex; gap: 12px; width: 100%; max-width: 730px; margin: 0 auto;">
           <button type="button" class="btn-secondary" id="wishlistAddCancel"
             style="flex: 1; justify-content: center; padding: 14px 20px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
             CANCELAR
@@ -294,7 +294,7 @@
   <!-- ===== MODAL CONFIGURAR Y MOVER A LA COLECCIÓN ===== -->
   <div class="transform-modal" id="moveToCollectionModal">
     <div class="modal-overlay" id="moveToCollectionOverlay"></div>
-    <div class="modal-content" style="max-width: 950px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
+    <div class="modal-content" style="max-width: 810px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
       <div class="form-header-omni" style="margin-bottom: 0px; border-bottom: 1px solid var(--border-green); padding-bottom: 18px; display: flex; align-items: center; gap: 15px; width: 100%;">
         <div class="omni-radar" style="width: 16px; height: 16px;"></div>
         <h2 id="moveToCollectionTitle" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">DETALLE DE ALIEN</h2>
@@ -308,11 +308,11 @@
         <input type="hidden" name="nombre" id="moveAlienNombreVal" value="" />
         <input type="hidden" name="serie" id="moveAlienSerieVal" value="" />
 
-        <div class="detail-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; align-items: stretch; margin-bottom: 24px;">
+        <div class="detail-container" style="display: grid; grid-template-columns: 350px 350px; gap: 30px; width: 100%; align-items: center; justify-content: center; margin-bottom: 24px;">
           
           <!-- Imagen del Alien / Selector y preview -->
           <div class="detail-img-wrap" id="moveAlienImgWrap" 
-            style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); transition: var(--transition); cursor: pointer; position: relative; min-height: 320px;"
+            style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; width: 350px; height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); transition: var(--transition); cursor: pointer; position: relative; flex-shrink: 0; aspect-ratio: 1 / 1;"
             onmouseover="this.style.borderColor='var(--green-primary)'; this.style.boxShadow='0 0 40px rgba(0, 255, 65, 0.3)'"
             onmouseout="this.style.borderColor='var(--border-green)'; this.style.boxShadow='0 0 30px rgba(0, 255, 65, 0.15)'">
             <div id="imageUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; text-align: center;">
@@ -321,7 +321,7 @@
               <span style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-secondary);">Haz clic aquí para subir una foto de la figura del alien</span>
             </div>
             
-            <img id="moveAlienPreviewImg" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: transparent;" />
+            <img id="moveAlienPreviewImg" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; mix-blend-mode: normal;" />
             
             <input type="file" name="imagen" accept="image/*" id="moveFileImage" style="display: none;" required />
             
@@ -405,7 +405,7 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 12px; width: 100%;">
+        <div style="display: flex; gap: 12px; width: 100%; max-width: 730px; margin: 0 auto;">
           <button type="button" class="btn-secondary" id="moveToCollectionCancel"
             style="flex: 1; justify-content: center; padding: 14px 20px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
             CANCELAR
@@ -422,7 +422,7 @@
   <!-- ===== MODAL CONFIGURAR Y EDITAR EN WISHLIST ===== -->
   <div class="transform-modal" id="wishlistEditModal">
     <div class="modal-overlay" id="wishlistEditOverlay"></div>
-    <div class="modal-content" style="max-width: 950px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
+    <div class="modal-content" style="max-width: 810px; width: 95%; text-align: left; padding: 40px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
       <div class="form-header-omni" style="margin-bottom: 0px; border-bottom: 1px solid var(--border-green); padding-bottom: 18px; display: flex; align-items: center; gap: 15px; width: 100%;">
         <div class="omni-radar" style="width: 16px; height: 16px;"></div>
         <h2 id="wishlistEditTitle" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">DETALLE DE ALIEN</h2>
@@ -436,11 +436,11 @@
         <input type="hidden" name="nombre" id="editAlienNombreVal" value="" />
         <input type="hidden" name="serie" id="editAlienSerieVal" value="" />
 
-        <div class="detail-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; align-items: stretch; margin-bottom: 24px;">
+        <div class="detail-container" style="display: grid; grid-template-columns: 350px 350px; gap: 30px; width: 100%; align-items: center; justify-content: center; margin-bottom: 24px;">
           
           <!-- Imagen del Alien / Selector y preview -->
           <div class="detail-img-wrap" id="editAlienImgWrap" 
-            style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); transition: var(--transition); cursor: pointer; position: relative; min-height: 320px;"
+            style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; width: 350px; height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); transition: var(--transition); cursor: pointer; position: relative; flex-shrink: 0; aspect-ratio: 1 / 1;"
             onmouseover="this.style.borderColor='var(--green-primary)'; this.style.boxShadow='0 0 40px rgba(0, 255, 65, 0.3)'"
             onmouseout="this.style.borderColor='var(--border-green)'; this.style.boxShadow='0 0 30px rgba(0, 255, 65, 0.15)'">
             <div id="editImageUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; text-align: center;">
@@ -449,7 +449,7 @@
               <span style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-secondary);">Haz clic aquí para subir una foto de la figura del alien</span>
             </div>
             
-            <img id="editAlienPreviewImg" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: transparent;" />
+            <img id="editAlienPreviewImg" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; mix-blend-mode: normal;" />
             
             <input type="file" name="imagen" accept="image/*" id="editFileImage" style="display: none;" />
             
@@ -527,7 +527,7 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 12px; width: 100%;">
+        <div style="display: flex; gap: 12px; width: 100%; max-width: 730px; margin: 0 auto;">
           <button type="button" class="btn-secondary" id="wishlistEditCancel"
             style="flex: 1; justify-content: center; padding: 14px 20px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
             CANCELAR
