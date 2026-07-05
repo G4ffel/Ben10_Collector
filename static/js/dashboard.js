@@ -2,19 +2,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Guardar y restaurar la posición del scroll para evitar saltos molestos al recargar
   const scrollKey = 'dashboard_scroll_pos';
   const savedScroll = localStorage.getItem(scrollKey);
-  if (savedScroll !== null) {
+  
+  // Detectar si fue recarga de página (F5 o envío de formulario)
+  const navEntries = performance.getEntriesByType('navigation');
+  const isReload = navEntries.length > 0 && navEntries[0].type === 'reload';
+
+  if (isReload && savedScroll !== null) {
     window.scrollTo(0, parseInt(savedScroll, 10));
-    localStorage.removeItem(scrollKey);
   }
+  localStorage.removeItem(scrollKey);
 
   window.addEventListener('beforeunload', () => {
     localStorage.setItem(scrollKey, window.scrollY);
-  });
-
-  document.querySelectorAll('.nav-link, .nav-logo').forEach(link => {
-    link.addEventListener('click', () => {
-      localStorage.removeItem(scrollKey);
-    });
   });
 
   const tabFiguresBtn = document.getElementById('tabFiguresBtn');
