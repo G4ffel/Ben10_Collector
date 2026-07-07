@@ -49,7 +49,7 @@ class FiguraForm(forms.ModelForm):
         if Alien.objects.count() == 0:
             Alien.seed_default_aliens()
         self.fields['nombre'].choices = [
-            (alien.nombre, alien.nombre) for alien in Alien.objects.all().order_by('nombre')
+            (alien.nombre, alien.nombre) for alien in Alien.objects.all().order_by('orden_aparicion')
         ]
 
 
@@ -100,7 +100,7 @@ class WishlistItemForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         from .models import Alien, WishlistItem
         self.fields['nombre'].choices = [
-            (alien.nombre, alien.nombre) for alien in Alien.objects.all().order_by('nombre')
+            (alien.nombre, alien.nombre) for alien in Alien.objects.all().order_by('orden_aparicion')
         ]
 
 

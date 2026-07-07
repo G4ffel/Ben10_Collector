@@ -126,11 +126,12 @@ class Alien(models.Model):
         null=True, 
         verbose_name="Imagen por defecto"
     )
+    orden_aparicion = models.IntegerField(default=999, verbose_name="Orden de aparición")
 
     class Meta:
         verbose_name = "Alien"
         verbose_name_plural = "Aliens"
-        ordering = ['nombre']
+        ordering = ['orden_aparicion', 'nombre']
 
     def __str__(self):
         return f"{self.nombre} ({self.serie_default})"
@@ -138,31 +139,81 @@ class Alien(models.Model):
     @classmethod
     def seed_default_aliens(cls):
         initial_aliens = [
-            ('Bestia', 'Ben 10'),
-            ('Cuatrobrazos', 'Ben 10'),
-            ('Materia Gris', 'Ben 10'),
-            ('XLR8', 'Ben 10'),
-            ('Ultra-T', 'Ben 10'),
-            ('Diamante', 'Ben 10'),
-            ('Insectoide', 'Ben 10'),
-            ('Acuático', 'Ben 10'),
-            ('Fantasmático', 'Ben 10'),
-            ('Cannonbolt', 'Ben 10'),
-            ('Fuego', 'Ben 10'),
+            # Ben 10 (Clásico)
+            ('Fuego', 'Ben 10', 1),
+            ('Bestia', 'Ben 10', 2),
+            ('Diamante', 'Ben 10', 3),
+            ('XLR8', 'Ben 10', 4),
+            ('Materia Gris', 'Ben 10', 5),
+            ('Cuatrobrazos', 'Ben 10', 6),
+            ('Insectoide', 'Ben 10', 7),
+            ('Fantasmático', 'Ben 10', 8),
+            ('Ultra-T', 'Ben 10', 9),
+            ('Acuático', 'Ben 10', 10),
+            ('Cannonbolt', 'Ben 10', 11),
+            ('Wildvine', 'Ben 10', 12),
+            ('Blitzwolfer', 'Ben 10', 13),
+            ('Snare-Oh', 'Ben 10', 14),
+            ('Frankenstrike', 'Ben 10', 15),
+            ('Upchuck', 'Ben 10', 16),
             
-            ('Goop', 'Ben 10 Alien Force'),
-            ('Fuego Pantanoso', 'Ben 10 Alien Force'),
-            ('Piedra', 'Ben 10 Alien Force'),
-            ('Frío', 'Ben 10 Alien Force'),
-            ('Humungosaurio', 'Ben 10 Alien Force'),
-            ('Cerebrón', 'Ben 10 Alien Force'),
-            ('Jetray', 'Ben 10 Alien Force'),
-            ('Mono Araña', 'Ben 10 Alien Force'),
-            ('Eco Eco', 'Ben 10 Alien Force'),
-            ('Alien X', 'Ben 10 Alien Force'),
+            # Ben 10 Alien Force / Ultimate Alien
+            ('Fuego Pantanoso', 'Ben 10 Alien Force', 17),
+            ('Eco Eco', 'Ben 10 Alien Force', 18),
+            ('Humungosaurio', 'Ben 10 Alien Force', 19),
+            ('Jetray', 'Ben 10 Alien Force', 20),
+            ('Frío', 'Ben 10 Alien Force', 21),
+            ('Piedra', 'Ben 10 Alien Force', 22),
+            ('Cerebrón', 'Ben 10 Alien Force', 23),
+            ('Mono Araña', 'Ben 10 Alien Force', 24),
+            ('Goop', 'Ben 10 Alien Force', 25),
+            ('Alien X', 'Ben 10 Alien Force', 26),
+            ('Lodestar', 'Ben 10 Alien Force', 27),
+            ('Rath', 'Ben 10 Alien Force', 28),
+            ('Upchuck AF', 'Ben 10 Alien Force', 29),
+            ('Nanomech', 'Ben 10 Alien Force', 30),
+            ('Amenaza Acuática', 'Ben 10 Alien Force', 31),
+            ('Armadillo', 'Ben 10 Alien Force', 32),
+            ('Tortutornado', 'Ben 10 Alien Force', 33),
+            ('NRG', 'Ben 10 Alien Force', 34),
+            ('Clockwork', 'Ben 10 Alien Force', 35),
+            ('Ampfibio', 'Ben 10 Alien Force', 36),
+            ('Fasttrack', 'Ben 10 Alien Force', 37),
+            ('Eatle', 'Ben 10 Alien Force', 38),
+            ('Humungosaurio Supremo', 'Ben 10 Alien Force', 39),
+            ('Fuego Pantanoso Supremo', 'Ben 10 Alien Force', 40),
+            ('Cannonbolt Supremo', 'Ben 10 Alien Force', 41),
+            ('Frío Supremo', 'Ben 10 Alien Force', 42),
+            ('Mono Araña Supremo', 'Ben 10 Alien Force', 43),
+            ('Eco Eco Supremo', 'Ben 10 Alien Force', 44),
+            ('Bestia Suprema', 'Ben 10 Alien Force', 45),
+
+            # Ben 10 Omniverse
+            ('Bloxx', 'Ben 10 Omniverse', 46),
+            ('Feedback', 'Ben 10 Omniverse', 47),
+            ('Eatle OV', 'Ben 10 Omniverse', 48),
+            ('Crashhopper', 'Ben 10 Omniverse', 49),
+            ('Gravattack', 'Ben 10 Omniverse', 50),
+            ('Bullfrag', 'Ben 10 Omniverse', 51),
+            ('Toepick', 'Ben 10 Omniverse', 52),
+
+            # Personajes
+            ('Ben Tennyson', 'Personajes', 53),
+            ('Gwen Tennyson', 'Personajes', 54),
+            ('Max Tennyson', 'Personajes', 55),
+            ('Kevin Levin', 'Personajes', 56),
+            ('Tetrax', 'Personajes', 57),
+
+            # Villanos
+            ('Vulkanus', 'Villanos', 58),
+            ('DNAliens', 'Villanos', 59),
+            ('Highbreed', 'Villanos', 60),
         ]
-        for name, series in initial_aliens:
-            cls.objects.get_or_create(nombre=name, defaults={'serie_default': series})
+        for name, series, order in initial_aliens:
+            alien, created = cls.objects.get_or_create(nombre=name, defaults={'serie_default': series, 'orden_aparicion': order})
+            if not created and alien.orden_aparicion != order:
+                alien.orden_aparicion = order
+                alien.save()
 
 
 class Perfil(models.Model):

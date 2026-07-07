@@ -5,7 +5,7 @@ from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm
 from .models import Figura, Perfil, Alien, WishlistItem
 
 def get_aliens_por_serie_data():
-    aliens = Alien.objects.all().order_by('nombre')
+    aliens = Alien.objects.all().order_by('orden_aparicion')
     aliens_por_serie = {}
     for s in ['Ben 10', 'Ben 10 Alien Force', 'Ben 10 Omniverse', 'Personajes', 'Villanos']:
         list_aliens = []
@@ -41,7 +41,7 @@ def coleccion(request):
     figuras_villanos = Figura.objects.filter(serie='Villanos')
     figuras_personajes = Figura.objects.filter(serie='Personajes')
     figuras_count = Figura.objects.count()
-    aliens = Alien.objects.all().order_by('nombre')
+    aliens = Alien.objects.all().order_by('orden_aparicion')
 
     def get_grouped_figures(queryset):
         grouped = []
@@ -155,7 +155,7 @@ def dashboard(request):
     page_number = request.GET.get('page')
     figuras = paginator.get_page(page_number)
 
-    aliens = Alien.objects.all().order_by('nombre')
+    aliens = Alien.objects.all().order_by('orden_aparicion')
 
     return render(request, 'collector/dashboard.html', {
         'total_figuras': total_figuras,

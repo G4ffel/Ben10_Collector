@@ -347,7 +347,7 @@
           </div>
         </div>
 
-        <div class="hud-scrollbar" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+        <div class="hud-scrollbar" style="height: 400px; overflow-y: auto; padding-right: 5px;">
           {% if aliens %}
           <table class="omni-hud-table" style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
@@ -433,51 +433,6 @@
         }
       }
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.edit-alien-db-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-id');
-          const nombre = btn.getAttribute('data-nombre');
-          const serie = btn.getAttribute('data-serie');
-          const imagenUrl = btn.getAttribute('data-imagen');
-
-          const form = document.querySelector('form[action="{% url 'dashboard' %}"]');
-          if (form) {
-            const idInput = document.getElementById('dashboardAlienIdInput');
-            if (idInput) idInput.value = id;
-            
-            const nameInput = form.querySelector('input[name="alien_nombre"]');
-            if (nameInput) nameInput.value = nombre;
-            
-            const serieSelect = form.querySelector('select[name="serie_default"]');
-            if (serieSelect) serieSelect.value = serie;
-
-            const submitBtnSpan = form.querySelector('button[type="submit"] span');
-            if (submitBtnSpan) submitBtnSpan.textContent = "GUARDAR CAMBIOS";
-
-            const label = document.getElementById('dashboardAlienImageLabel');
-            if (label) {
-              if (imagenUrl) {
-                label.textContent = "CAMBIAR FOTO";
-                label.style.borderColor = "var(--green-primary)";
-                label.style.color = "var(--green-primary)";
-                label.style.background = "rgba(0, 255, 65, 0.08)";
-                label.style.boxShadow = "none";
-              } else {
-                label.textContent = "FOTO ALIEN";
-                label.style.borderColor = "var(--border-green)";
-                label.style.color = "var(--green-primary)";
-                label.style.background = "var(--dark-3)";
-                label.style.boxShadow = "none";
-              }
-            }
-
-            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        });
-      });
-    });
   </script>
 
   <script src="{% static 'js/bg-particles.js' %}"></script>

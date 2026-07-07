@@ -56,8 +56,21 @@ def perfil_global(request):
         "Cannonbolt", "Wildvine", "Upchuck", "Muy Grande", "Feedback", 
         "Humungosaurio", "Fuego Pantanoso", "Frío", "Eco Eco", "Rath", "Gloop"
     ]
-    # Unificar y ordenar alfabéticamente
-    todos_los_aliens = sorted(list(set(aliens_en_db + aliens_predeterminados)))
+    # Unificar
+    todos_los_aliens_raw = list(set(aliens_en_db + aliens_predeterminados))
+
+    alien_orders = {a.nombre: a.orden_aparicion for a in Alien.objects.all()}
+    def get_sort_key(name):
+        normalized_map = {
+            'Cuatro Brazos': 'Cuatrobrazos',
+            'Ultra T': 'Ultra-T',
+            'Fauces': 'Acuático',
+            'Gloop': 'Goop'
+        }
+        mapped_name = normalized_map.get(name, name)
+        return (alien_orders.get(mapped_name, 999), name)
+
+    todos_los_aliens = sorted(todos_los_aliens_raw, key=get_sort_key)
 
     import os
     from django.conf import settings
