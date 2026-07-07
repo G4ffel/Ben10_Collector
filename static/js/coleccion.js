@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('omniFigureForm');
   const formTitle = document.getElementById('modalFormTitle');
   const imageHint = document.getElementById('imageHint');
-  const imageInput = document.querySelector('input[type="file"]');
+  const imageInput = document.querySelector('#omniFigureForm input[type="file"]');
 
   // Campos del formulario
   const nombreInput = document.getElementById('id_nombre') || document.querySelector('#omniFigureForm [name="nombre"]');
@@ -46,13 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let primerVisible = null;
     let valorActualValido = false;
 
+    // Sincronizar el select nativo de Django si la búsqueda es coincidencia exacta de algún alien permitido
+    const exactMatch = permitidos.find(a => (typeof a === 'object' && a.nombre.toLowerCase().trim() === query));
+    if (exactMatch) {
+      nombreInput.value = exactMatch.nombre;
+    }
+
     // Map objects to names if needed
     const permitidosNombres = permitidos.map(a => typeof a === 'string' ? a : a.nombre);
 
     // Leemos las opciones del select nativo de Django para generar los li
     Array.from(nombreInput.options).forEach(option => {
       const alienName = option.value;
-      const perteneceSerie = (permitidosNombres.length === 0) || permitidosNombres.includes(alienName);
+      const perteneceSerie = (permitidosNombres.length === 0) || permitidosNombres.some(p => p.toLowerCase().trim() === alienName.toLowerCase().trim());
       const coincideBusqueda = alienName.toLowerCase().includes(query);
 
       if (perteneceSerie && coincideBusqueda) {
@@ -62,11 +68,38 @@ document.addEventListener('DOMContentLoaded', () => {
           if (autocompleteInput) autocompleteInput.value = alienName;
           nombreInput.value = alienName; // Sincroniza al select oculto de Django
           autocompleteList.style.display = 'none';
+
+          // Actualizar previsualización al alien seleccionado de la base de datos (tanto al añadir como al editar)
+          const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre.toLowerCase().trim() === alienName.toLowerCase().trim()));
+          const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
+          const previewImg = document.getElementById('figureAddAlienPreviewImg');
+          const previewText = document.getElementById('figureAddAlienPreviewText');
+          if (previewImg && (!imageInput || !imageInput.files || imageInput.files.length === 0)) {
+            previewImg.src = defaultImgUrl;
+            if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
+              previewImg.style.animation = 'none';
+              previewImg.style.width = '100%';
+              previewImg.style.height = '100%';
+              previewImg.style.objectFit = 'cover';
+              previewImg.style.borderRadius = '0';
+              previewImg.style.padding = '0';
+              previewImg.style.mixBlendMode = 'normal';
+              if (previewText) previewText.style.display = 'none';
+            } else {
+              previewImg.style.animation = 'omni-spin 25s linear infinite';
+              previewImg.style.width = '130px';
+              previewImg.style.height = '130px';
+              previewImg.style.padding = '0';
+              previewImg.style.borderRadius = '0';
+              previewImg.style.mixBlendMode = 'normal';
+              if (previewText) previewText.style.display = 'block';
+            }
+          }
         });
         autocompleteList.appendChild(li);
 
         if (!primerVisible) primerVisible = alienName;
-        if (alienName === nombreInput.value) valorActualValido = true;
+        if (alienName.toLowerCase().trim() === nombreInput.value.toLowerCase().trim()) valorActualValido = true;
       }
     });
 
@@ -75,6 +108,36 @@ document.addEventListener('DOMContentLoaded', () => {
       nombreInput.value = primerVisible;
       if (document.activeElement !== autocompleteInput && autocompleteInput) {
         autocompleteInput.value = primerVisible;
+      }
+    }
+
+    // Actualizar previsualización para el valor actual si estamos añadiendo una figura
+    if (nombreInput && formTitle && formTitle.textContent === "AÑADIR NUEVA FIGURA") {
+      const currentName = exactMatch ? exactMatch.nombre : nombreInput.value;
+      const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre.toLowerCase().trim() === currentName.toLowerCase().trim()));
+      const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
+      const previewImg = document.getElementById('figureAddAlienPreviewImg');
+      const previewText = document.getElementById('figureAddAlienPreviewText');
+      if (previewImg && (!imageInput || !imageInput.files || imageInput.files.length === 0)) {
+        previewImg.src = defaultImgUrl;
+        if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
+          previewImg.style.animation = 'none';
+          previewImg.style.width = '100%';
+          previewImg.style.height = '100%';
+          previewImg.style.objectFit = 'cover';
+          previewImg.style.borderRadius = '0';
+          previewImg.style.padding = '0';
+          previewImg.style.mixBlendMode = 'normal';
+          if (previewText) previewText.style.display = 'none';
+        } else {
+          previewImg.style.animation = 'omni-spin 25s linear infinite';
+          previewImg.style.width = '130px';
+          previewImg.style.height = '130px';
+          previewImg.style.padding = '0';
+          previewImg.style.borderRadius = '0';
+          previewImg.style.mixBlendMode = 'normal';
+          if (previewText) previewText.style.display = 'block';
+        }
       }
     }
   };
@@ -109,11 +172,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Escuchar cambios en la selección de archivo
+  // Escuchar cambios en la selección de archivo y actualizar previsualización
   if (imageInput && fileChosenName) {
     imageInput.addEventListener('change', () => {
       if (imageInput.files && imageInput.files.length > 0) {
-        fileChosenName.textContent = `${imageInput.files[0].name}`;
+        const file = imageInput.files[0];
+        fileChosenName.textContent = `${file.name}`;
+        
+        // Cargar previsualización del archivo seleccionado
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const previewImg = document.getElementById('figureAddAlienPreviewImg');
+          const previewText = document.getElementById('figureAddAlienPreviewText');
+          if (previewImg) {
+            previewImg.src = e.target.result;
+            previewImg.style.animation = 'none';
+            previewImg.style.width = '100%';
+            previewImg.style.height = '100%';
+            previewImg.style.objectFit = 'cover';
+            previewImg.style.borderRadius = '0';
+            previewImg.style.padding = '0';
+            previewImg.style.mixBlendMode = 'normal';
+            if (previewText) previewText.style.display = 'none';
+          }
+        };
+        reader.readAsDataURL(file);
       } else {
         fileChosenName.textContent = "Sin archivos seleccionados";
       }
@@ -139,8 +222,22 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
       if (form) form.reset();
       if (imageHint) imageHint.style.display = 'none';
-      if (imageInput) imageInput.required = true;
+      if (imageInput) imageInput.required = false;
       if (fileChosenName) fileChosenName.textContent = "Sin archivos seleccionados";
+
+      // Resetear la imagen a Omnitrix girando
+      const previewImg = document.getElementById('figureAddAlienPreviewImg');
+      const previewText = document.getElementById('figureAddAlienPreviewText');
+      if (previewImg) {
+        previewImg.src = '/media/omnitrix/Ben_10_Omnitrix.png';
+        previewImg.style.animation = 'omni-spin 25s linear infinite';
+        previewImg.style.width = '100px';
+        previewImg.style.height = '100px';
+        previewImg.style.padding = '0';
+        previewImg.style.borderRadius = '0';
+        previewImg.style.mixBlendMode = 'normal';
+        if (previewText) previewText.style.display = 'block';
+      }
     }
   };
 
@@ -172,6 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const marca = btn.getAttribute('data-marca');
       const tamano = btn.getAttribute('data-tamano');
 
+      // Buscar la URL de la imagen en la tarjeta
+      const figureCard = btn.closest('.figure-card-omni');
+      const imgEl = figureCard ? figureCard.querySelector('.figure-img-wrap img') : null;
+      const imagenUrl = imgEl ? imgEl.src : '';
+
       if (formTitle) formTitle.textContent = "EDITAR FIGURA";
       if (form) form.action = `/coleccion/editar/${id}/`;
 
@@ -194,6 +296,21 @@ document.addEventListener('DOMContentLoaded', () => {
       if (marcaSelect) marcaSelect.value = marca;
       if (tamanoSelect) tamanoSelect.value = tamano;
       if (subcategoriaSelect) subcategoriaSelect.value = subcategoria || '';
+
+      // Mostrar previsualización de la imagen actual
+      const previewImg = document.getElementById('figureAddAlienPreviewImg');
+      const previewText = document.getElementById('figureAddAlienPreviewText');
+      if (previewImg && imagenUrl) {
+        previewImg.src = imagenUrl;
+        previewImg.style.animation = 'none';
+        previewImg.style.width = '100%';
+        previewImg.style.height = '100%';
+        previewImg.style.objectFit = 'cover';
+        previewImg.style.borderRadius = '0';
+        previewImg.style.padding = '0';
+        previewImg.style.mixBlendMode = 'normal';
+        if (previewText) previewText.style.display = 'none';
+      }
 
       // Al editar, la imagen es opcional (se mantiene la existente)
       if (imageInput) imageInput.required = false;
