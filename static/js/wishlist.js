@@ -29,6 +29,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let selectedAliens = new Set();
+
+  const updateSelectedAliensUI = () => {
+    if (autocompleteInput) {
+      if (selectedAliens.size === 0) {
+        autocompleteInput.value = '';
+      } else if (selectedAliens.size === 1) {
+        autocompleteInput.value = Array.from(selectedAliens)[0];
+      } else {
+        autocompleteInput.value = `${selectedAliens.size} seleccionados (${Array.from(selectedAliens).join(', ')})`;
+      }
+    }
+
+    let container = document.getElementById('nombresMultipleContainer');
+    if (!container && addForm) {
+      container = document.createElement('div');
+      container.id = 'nombresMultipleContainer';
+      container.style.display = 'none';
+      addForm.appendChild(container);
+    }
+    if (container) {
+      container.innerHTML = '';
+      selectedAliens.forEach(nombre => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'nombres_multiple';
+        input.value = nombre;
+        container.appendChild(input);
+      });
+    }
+
+    if (nombreSelect) {
+      if (selectedAliens.size > 0) {
+        nombreSelect.value = Array.from(selectedAliens)[0];
+      }
+    }
+
+    const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
+    const previewText = document.getElementById('wishlistAddAlienPreviewText');
+    if (previewImg) {
+      if (selectedAliens.size > 0) {
+        const primerAlien = Array.from(selectedAliens)[0];
+        const permitidos = aliensPorSerie[serieSelect.value] || [];
+        const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre === primerAlien));
+        const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
+        
+        previewImg.src = defaultImgUrl;
+        if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
+          previewImg.style.animation = 'none';
+          previewImg.style.width = '100%';
+          previewImg.style.height = '100%';
+          previewImg.style.objectFit = 'cover';
+          previewImg.style.borderRadius = '0';
+          previewImg.style.padding = '0';
+          previewImg.style.mixBlendMode = 'normal';
+          if (previewText) previewText.style.display = 'none';
+        }
+      } else {
+        previewImg.src = '/media/omnitrix/Ben_10_Omnitrix.png';
+        previewImg.style.animation = 'omni-spin 25s linear infinite';
+        previewImg.style.width = '100px';
+        previewImg.style.height = '100px';
+        previewImg.style.padding = '0';
+        previewImg.style.borderRadius = '0';
+        previewImg.style.mixBlendMode = 'normal';
+        if (previewText) previewText.style.display = 'block';
+      }
+    }
+  };
+
   const renderAutocompleteList = (serieSelectedValue, searchQuery = '') => {
     if (!nombreSelect || !autocompleteList) return;
     const permitidos = aliensPorSerie[serieSelectedValue] || [];
@@ -48,40 +118,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (perteneceSerie && coincideBusqueda) {
         const li = document.createElement('li');
-        li.textContent = alienName;
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.padding = '10px 16px';
+        li.style.cursor = 'pointer';
 
-        const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre === alienName));
-        const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
+        // Checkbox box
+        const check = document.createElement('span');
+        check.className = 'hud-checkbox-box';
+        check.style.display = 'inline-block';
+        check.style.width = '14px';
+        check.style.height = '14px';
+        check.style.border = '1px solid var(--border-green)';
+        check.style.borderRadius = '3px';
+        check.style.marginRight = '12px';
+        check.style.position = 'relative';
+        check.style.background = 'var(--dark-3)';
+        check.style.flexShrink = '0';
+        check.style.transition = 'all 0.2s ease';
 
-        li.addEventListener('click', () => {
-          if (autocompleteInput) autocompleteInput.value = alienName;
-          nombreSelect.value = alienName;
-          autocompleteList.style.display = 'none';
+        // Checkmark dot inside
+        const dot = document.createElement('span');
+        dot.style.position = 'absolute';
+        dot.style.top = '2px';
+        dot.style.left = '2px';
+        dot.style.width = '8px';
+        dot.style.height = '8px';
+        dot.style.borderRadius = '1px';
+        dot.style.background = 'var(--green-primary)';
+        dot.style.boxShadow = '0 0 5px var(--green-glow)';
+        dot.style.transition = 'opacity 0.2s ease';
+        
+        if (selectedAliens.has(alienName)) {
+          check.style.borderColor = 'var(--green-primary)';
+          check.style.background = 'rgba(0, 255, 65, 0.15)';
+          dot.style.opacity = '1';
+        } else {
+          dot.style.opacity = '0';
+        }
+        check.appendChild(dot);
+        li.appendChild(check);
 
-          const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
-          const previewText = document.getElementById('wishlistAddAlienPreviewText');
-          if (previewImg) {
-            previewImg.src = defaultImgUrl;
-            if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
-              previewImg.style.animation = 'none';
-              previewImg.style.width = '100%';
-              previewImg.style.height = '100%';
-              previewImg.style.objectFit = 'cover';
-              previewImg.style.borderRadius = '0';
-              previewImg.style.padding = '0';
-              previewImg.style.mixBlendMode = 'normal';
-              if (previewText) previewText.style.display = 'none';
-            } else {
-              previewImg.style.animation = 'omni-spin 25s linear infinite';
-              previewImg.style.width = '100px';
-              previewImg.style.height = '100px';
-              previewImg.style.padding = '0';
-              previewImg.style.borderRadius = '0';
-              previewImg.style.mixBlendMode = 'normal';
-              if (previewText) previewText.style.display = 'block';
-            }
+        // Text label
+        const textSpan = document.createElement('span');
+        textSpan.textContent = alienName;
+        li.appendChild(textSpan);
+
+        // Toggle selection on click
+        li.addEventListener('click', (e) => {
+          e.stopPropagation(); // Evitar cerrar el dropdown al clickar
+          
+          if (selectedAliens.has(alienName)) {
+            selectedAliens.delete(alienName);
+            check.style.borderColor = 'var(--border-green)';
+            check.style.background = 'var(--dark-3)';
+            dot.style.opacity = '0';
+          } else {
+            selectedAliens.add(alienName);
+            check.style.borderColor = 'var(--green-primary)';
+            check.style.background = 'rgba(0, 255, 65, 0.15)';
+            dot.style.opacity = '1';
           }
+          updateSelectedAliensUI();
         });
+
         autocompleteList.appendChild(li);
 
         if (!primerVisible) primerVisible = alienName;
@@ -91,9 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!valorActualValido && primerVisible) {
       nombreSelect.value = primerVisible;
-      if (document.activeElement !== autocompleteInput && autocompleteInput) {
-        autocompleteInput.value = primerVisible;
-      }
     }
 
     const currentName = nombreSelect.value;
@@ -127,11 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (autocompleteInput) {
     const showOptions = () => {
       autocompleteList.style.display = 'block';
+      if (customSerieOptions) customSerieOptions.style.display = 'none';
       renderAutocompleteList(serieSelect.value, '');
     };
     autocompleteInput.addEventListener('focus', showOptions);
     autocompleteInput.addEventListener('click', showOptions);
     autocompleteInput.addEventListener('input', (e) => {
+      if (customSerieOptions) customSerieOptions.style.display = 'none';
       renderAutocompleteList(serieSelect.value, e.target.value);
     });
   }
@@ -162,6 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       const isVisible = customSerieOptions.style.display === 'block';
       customSerieOptions.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible && autocompleteList) {
+        autocompleteList.style.display = 'none';
+      }
     });
 
     customSerieOptions.querySelectorAll('li').forEach(option => {
@@ -196,10 +298,14 @@ document.addEventListener('DOMContentLoaded', () => {
       addModal.classList.add('active');
       document.body.style.overflow = 'hidden';
       
+      if (selectedAliens) {
+        selectedAliens.clear();
+        updateSelectedAliensUI();
+      }
+      
       if (serieSelect) {
         if (customSerieText) customSerieText.textContent = serieSelect.value;
         renderAutocompleteList(serieSelect.value, '');
-        if (autocompleteInput) autocompleteInput.value = nombreSelect.value;
       }
     }
   };
@@ -210,6 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
       if (addForm) addForm.reset();
       if (customSerieText && serieSelect) customSerieText.textContent = serieSelect.value;
+      if (selectedAliens) {
+        selectedAliens.clear();
+        updateSelectedAliensUI();
+      }
     }
   };
 

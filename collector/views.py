@@ -299,16 +299,30 @@ def wishlist(request):
 
 def agregar_a_wishlist(request):
     if request.method == 'POST':
-        form = WishlistItemForm(request.POST)
-        if form.is_valid():
-            item = form.save(commit=False)
-            try:
-                alien_db = Alien.objects.get(nombre=item.nombre)
-                if alien_db.imagen:
-                    item.imagen = alien_db.imagen
-            except Alien.DoesNotExist:
-                pass
-            item.save()
+        nombres = request.POST.getlist('nombres_multiple')
+        serie = request.POST.get('serie')
+        
+        if nombres and serie:
+            for nombre in nombres:
+                item = WishlistItem(nombre=nombre, serie=serie)
+                try:
+                    alien_db = Alien.objects.get(nombre=nombre)
+                    if alien_db.imagen:
+                        item.imagen = alien_db.imagen
+                except Alien.DoesNotExist:
+                    pass
+                item.save()
+        else:
+            form = WishlistItemForm(request.POST)
+            if form.is_valid():
+                item = form.save(commit=False)
+                try:
+                    alien_db = Alien.objects.get(nombre=item.nombre)
+                    if alien_db.imagen:
+                        item.imagen = alien_db.imagen
+                except Alien.DoesNotExist:
+                    pass
+                item.save()
     return redirect('wishlist')
 
 
