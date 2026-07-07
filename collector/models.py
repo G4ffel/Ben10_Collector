@@ -1,5 +1,27 @@
 from django.db import models
 
+def figuras_upload_path(instance, filename):
+    mapping = {
+        'Ben 10': 'ben-10',
+        'Ben 10 Alien Force': 'ben-10-alien-force',
+        'Ben 10 Omniverse': 'omniverse',
+        'Personajes': 'personajes',
+        'Villanos': 'villanos'
+    }
+    folder = mapping.get(instance.serie, 'otros')
+    return f'figuras/{folder}/{filename}'
+
+def aliens_db_upload_path(instance, filename):
+    mapping = {
+        'Ben 10': 'ben-10',
+        'Ben 10 Alien Force': 'ben-10-alien-force',
+        'Ben 10 Omniverse': 'omniverse',
+        'Personajes': 'personajes',
+        'Villanos': 'villanos'
+    }
+    folder = mapping.get(instance.serie_default, 'otros')
+    return f'aliens_db/{folder}/{filename}'
+
 class Figura(models.Model):
     SERIE_CHOICES = [
         ('Ben 10', 'Ben 10'),
@@ -68,7 +90,7 @@ class Figura(models.Model):
         verbose_name="Nombre del Alien"
     )
     precio = models.IntegerField(verbose_name="Precio (CLP)")
-    imagen = models.FileField(upload_to='figuras/', blank=True, null=True, verbose_name="Imagen de la Figura")
+    imagen = models.FileField(upload_to=figuras_upload_path, blank=True, null=True, verbose_name="Imagen de la Figura")
     fecha_adquisicion = models.DateField(verbose_name="Fecha de Adquisición")
     serie = models.CharField(
         max_length=50, 
@@ -121,7 +143,7 @@ class Alien(models.Model):
     )
 
     imagen = models.FileField(
-        upload_to='aliens_db/', 
+        upload_to=aliens_db_upload_path, 
         blank=True, 
         null=True, 
         verbose_name="Imagen por defecto"
@@ -313,7 +335,7 @@ class WishlistItem(models.Model):
         verbose_name="Serie de origen"
     )
     precio = models.IntegerField(verbose_name="Precio (CLP)", default=0, blank=True, null=True)
-    imagen = models.FileField(upload_to='figuras/', verbose_name="Imagen de la Figura", blank=True, null=True)
+    imagen = models.FileField(upload_to=figuras_upload_path, verbose_name="Imagen de la Figura", blank=True, null=True)
     fecha_adquisicion = models.DateField(verbose_name="Fecha de Adquisición", blank=True, null=True)
     estado = models.CharField(
         max_length=20,

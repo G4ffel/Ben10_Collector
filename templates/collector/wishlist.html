@@ -64,52 +64,43 @@
     <!-- LISTADO DE WISHLIST -->
     <div class="figures-list-container">
       {% if wishlist_items %}
-      <div class="figures-grid-omni">
-        {% for item in wishlist_items %}
-        <div class="figure-card-omni wishlist-card" style="position: relative; display: flex; flex-direction: column; height: 100%; border: 1px solid rgba(0, 255, 65, 0.15); transition: var(--transition);"
-          data-id="{{ item.id }}"
-          data-nombre="{{ item.nombre }}"
-          data-serie="{{ item.serie }}">
-          
-          <div class="figure-img-wrap" style="border-bottom: none; display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1 / 1; background: radial-gradient(circle, rgba(0, 255, 65, 0.05), transparent 70%); position: relative; overflow: hidden;">
-            {% if item.imagen %}
-              <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" 
-                style="width: 100%; height: 100%; object-fit: cover; padding: 0;" />
-            {% else %}
-              <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Wanted" 
-                style="width: 80px; height: 80px; filter: grayscale(1) opacity(0.2) drop-shadow(0 0 10px rgba(0, 255, 65, 0.15)); transition: var(--transition);" 
-                class="wishlist-placeholder-img" />
-            {% endif %}
-          </div>
-
-          <span class="figure-serie-badge {% if item.serie == 'Ben 10' %}serie-classic{% elif item.serie == 'Ben 10 Alien Force' %}serie-af{% elif item.serie == 'Ben 10 Omniverse' %}serie-ov{% elif item.serie == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}">
-            {{ item.serie }}
-          </span>
-
-          <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
-            <div>
-              <h3 style="margin-bottom: 5px;">{{ item.nombre }}</h3>
-              <p style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-body);">Deseado desde: {{ item.fecha_agregado|date:"d/m/Y" }}</p>
-            </div>
+      {% for section_title, border_color, items in wishlist_sections %}
+      <div class="serie-section-wrapper" style="margin-bottom: 60px;">
+        <h2 class="sub-title-omni"
+          style="border-left-color: {{ border_color }}; margin-bottom: 25px; font-size: 1.3rem;">
+          {{ section_title }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">{{ items|length }} Aliens</span>
+        </h2>
+        <div class="figures-grid-omni">
+          {% for item in items %}
+          <div class="figure-card-omni wishlist-card" style="position: relative; display: flex; flex-direction: column; height: 100%; border: 1px solid rgba(0, 255, 65, 0.15); transition: var(--transition);"
+            data-id="{{ item.id }}"
+            data-nombre="{{ item.nombre }}"
+            data-serie="{{ item.serie }}">
             
-            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
-              <button class="btn-primary move-to-collection-btn" 
-                style="width: 100%; justify-content: center; font-size: 0.8rem; padding: 10px 14px; cursor: pointer;"
-                data-id="{{ item.id }}"
-                data-nombre="{{ item.nombre }}"
-                data-serie="{{ item.serie }}"
-                data-precio="{{ item.precio }}"
-                data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
-                data-estado="{{ item.estado }}"
-                data-marca="{{ item.marca }}"
-                data-tamano="{{ item.tamano }}"
-                data-subcategoria="{{ item.subcategoria }}"
-                data-imagen="{% if item.imagen %}{{ item.imagen.url }}{% endif %}">
-                Coleccionar
-              </button>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <button class="btn-secondary edit-wishlist-btn" 
-                  style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 8px 12px; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); outline: none; box-shadow: none;"
+            <div class="figure-img-wrap" style="border-bottom: none; display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1 / 1; background: radial-gradient(circle, rgba(0, 255, 65, 0.05), transparent 70%); position: relative; overflow: hidden;">
+              {% if item.imagen %}
+                <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" 
+                  style="width: 100%; height: 100%; object-fit: cover; padding: 0;" />
+              {% else %}
+                <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Wanted" 
+                  style="width: 80px; height: 80px; filter: grayscale(1) opacity(0.2) drop-shadow(0 0 10px rgba(0, 255, 65, 0.15)); transition: var(--transition);" 
+                  class="wishlist-placeholder-img" />
+              {% endif %}
+            </div>
+
+            <span class="figure-serie-badge {% if item.serie == 'Ben 10' %}serie-classic{% elif item.serie == 'Ben 10 Alien Force' %}serie-af{% elif item.serie == 'Ben 10 Omniverse' %}serie-ov{% elif item.serie == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}">
+              {{ item.serie }}
+            </span>
+
+            <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+              <div>
+                <h3 style="margin-bottom: 5px;">{{ item.nombre }}</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-body);">Deseado desde: {{ item.fecha_agregado|date:"d/m/Y" }}</p>
+              </div>
+              
+              <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn-primary move-to-collection-btn" 
+                  style="width: 100%; justify-content: center; font-size: 0.8rem; padding: 10px 14px; cursor: pointer;"
                   data-id="{{ item.id }}"
                   data-nombre="{{ item.nombre }}"
                   data-serie="{{ item.serie }}"
@@ -120,20 +111,37 @@
                   data-tamano="{{ item.tamano }}"
                   data-subcategoria="{{ item.subcategoria }}"
                   data-imagen="{% if item.imagen %}{{ item.imagen.url }}{% endif %}">
-                  Editar
+                  Coleccionar
                 </button>
-                <a href="{% url 'eliminar_de_wishlist' item.id %}" class="btn-secondary" 
-                  style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 8px 12px; cursor: pointer; border-color: rgba(255, 51, 51, 0.3); color: rgba(255, 232, 232, 0.75); display: inline-flex; align-items: center; box-shadow: none;"
-                  onmouseover="this.style.borderColor='rgba(255, 51, 51, 0.8)'; this.style.color='#ffdddd'; this.style.backgroundColor='rgba(255, 51, 51, 0.05)'"
-                  onmouseout="this.style.borderColor='rgba(255, 51, 51, 0.3)'; this.style.color='rgba(255, 232, 232, 0.75)'; this.style.backgroundColor='transparent'">
-                  Quitar
-                </a>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <button class="btn-secondary edit-wishlist-btn" 
+                    style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 8px 12px; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); outline: none; box-shadow: none;"
+                    data-id="{{ item.id }}"
+                    data-nombre="{{ item.nombre }}"
+                    data-serie="{{ item.serie }}"
+                    data-precio="{{ item.precio }}"
+                    data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                    data-estado="{{ item.estado }}"
+                    data-marca="{{ item.marca }}"
+                    data-tamano="{{ item.tamano }}"
+                    data-subcategoria="{{ item.subcategoria }}"
+                    data-imagen="{% if item.imagen %}{{ item.imagen.url }}{% endif %}">
+                    Editar
+                  </button>
+                  <a href="{% url 'eliminar_de_wishlist' item.id %}" class="btn-secondary" 
+                    style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 8px 12px; cursor: pointer; border-color: rgba(255, 51, 51, 0.3); color: rgba(255, 232, 232, 0.75); display: inline-flex; align-items: center; box-shadow: none;"
+                    onmouseover="this.style.borderColor='rgba(255, 51, 51, 0.8)'; this.style.color='#ffdddd'; this.style.backgroundColor='rgba(255, 51, 51, 0.05)'"
+                    onmouseout="this.style.borderColor='rgba(255, 51, 51, 0.3)'; this.style.color='rgba(255, 232, 232, 0.75)'; this.style.backgroundColor='transparent'">
+                    Quitar
+                  </a>
+                </div>
               </div>
             </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
+      {% endfor %}
       {% else %}
       <div class="empty-state-omni">
         <div class="empty-icon-omni" style="background: url('/media/omnitrix/Ben_10_Omnitrix.png') center/contain no-repeat; filter: grayscale(1) opacity(0.15); width: 85px; height: 85px; margin: 0 auto 20px; animation: omni-pulse 3s infinite;"></div>

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum, Avg, Max, Subquery, OuterRef
+from django.db.models import Sum, Avg, Max, Subquery, OuterRef, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
 from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm
@@ -12,6 +12,24 @@ def get_ordered_figures(queryset):
     return queryset.annotate(
         alien_order=Coalesce(alien_order, 999)
     ).order_by('alien_order', 'nombre')
+
+def get_ordered_figures_by_series(queryset):
+    series_order = Case(
+        When(serie='Ben 10', then=Value(1)),
+        When(serie='Ben 10 Alien Force', then=Value(2)),
+        When(serie='Ben 10 Omniverse', then=Value(3)),
+        When(serie='Personajes', then=Value(4)),
+        When(serie='Villanos', then=Value(5)),
+        default=Value(99),
+        output_field=IntegerField()
+    )
+    alien_order = Subquery(
+        Alien.objects.filter(nombre=OuterRef('nombre')).values('orden_aparicion')[:1]
+    )
+    return queryset.annotate(
+        custom_series_order=series_order,
+        alien_order=Coalesce(alien_order, 999)
+    ).order_by('custom_series_order', 'alien_order', 'nombre')
 
 def get_aliens_por_serie_data():
     aliens = Alien.objects.all().order_by('orden_aparicion')
@@ -159,7 +177,7 @@ def dashboard(request):
     unicos_personajes = Figura.objects.filter(serie='Personajes').values('nombre').distinct().count()
     completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
 
-    figuras_list = Figura.objects.all().order_by('-precio')
+    figuras_list = get_ordered_figures_by_series(Figura.objects.all())
     paginator = Paginator(figuras_list, 10)
     page_number = request.GET.get('page')
     figuras = paginator.get_page(page_number)
@@ -226,7 +244,7 @@ def editar_perfil(request):
 from django.http import JsonResponse
 
 def api_figuras(request):
-    figuras = Figura.objects.all().order_by('-fecha_adquisicion')
+    figuras = get_ordered_figures_by_series(Figura.objects.all())
     data = []
     for f in figuras:
         data.append({
@@ -245,7 +263,25 @@ def api_figuras(request):
 
 
 def wishlist(request):
-    wishlist_items = get_ordered_figures(WishlistItem.objects.all())
+    wishlist_items = get_ordered_figures_by_series(WishlistItem.objects.all())
+    wishlist_classic = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10'))
+    wishlist_af = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Alien Force'))
+    wishlist_ov = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Omniverse'))
+    wishlist_villanos = get_ordered_figures(WishlistItem.objects.filter(serie='Villanos'))
+    wishlist_personajes = get_ordered_figures(WishlistItem.objects.filter(serie='Personajes'))
+
+    wishlist_sections = []
+    if wishlist_classic.exists():
+        wishlist_sections.append(('Ben 10 (Clásico)', 'var(--green-primary)', wishlist_classic))
+    if wishlist_af.exists():
+        wishlist_sections.append(('Ben 10 Alien Force', '#3b82f6', wishlist_af))
+    if wishlist_ov.exists():
+        wishlist_sections.append(('Ben 10 Omniverse', '#8b5cf6', wishlist_ov))
+    if wishlist_personajes.exists():
+        wishlist_sections.append(('Personajes', '#eab308', wishlist_personajes))
+    if wishlist_villanos.exists():
+        wishlist_sections.append(('Villanos', '#ef4444', wishlist_villanos))
+
     aliens_por_serie = get_aliens_por_serie_data()
     form_wishlist = WishlistItemForm()
     form_figura = FiguraForm()
@@ -253,6 +289,7 @@ def wishlist(request):
 
     return render(request, 'collector/wishlist.html', {
         'wishlist_items': wishlist_items,
+        'wishlist_sections': wishlist_sections,
         'form_wishlist': form_wishlist,
         'form_figura': form_figura,
         'form_wishlist_edit': form_wishlist_edit,
@@ -317,13 +354,34 @@ def mover_a_coleccion(request, wishlist_id):
             wishlist_item.delete()
             return redirect('coleccion')
         else:
-            wishlist_items = get_ordered_figures(WishlistItem.objects.all())
+            wishlist_items = get_ordered_figures_by_series(WishlistItem.objects.all())
+            wishlist_classic = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10'))
+            wishlist_af = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Alien Force'))
+            wishlist_ov = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Omniverse'))
+            wishlist_villanos = get_ordered_figures(WishlistItem.objects.filter(serie='Villanos'))
+            wishlist_personajes = get_ordered_figures(WishlistItem.objects.filter(serie='Personajes'))
+
+            wishlist_sections = []
+            if wishlist_classic.exists():
+                wishlist_sections.append(('Ben 10 (Clásico)', 'var(--green-primary)', wishlist_classic))
+            if wishlist_af.exists():
+                wishlist_sections.append(('Ben 10 Alien Force', '#3b82f6', wishlist_af))
+            if wishlist_ov.exists():
+                wishlist_sections.append(('Ben 10 Omniverse', '#8b5cf6', wishlist_ov))
+            if wishlist_personajes.exists():
+                wishlist_sections.append(('Personajes', '#eab308', wishlist_personajes))
+            if wishlist_villanos.exists():
+                wishlist_sections.append(('Villanos', '#ef4444', wishlist_villanos))
+
             aliens_por_serie = get_aliens_por_serie_data()
             form_wishlist = WishlistItemForm()
+            form_wishlist_edit = WishlistEditForm()
             return render(request, 'collector/wishlist.html', {
                 'wishlist_items': wishlist_items,
+                'wishlist_sections': wishlist_sections,
                 'form_wishlist': form_wishlist,
                 'form_figura': form,
+                'form_wishlist_edit': form_wishlist_edit,
                 'aliens_por_serie': aliens_por_serie,
                 'error_moving_id': wishlist_id,
             })
