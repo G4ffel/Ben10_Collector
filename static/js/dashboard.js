@@ -29,8 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
     tabAliensBtn.style.textShadow = 'none';
     tabAliensBtn.style.fontWeight = 'normal';
 
-    tabFiguresContent.style.display = 'block';
+    tabFiguresContent.style.display = 'flex';
     tabAliensContent.style.display = 'none';
+    const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
+    if (alienGalleryBtn) alienGalleryBtn.style.display = 'none';
   };
 
   const selectAliensTab = () => {
@@ -52,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tabFiguresContent.style.display = 'none';
     tabAliensContent.style.display = 'flex';
+    const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
+    if (alienGalleryBtn) alienGalleryBtn.style.display = 'flex';
   };
 
   const applyFilter = (serie) => {
@@ -269,6 +273,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // === MODAL DE GALERÍA DE HOLOGRAMAS ===
+  const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
+  const alienGalleryModal = document.getElementById('alienGalleryModal');
+  const alienGalleryCloseX = document.getElementById('alienGalleryCloseX');
+  const alienGalleryOverlay = document.getElementById('alienGalleryOverlay');
+
+  if (alienGalleryBtn && alienGalleryModal) {
+    alienGalleryBtn.addEventListener('click', () => {
+      alienGalleryModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  const closeAlienGalleryModal = () => {
+    if (alienGalleryModal) {
+      alienGalleryModal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  };
+
+  if (alienGalleryCloseX) alienGalleryCloseX.addEventListener('click', closeAlienGalleryModal);
+  if (alienGalleryOverlay) alienGalleryOverlay.addEventListener('click', closeAlienGalleryModal);
 
   // Inicializar estado del Dashboard desde los parámetros URL iniciales
   const urlParams = new URLSearchParams(window.location.search);

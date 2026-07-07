@@ -178,7 +178,7 @@ def dashboard(request):
     completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
 
     figuras_list = get_ordered_figures_by_series(Figura.objects.all())
-    paginator = Paginator(figuras_list, 10)
+    paginator = Paginator(figuras_list, 7)
     page_number = request.GET.get('page')
     figuras = paginator.get_page(page_number)
 
