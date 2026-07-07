@@ -268,10 +268,10 @@ def eliminar_alien(request, id):
 
 @never_cache
 def home(request):
-    total_classic = Figura.objects.filter(serie='Ben 10').count()
-    total_af = Figura.objects.filter(serie='Ben 10 Alien Force').count()
-    total_ov = Figura.objects.filter(serie='Ben 10 Omniverse').count()
-    total_figuras = Figura.objects.count()
+    total_classic = Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion').count()
+    total_af = Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion').count()
+    total_ov = Figura.objects.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion').count()
+    total_figuras = Figura.objects.filter(estado_coleccion='coleccion').count()
 
     return render(request, 'index.html', {
         'total_classic': total_classic,
