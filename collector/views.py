@@ -198,6 +198,9 @@ def dashboard(request):
     page_number = request.GET.get('page')
     figuras = paginator.get_page(page_number)
 
+    # Fetch bodega and sold figures for the dashboard
+    figuras_bodega = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion__in=['bodega', 'vendido']))
+
     aliens = Alien.objects.all().order_by('orden_aparicion')
     aliens_por_serie = get_aliens_por_serie_data()
     form = FiguraForm()
@@ -223,6 +226,7 @@ def dashboard(request):
         'total_posibles_personajes': total_posibles_personajes,
         'unicos_personajes': unicos_personajes,
         'figuras': figuras,
+        'figuras_bodega': figuras_bodega,
         'aliens': aliens,
         'serie_choices': Figura.SERIE_CHOICES,
         'aliens_por_serie': aliens_por_serie,
@@ -449,6 +453,9 @@ def bodega(request):
         total=Sum(Coalesce('precio_venta', F('precio')) - F('precio'))
     )['total'] or 0
     valor_bodega = Figura.objects.filter(estado_coleccion='bodega').aggregate(Sum('precio'))['precio__sum'] or 0
+    total_ventas = Figura.objects.filter(estado_coleccion='vendido').aggregate(
+        total=Sum(Coalesce('precio_venta', 'precio'))
+    )['total'] or 0
     aliens_por_serie = get_aliens_por_serie_data()
 
     return render(request, 'collector/bodega.html', {
@@ -456,6 +463,7 @@ def bodega(request):
         'figuras_vendidos': figuras_vendidos,
         'ganancia_total': ganancia_total,
         'valor_bodega': valor_bodega,
+        'total_ventas': total_ventas,
         'form': form,
         'aliens_por_serie': aliens_por_serie,
     })

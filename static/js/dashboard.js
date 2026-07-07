@@ -12,57 +12,44 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Funciones de tabs y filtros usando queries dinámicas
-  const selectFiguresTab = () => {
-    const tabFiguresBtn = document.getElementById('tabFiguresBtn');
-    const tabAliensBtn = document.getElementById('tabAliensBtn');
-    const tabFiguresContent = document.getElementById('tabFiguresContent');
-    const tabAliensContent = document.getElementById('tabAliensContent');
-    if (!tabFiguresBtn || !tabAliensBtn) return;
-    
-    tabFiguresBtn.style.color = 'var(--green-primary)';
-    tabFiguresBtn.style.borderBottomColor = 'var(--green-primary)';
-    tabFiguresBtn.style.textShadow = '0 0 8px var(--green-glow)';
-    tabFiguresBtn.style.fontWeight = 'bold';
-    
-    tabAliensBtn.style.color = 'var(--text-muted)';
-    tabAliensBtn.style.borderBottomColor = 'transparent';
-    tabAliensBtn.style.textShadow = 'none';
-    tabAliensBtn.style.fontWeight = 'normal';
+  const setTabActive = (tabName) => {
+    const tabs = ['Figures', 'Aliens', 'Bodega'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`tab${t}Btn`);
+      const content = document.getElementById(`tab${t}Content`);
+      if (btn) {
+        if (t === tabName) {
+          btn.style.color = 'var(--green-primary)';
+          btn.style.borderBottomColor = 'var(--green-primary)';
+          btn.style.textShadow = '0 0 8px var(--green-glow)';
+          btn.style.fontWeight = 'bold';
+        } else {
+          btn.style.color = 'var(--text-muted)';
+          btn.style.borderBottomColor = 'transparent';
+          btn.style.textShadow = 'none';
+          btn.style.fontWeight = 'normal';
+        }
+      }
+      if (content) {
+        content.style.display = t === tabName ? 'flex' : 'none';
+      }
+    });
 
-    tabFiguresContent.style.display = 'flex';
-    tabAliensContent.style.display = 'none';
     const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
     if (alienGalleryBtn) {
-      alienGalleryBtn.style.visibility = 'hidden';
-      alienGalleryBtn.style.pointerEvents = 'none';
+      if (tabName === 'Aliens') {
+        alienGalleryBtn.style.visibility = 'visible';
+        alienGalleryBtn.style.pointerEvents = 'auto';
+      } else {
+        alienGalleryBtn.style.visibility = 'hidden';
+        alienGalleryBtn.style.pointerEvents = 'none';
+      }
     }
   };
 
-  const selectAliensTab = () => {
-    const tabFiguresBtn = document.getElementById('tabFiguresBtn');
-    const tabAliensBtn = document.getElementById('tabAliensBtn');
-    const tabFiguresContent = document.getElementById('tabFiguresContent');
-    const tabAliensContent = document.getElementById('tabAliensContent');
-    if (!tabFiguresBtn || !tabAliensBtn) return;
-
-    tabAliensBtn.style.color = 'var(--green-primary)';
-    tabAliensBtn.style.borderBottomColor = 'var(--green-primary)';
-    tabAliensBtn.style.textShadow = '0 0 8px var(--green-glow)';
-    tabAliensBtn.style.fontWeight = 'bold';
-
-    tabFiguresBtn.style.color = 'var(--text-muted)';
-    tabFiguresBtn.style.borderBottomColor = 'transparent';
-    tabFiguresBtn.style.textShadow = 'none';
-    tabFiguresBtn.style.fontWeight = 'normal';
-
-    tabFiguresContent.style.display = 'none';
-    tabAliensContent.style.display = 'flex';
-    const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
-    if (alienGalleryBtn) {
-      alienGalleryBtn.style.visibility = 'visible';
-      alienGalleryBtn.style.pointerEvents = 'auto';
-    }
-  };
+  const selectFiguresTab = () => setTabActive('Figures');
+  const selectAliensTab = () => setTabActive('Aliens');
+  const selectBodegaTab = () => setTabActive('Bodega');
 
   const applyFilter = (serie) => {
     const alienRows = document.querySelectorAll('.alien-row');
@@ -167,6 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (activeTab === 'aliens') {
         selectAliensTab();
+      } else if (activeTab === 'bodega') {
+        selectBodegaTab();
       } else {
         selectFiguresTab();
       }
@@ -191,6 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (e.target.closest('#tabAliensBtn')) {
       e.preventDefault();
       selectAliensTab();
+    } else if (e.target.closest('#tabBodegaBtn')) {
+      e.preventDefault();
+      selectBodegaTab();
     }
 
     // 2. Control de filtros de series
@@ -381,6 +373,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (activeTab === 'aliens') {
     selectAliensTab();
+  } else if (activeTab === 'bodega') {
+    selectBodegaTab();
   } else {
     selectFiguresTab();
   }
