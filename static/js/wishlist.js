@@ -611,4 +611,21 @@ document.addEventListener('DOMContentLoaded', () => {
       openMoveModal(matchedBtn);
     }
   }
+
+  // Hover fluorescent glow effect on placeholder images inside wishlist cards
+  document.querySelectorAll('.wishlist-card').forEach(card => {
+    const placeholder = card.querySelector('.wishlist-placeholder-img');
+    card.addEventListener('mouseenter', () => {
+      if(placeholder) {
+        placeholder.style.filter = 'none opacity(0.85) drop-shadow(0 0 15px var(--green-primary))';
+        placeholder.style.transform = 'scale(1.15) rotate(5deg)';
+      }
+    });
+    card.addEventListener('mouseleave', () => {
+      if(placeholder) {
+        placeholder.style.filter = 'grayscale(1) opacity(0.2) drop-shadow(0 0 10px rgba(0, 255, 65, 0.15))';
+        placeholder.style.transform = 'scale(1) rotate(0deg)';
+      }
+    });
+  });
 });

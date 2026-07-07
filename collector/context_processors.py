@@ -21,16 +21,16 @@ def perfil_global(request):
     form_perfil = PerfilForm(instance=perfil)
     
     # Calcular estadísticas agregadas
-    figuras_count = Figura.objects.count()
-    valor_total = Figura.objects.aggregate(Sum('precio'))['precio__sum'] or 0
-    aliens_unicos = Figura.objects.values('nombre').distinct().count()
+    figuras_count = Figura.objects.filter(estado_coleccion='coleccion').count()
+    valor_total = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Sum('precio'))['precio__sum'] or 0
+    aliens_unicos = Figura.objects.filter(estado_coleccion='coleccion').values('nombre').distinct().count()
 
     # Conteos por serie
-    count_ben10 = Figura.objects.filter(serie='Ben 10').count()
-    count_af    = Figura.objects.filter(serie='Ben 10 Alien Force').count()
-    count_ov    = Figura.objects.filter(serie='Ben 10 Omniverse').count()
-    count_villanos = Figura.objects.filter(serie='Villanos').count()
-    count_personajes = Figura.objects.filter(serie='Personajes').count()
+    count_ben10 = Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion').count()
+    count_af    = Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion').count()
+    count_ov    = Figura.objects.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion').count()
+    count_villanos = Figura.objects.filter(serie='Villanos', estado_coleccion='coleccion').count()
+    count_personajes = Figura.objects.filter(serie='Personajes', estado_coleccion='coleccion').count()
 
     # Rango editable asignado al perfil
     rango = perfil.get_rango_display()
@@ -47,7 +47,7 @@ def perfil_global(request):
     rango_class = rango_class_map.get(perfil.rango, 'rango-novato')
 
     # Obtener todos los aliens únicos registrados de las figuras creadas en DB
-    aliens_en_db = list(Figura.objects.values_list('nombre', flat=True).distinct())
+    aliens_en_db = list(Figura.objects.filter(estado_coleccion='coleccion').values_list('nombre', flat=True).distinct())
     
     # Lista predeterminada de aliens icónicos de Ben 10 como fallback/iniciales
     aliens_predeterminados = [

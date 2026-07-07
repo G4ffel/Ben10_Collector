@@ -5,6 +5,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Ben 10</title>
   <link rel="icon" type="image/png" href="/media/omnitrix/Ben_10_Omnitrix.png" />
   <meta name="description"
@@ -15,28 +18,6 @@
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  <style>
-    @keyframes float-bg-1 {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-15px) rotate(3deg); }
-    }
-    @keyframes float-bg-2 {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-12px) rotate(-4deg); }
-    }
-    @keyframes float-bg-3 {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-18px) rotate(2deg); }
-    }
-    @keyframes float-bg-4 {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(-3deg); }
-    }
-    @keyframes holo-float-container {
-      0%, 100% { transform: translate(-50%, -50%); }
-      50% { transform: translate(-50%, -52%); }
-    }
-  </style>
 </head>
 
 <body>
@@ -49,28 +30,7 @@
     <div class="particles-container" id="global-particles"></div>
   </div>
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <a href="{% url 'home' %}" class="nav-logo">
-        <div class="omnitrix-mini"></div>
-        <span class="logo-text">BEN <span class="logo-num">10</span></span>
-      </a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="{% url 'home' %}" class="nav-link active">Inicio</a></li>
-        <li><a href="{% url 'coleccion' %}" class="nav-link">Colección</a></li>
-        <li><a href="{% url 'wishlist' %}" class="nav-link">Wishlist</a></li>
-        <li><a href="{% url 'dashboard' %}" class="nav-link">Panel</a></li>
-      </ul>
-      <button class="nav-profile-btn" id="openProfileBtn">
-        <img src="{{ perfil.avatar_url }}" class="nav-profile-avatar-img" alt="Avatar">
-        <span class="nav-profile-name">{{ perfil.nombre }}</span>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  {% include 'collector/includes/navbar.html' %}
 
   <!-- ===== HERO SECTION ===== -->
   <section class="hero" id="home">
@@ -157,47 +117,7 @@
 
   <script src="{% static 'js/profile-modal.js' %}"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const centralAliens = [
-        '/media/aliens/alien-x.png',
-        '/media/aliens/fuego-pantanoso-supremo.png',
-        '/media/aliens/goob.png',
-        '/media/aliens/fuego.png',
-        '/media/aliens/ben-tennyson.png'
-      ];
-
-      let currentIndex = 0;
-      const centralImg = document.getElementById('centralHoloImg');
-
-      if (centralImg) {
-        setInterval(() => {
-          currentIndex = (currentIndex + 1) % centralAliens.length;
-          const nextAlienImg = centralAliens[currentIndex];
-
-          // Animación de desaparición y escala (efecto glitch de entrada)
-          centralImg.style.opacity = '0';
-          centralImg.style.transform = 'scale(0.85) translateY(10px)';
-
-          setTimeout(() => {
-            // Actualizar imagen manteniendo la sombra verde original
-            centralImg.src = nextAlienImg;
-            centralImg.style.filter = 'drop-shadow(0 0 45px rgba(0, 255, 65, 0.6))';
-
-            // Ajustar escala y posición específica para Goop (goob.png) para igualar el tamaño
-            if (nextAlienImg.includes('goob.png')) {
-              centralImg.style.transform = 'scale(1.15) translateY(-9px)';
-            } else {
-              centralImg.style.transform = 'scale(1) translateY(0)';
-            }
-
-            // Animación de aparición
-            centralImg.style.opacity = '0.28';
-          }, 400);
-        }, 4000); // Rotación cada 4 segundos
-      }
-    });
-  </script>
+  <script src="{% static 'js/home.js' %}"></script>
 </body>
 </html>
 

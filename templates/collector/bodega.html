@@ -1,0 +1,261 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Bodega y Ventas - Ben 10 Collector</title>
+  <link rel="icon" type="image/png" href="/media/omnitrix/Ben_10_Omnitrix.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+
+<body>
+
+  <!-- ===== BACKGROUND ANIMADO GLOBAL ===== -->
+  <div class="global-bg">
+    <div class="energy-ring ring-1"></div>
+    <div class="energy-ring ring-2"></div>
+    <div class="energy-ring ring-3"></div>
+    <div class="particles-container" id="global-particles"></div>
+  </div>
+
+  {% include 'collector/includes/navbar.html' %}
+
+  <!-- ===== CONTAINER PRINCIPAL ===== -->
+  <main class="collection-container container" style="padding-top: 130px; padding-bottom: 80px;">
+    
+    <!-- HEADER DE BODEGA -->
+    <div class="collection-header" style="margin-bottom: 40px; text-align: left; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-bottom: 1px solid rgba(0, 255, 65, 0.15); padding-bottom: 25px;">
+
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <!-- VALOR TOTAL BODEGA -->
+        <div class="hud-card" style="background: rgba(10, 21, 10, 0.6); border: 1px solid rgba(255, 153, 0, 0.3); padding: 12px 24px; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 153, 0, 0.05); display: flex; flex-direction: column; align-items: flex-end;">
+          <span style="font-family: var(--font-display); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">Valor Bodega</span>
+          <span style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; color: #ff9900; text-shadow: 0 0 8px rgba(255, 153, 0, 0.5);">${{ valor_bodega }} CLP</span>
+        </div>
+
+        <!-- GANANCIA VENTAS -->
+        <div class="hud-card" style="background: rgba(10, 21, 10, 0.6); border: 1px solid rgba(0, 255, 65, 0.2); padding: 12px 24px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; align-items: flex-end;">
+          <span style="font-family: var(--font-display); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">Ganancia Ventas</span>
+          <span class="green-text" style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; text-shadow: 0 0 8px var(--green-glow);">${{ ganancia_total }} CLP</span>
+        </div>
+
+        <button class="btn-primary" id="openAddModalBtn" style="font-family: var(--font-display); font-size: 0.8rem; padding: 12px 20px; letter-spacing: 1px; height: 50px;">
+          + AÑADIR A BODEGA
+        </button>
+      </div>
+    </div>
+
+    <!-- DUAL SECTIONS GRID -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; width: 100%;">
+      
+      <!-- COLUMNA 1: BODEGA (ALMACENADOS) -->
+      <div style="display: flex; flex-direction: column; gap: 25px;">
+        <h2 class="sub-title-omni" style="font-size: 1.3rem; border-left-color: #ff9900; padding-left: 15px; margin-bottom: 5px;">
+          BODEGA GALÁCTICA <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_bodega|length }} Figuras)</span>
+        </h2>
+        
+        {% if figuras_bodega %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
+          {% for figura in figuras_bodega %}
+          <div class="figure-card-omni" style="cursor: pointer; border-color: rgba(255, 153, 0, 0.2);"
+            data-nombre="{{ figura.nombre }}"
+            data-precio="{{ figura.precio }}"
+            data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
+            data-serie="{{ figura.serie }}"
+            data-estado="{{ figura.get_estado_display }}"
+            data-marca="{{ figura.get_marca_display }}"
+            data-tamano="{{ figura.get_tamano_display }}"
+            data-subcategoria="{{ figura.subcategoria }}"
+            data-imagen="{{ figura.imagen.url }}">
+            
+            <div class="figure-img-wrap" style="border-bottom: none; background: #ffffff;">
+              <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" style="width: 100%; height: 100%; object-fit: contain;" />
+            </div>
+
+            <span class="figure-serie-badge" style="position: absolute; top: 10px; right: 10px; border: 1px solid #ff9900 !important; background: rgba(5, 12, 5, 0.95) !important; color: #ff9900 !important; font-weight: bold !important; text-shadow: 0 0 5px rgba(255, 153, 0, 0.8) !important; box-shadow: 0 0 10px rgba(255, 153, 0, 0.3) !important;">
+              BODEGA
+            </span>
+
+            <div class="figure-info-omni" style="border-top: 1px solid rgba(255, 153, 0, 0.15);">
+              <h3 style="margin-top: 5px;">{{ figura.nombre }}</h3>
+              <div class="figure-meta">
+                <div class="meta-item">
+                  <span class="meta-label">VALOR:</span>
+                  <span class="meta-value green-text">${{ figura.precio }} CLP</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">MARCA:</span>
+                  <span class="meta-value" style="color: var(--text-secondary);">{{ figura.get_marca_display }}</span>
+                </div>
+              </div>
+
+              <!-- BOTONES DE ACCIÓN BODEGA -->
+              <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                <a href="javascript:void(0)" class="bodega-btn bodega-btn-secondary edit-figure-btn"
+                  data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                  data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                  data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
+                  data-subcategoria="{{ figura.subcategoria }}"
+                  data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                  Editar
+                </a>
+                <a href="javascript:void(0)" class="bodega-btn bodega-btn-primary sell-figure-btn"
+                  data-id="{{ figura.id }}"
+                  data-nombre="{{ figura.nombre }}"
+                  data-precio="{{ figura.precio }}">
+                  Vender
+                </a>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 8px; width: 100%;">
+                <a href="{% url 'reintegrar_a_coleccion' figura.id %}" class="bodega-btn bodega-btn-secondary"
+                  data-confirm="¿Reintegrar a {{ figura.nombre }} a la Colección activa?">
+                  Reintegrar
+                </a>
+                <a href="{% url 'eliminar_figura' figura.id %}" class="bodega-btn bodega-btn-danger"
+                  data-confirm="¿Eliminar a {{ figura.nombre }} definitivamente del inventario?">
+                  Desintegrar
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div style="background: rgba(255, 153, 0, 0.02); border: 1px dashed rgba(255, 153, 0, 0.15); padding: 20px 40px; text-align: center; border-radius: 10px; color: var(--text-muted); font-family: var(--font-body); font-size: 0.95rem; min-height: 120px; display: flex; align-items: center; justify-content: center;">
+          La bodega está vacía. Puedes archivar figuras de la colección o registrar nuevas especies directamente aquí.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- COLUMNA 2: REGISTRO DE VENTAS (VENDIDOS) -->
+      <div style="display: flex; flex-direction: column; gap: 25px;">
+        <h2 class="sub-title-omni" style="font-size: 1.3rem; border-left-color: #00ff41; padding-left: 15px; margin-bottom: 5px;">
+          HISTORIAL DE VENTAS <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_vendidos|length }} Transacciones)</span>
+        </h2>
+        
+        {% if figuras_vendidos %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
+          {% for figura in figuras_vendidos %}
+          <div class="figure-card-omni" style="cursor: pointer; border-color: rgba(0, 255, 65, 0.2);"
+            data-nombre="{{ figura.nombre }}"
+            data-precio="{{ figura.precio }}"
+            data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
+            data-serie="{{ figura.serie }}"
+            data-estado="{{ figura.get_estado_display }}"
+            data-marca="{{ figura.get_marca_display }}"
+            data-tamano="{{ figura.get_tamano_display }}"
+            data-subcategoria="{{ figura.subcategoria }}"
+            data-imagen="{{ figura.imagen.url }}">
+            
+            <div class="figure-img-wrap" style="border-bottom: none; background: #ffffff; filter: grayscale(0.5) opacity(0.8);">
+              <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" style="width: 100%; height: 100%; object-fit: contain;" />
+            </div>
+
+            <span class="figure-serie-badge" style="position: absolute; top: 10px; right: 10px; border: 1px solid #00ff41 !important; background: rgba(5, 12, 5, 0.95) !important; color: #00ff41 !important; font-weight: bold !important; text-shadow: 0 0 5px rgba(0, 255, 65, 0.8) !important; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;">
+              VENDIDO
+            </span>
+
+            <div class="figure-info-omni" style="border-top: 1px solid rgba(0, 255, 65, 0.15);">
+              <h3 style="margin-top: 5px; color: var(--text-secondary); text-decoration: line-through;">{{ figura.nombre }}</h3>
+              <div class="figure-meta">
+                <div class="meta-item">
+                  <span class="meta-label">PRECIO VENTA:</span>
+                  <span class="meta-value green-text" style="font-weight: bold; text-shadow: 0 0 5px var(--green-glow);">{% if figura.precio_venta is not None %}${{ figura.precio_venta }}{% else %}${{ figura.precio }}{% endif %} CLP</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">SERIE:</span>
+                  <span class="meta-value" style="color: var(--text-muted); font-size: 0.8rem;">{{ figura.serie }}</span>
+                </div>
+              </div>
+
+              <!-- BOTONES DE ACCIÓN VENDIDO -->
+              <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                <a href="{% url 'mover_a_bodega' figura.id %}" class="bodega-btn bodega-btn-secondary"
+                  style="border-color: #ff9900 !important; color: #ff9900 !important;"
+                  data-confirm="¿Mover a {{ figura.nombre }} de vuelta a la bodega?">
+                  A Bodega
+                </a>
+                <a href="{% url 'reintegrar_a_coleccion' figura.id %}" class="bodega-btn bodega-btn-secondary"
+                  data-confirm="¿Reintegrar a {{ figura.nombre }} a la Colección activa?">
+                  Colección
+                </a>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 8px; width: 100%;">
+                <a href="{% url 'eliminar_figura' figura.id %}" class="bodega-btn bodega-btn-danger"
+                  data-confirm="¿Eliminar definitivamente el registro de venta de {{ figura.nombre }}?">
+                  Desintegrar Registro
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div style="background: rgba(0, 255, 65, 0.02); border: 1px dashed rgba(0, 255, 65, 0.15); padding: 20px 40px; text-align: center; border-radius: 10px; color: var(--text-muted); font-family: var(--font-body); font-size: 0.95rem; min-height: 120px; display: flex; align-items: center; justify-content: center;">
+          No hay registros de ventas guardados en la base de datos galáctica.
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ===== MODAL FORMULARIO (AÑADIR / EDITAR) ===== -->
+  {% include 'collector/includes/figure_modal.html' %}
+
+  <!-- ===== MODAL DETALLE DE FIGURA ===== -->
+  {% include 'collector/includes/detail_modal.html' %}
+
+  <!-- ===== MODAL REGISTRAR VENTA (PRECIO) ===== -->
+  <div class="modal-container" id="sellModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(12px); background: rgba(0, 0, 0, 0.75);">
+    <div class="modal-overlay" id="sellModalOverlay" style="position: absolute; width: 100%; height: 100%; cursor: pointer;"></div>
+    <div class="modal-content-wrapper" style="max-width: 420px; width: 90%; background: var(--dark-2); border: 2px solid var(--green-primary); border-radius: 16px; position: relative; z-index: 4001; box-shadow: 0 0 35px rgba(0, 255, 65, 0.3); display: flex; flex-direction: column; padding: 30px; box-sizing: border-box; text-align: center; gap: 20px;">
+      
+      <!-- HEADER -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <div class="omni-radar" style="width: 16px; height: 16px;"></div>
+        <h2 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 10px var(--green-glow);">REGISTRAR VENTA</h2>
+      </div>
+
+      <p id="sellModalText" style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-secondary); margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 0.5px;"></p>
+
+      <!-- INPUT FIELD -->
+      <div class="form-group-omni" style="text-align: left; width: 100%; margin-top: 10px;">
+        <label for="sellPriceInput" style="font-family: var(--font-display); font-size: 0.75rem; color: var(--green-primary); display: block; margin-bottom: 8px; letter-spacing: 1px;">PRECIO DE VENTA (CLP)</label>
+        <input type="number" id="sellPriceInput" style="width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-green); background: rgba(0,0,0,0.4); color: #ffffff; font-family: var(--font-body); font-size: 1rem; outline: none; box-sizing: border-box; transition: var(--transition);" onfocus="this.style.borderColor='var(--green-primary)'; this.style.boxShadow='0 0 10px rgba(0,255,65,0.2)';" onblur="this.style.borderColor='var(--border-green)'; this.style.boxShadow='none';" />
+      </div>
+
+      <!-- BUTTONS -->
+      <div style="display: flex; gap: 12px; margin-top: 15px; width: 100%;">
+        <button type="button" id="sellModalCancel" class="bodega-btn bodega-btn-danger" style="flex: 1; height: 36px;">CANCELAR</button>
+        <button type="button" id="sellModalAccept" class="bodega-btn bodega-btn-primary" style="flex: 1; height: 36px; background: linear-gradient(135deg, #00ff41, #00b32c) !important; border: 1px solid #00ff41 !important; color: var(--dark-1) !important; font-weight: bold !important;">CONFIRMAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DATOS PARA JAVASCRIPT ===== -->
+  {{ aliens_por_serie|json_script:"aliens-por-serie-data" }}
+  <script src="{% static 'js/coleccion.js' %}?v=3"></script>
+
+  <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
+  {% include 'collector/includes/profile_modal.html' %}
+
+  <script src="{% static 'js/profile-modal.js' %}?v=3"></script>
+  <script src="{% static 'js/bg-particles.js' %}?v=3"></script>
+
+  <script src="{% static 'js/bodega.js' %}"></script>
+</body>
+</html>

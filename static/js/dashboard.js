@@ -386,3 +386,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyFilter(activeSerie);
 });
+
+// Helper function for dashboard alien photo file label update
+function updateDashboardAlienFileLabel(input) {
+  const label = document.getElementById('dashboardAlienImageLabel');
+  if (label) {
+    if (input.files && input.files[0]) {
+      label.textContent = "✓ CARGADA";
+      label.style.borderColor = "var(--green-primary)";
+      label.style.color = "var(--dark-1)";
+      label.style.background = "linear-gradient(135deg, var(--green-primary), var(--green-mid))";
+      label.style.boxShadow = "0 0 15px var(--green-glow)";
+    } else {
+      label.textContent = "FOTO ALIEN";
+      label.style.borderColor = "var(--border-green)";
+      label.style.color = "var(--green-primary)";
+      label.style.background = "var(--dark-3)";
+      label.style.boxShadow = "none";
+    }
+  }
+}

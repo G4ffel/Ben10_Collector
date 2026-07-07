@@ -1,0 +1,25 @@
+{% load static %}
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo">
+        <div class="omnitrix-mini"></div>
+        <span class="logo-text">BEN <span class="logo-num">10</span></span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="{% url 'home' %}" class="nav-link {% if request.path == '/' %}active{% endif %}">Inicio</a></li>
+        <li><a href="{% url 'coleccion' %}" class="nav-link {% if 'coleccion' in request.path %}active{% endif %}">Colección</a></li>
+        <li><a href="{% url 'wishlist' %}" class="nav-link {% if 'wishlist' in request.path %}active{% endif %}">Wishlist</a></li>
+        <li><a href="{% url 'bodega' %}" class="nav-link {% if 'bodega' in request.path %}active{% endif %}">Bodega</a></li>
+        <li><a href="{% url 'dashboard' %}" class="nav-link {% if 'dashboard' in request.path %}active{% endif %}">Panel</a></li>
+      </ul>
+      <button class="nav-profile-btn" id="openProfileBtn">
+        <img src="{{ perfil.avatar_url }}" class="nav-profile-avatar-img" alt="Avatar">
+        <span class="nav-profile-name">{{ perfil.nombre }}</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <script src="{% static 'js/omni-confirm.js' %}"></script>

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum, Avg, Max, Subquery, OuterRef, Case, When, Value, IntegerField
+from django.views.decorators.cache import never_cache
+from django.db.models import Sum, Avg, Max, Subquery, OuterRef, Case, When, Value, IntegerField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
 from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm
@@ -45,6 +46,7 @@ def get_aliens_por_serie_data():
         aliens_por_serie[s] = list_aliens
     return aliens_por_serie
 
+@never_cache
 def coleccion(request):
     if request.method == 'POST':
         form = FiguraForm(request.POST, request.FILES)
@@ -62,12 +64,12 @@ def coleccion(request):
     else:
         form = FiguraForm()
     
-    figuras_classic = get_ordered_figures(Figura.objects.filter(serie='Ben 10'))
-    figuras_af = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Alien Force'))
-    figuras_ov = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Omniverse'))
-    figuras_villanos = get_ordered_figures(Figura.objects.filter(serie='Villanos'))
-    figuras_personajes = get_ordered_figures(Figura.objects.filter(serie='Personajes'))
-    figuras_count = Figura.objects.count()
+    figuras_classic = get_ordered_figures(Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion'))
+    figuras_af = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion'))
+    figuras_ov = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion'))
+    figuras_villanos = get_ordered_figures(Figura.objects.filter(serie='Villanos', estado_coleccion='coleccion'))
+    figuras_personajes = get_ordered_figures(Figura.objects.filter(serie='Personajes', estado_coleccion='coleccion'))
+    figuras_count = Figura.objects.filter(estado_coleccion='coleccion').count()
     aliens = Alien.objects.all().order_by('orden_aparicion')
 
     def get_grouped_figures(queryset):
@@ -116,21 +118,27 @@ def coleccion(request):
 
 def editar_figura(request, id):
     figura = get_object_or_404(Figura, id=id)
+    referer = request.META.get('HTTP_REFERER', '')
     if request.method == 'POST':
         # Pasamos instance=figura para que actualice el registro existente
         form = FiguraForm(request.POST, request.FILES, instance=figura)
         if form.is_valid():
             form.save()
-            referer = request.META.get('HTTP_REFERER', '')
             if 'dashboard' in referer:
                 return redirect('dashboard')
+            elif 'bodega' in referer:
+                return redirect('bodega')
             return redirect('coleccion')
         else:
-            referer = request.META.get('HTTP_REFERER', '')
             if referer:
                 return redirect(referer)
+    if 'bodega' in referer:
+        return redirect('bodega')
+    elif 'dashboard' in referer:
+        return redirect('dashboard')
     return redirect('coleccion')
 
+@never_cache
 def dashboard(request):
     if request.method == 'POST':
         # Agregar o editar alien desde el panel
@@ -155,10 +163,10 @@ def dashboard(request):
                 alien.save()
             return redirect(f'/dashboard/?tab=aliens&serie={serie_default}')
 
-    total_figuras = Figura.objects.count()
-    valor_total = Figura.objects.aggregate(Sum('precio'))['precio__sum'] or 0
-    precio_promedio = Figura.objects.aggregate(Avg('precio'))['precio__avg'] or 0
-    precio_maximo = Figura.objects.aggregate(Max('precio'))['precio__max'] or 0
+    total_figuras = Figura.objects.filter(estado_coleccion='coleccion').count()
+    valor_total = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Sum('precio'))['precio__sum'] or 0
+    precio_promedio = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Avg('precio'))['precio__avg'] or 0
+    precio_maximo = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Max('precio'))['precio__max'] or 0
 
     # Asegurar aliens cargados
     if Alien.objects.count() == 0:
@@ -166,26 +174,26 @@ def dashboard(request):
 
     # Calcular completitud de colecciones únicas basadas en aliens disponibles
     total_posibles_classic = Alien.objects.filter(serie_default='Ben 10').count()
-    unicos_classic = Figura.objects.filter(serie='Ben 10').values('nombre').distinct().count()
+    unicos_classic = Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion').values('nombre').distinct().count()
     completitud_classic = int((unicos_classic / total_posibles_classic) * 100) if total_posibles_classic > 0 else 0
     
     total_posibles_af = Alien.objects.filter(serie_default='Ben 10 Alien Force').count()
-    unicos_af = Figura.objects.filter(serie='Ben 10 Alien Force').values('nombre').distinct().count()
+    unicos_af = Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion').values('nombre').distinct().count()
     completitud_af = int((unicos_af / total_posibles_af) * 100) if total_posibles_af > 0 else 0
 
     total_posibles_ov = Alien.objects.filter(serie_default='Ben 10 Omniverse').count()
-    unicos_ov = Figura.objects.filter(serie='Ben 10 Omniverse').values('nombre').distinct().count()
+    unicos_ov = Figura.objects.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion').values('nombre').distinct().count()
     completitud_ov = int((unicos_ov / total_posibles_ov) * 100) if total_posibles_ov > 0 else 0
 
     total_posibles_villanos = Alien.objects.filter(serie_default='Villanos').count()
-    unicos_villanos = Figura.objects.filter(serie='Villanos').values('nombre').distinct().count()
+    unicos_villanos = Figura.objects.filter(serie='Villanos', estado_coleccion='coleccion').values('nombre').distinct().count()
     completitud_villanos = int((unicos_villanos / total_posibles_villanos) * 100) if total_posibles_villanos > 0 else 0
 
     total_posibles_personajes = Alien.objects.filter(serie_default='Personajes').count()
-    unicos_personajes = Figura.objects.filter(serie='Personajes').values('nombre').distinct().count()
+    unicos_personajes = Figura.objects.filter(serie='Personajes', estado_coleccion='coleccion').values('nombre').distinct().count()
     completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
 
-    figuras_list = get_ordered_figures_by_series(Figura.objects.all())
+    figuras_list = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion='coleccion'))
     paginator = Paginator(figuras_list, 7)
     page_number = request.GET.get('page')
     figuras = paginator.get_page(page_number)
@@ -232,6 +240,7 @@ def eliminar_alien(request, id):
     alien.delete()
     return redirect(f'/dashboard/?tab=aliens&serie={serie}')
 
+@never_cache
 def home(request):
     total_classic = Figura.objects.filter(serie='Ben 10').count()
     total_af = Figura.objects.filter(serie='Ben 10 Alien Force').count()
@@ -274,6 +283,7 @@ def api_figuras(request):
     return JsonResponse({'figuras': data})
 
 
+@never_cache
 def wishlist(request):
     wishlist_items = get_ordered_figures_by_series(WishlistItem.objects.all())
     wishlist_classic = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10'))
@@ -412,6 +422,74 @@ def mover_a_coleccion(request, wishlist_id):
                 'error_moving_id': wishlist_id,
             })
     return redirect('wishlist')
+
+
+@never_cache
+def bodega(request):
+    if request.method == 'POST':
+        form = FiguraForm(request.POST, request.FILES)
+        if form.is_valid():
+            figura = form.save(commit=False)
+            figura.estado_coleccion = 'bodega'
+            if not figura.imagen:
+                try:
+                    alien_db = Alien.objects.get(nombre=figura.nombre)
+                    if alien_db.imagen:
+                        figura.imagen = alien_db.imagen
+                except Alien.DoesNotExist:
+                    pass
+            figura.save()
+            return redirect('bodega')
+    else:
+        form = FiguraForm()
+
+    figuras_bodega = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion='bodega'))
+    figuras_vendidos = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion='vendido'))
+    ganancia_total = Figura.objects.filter(estado_coleccion='vendido').aggregate(
+        total=Sum(Coalesce('precio_venta', F('precio')) - F('precio'))
+    )['total'] or 0
+    valor_bodega = Figura.objects.filter(estado_coleccion='bodega').aggregate(Sum('precio'))['precio__sum'] or 0
+    aliens_por_serie = get_aliens_por_serie_data()
+
+    return render(request, 'collector/bodega.html', {
+        'figuras_bodega': figuras_bodega,
+        'figuras_vendidos': figuras_vendidos,
+        'ganancia_total': ganancia_total,
+        'valor_bodega': valor_bodega,
+        'form': form,
+        'aliens_por_serie': aliens_por_serie,
+    })
+
+def mover_a_bodega(request, id):
+    figura = get_object_or_404(Figura, id=id)
+    figura.estado_coleccion = 'bodega'
+    figura.save()
+    referer = request.META.get('HTTP_REFERER', '')
+    if 'dashboard' in referer:
+        return redirect('dashboard')
+    if 'coleccion' in referer:
+        return redirect('coleccion')
+    return redirect('bodega')
+
+def mover_a_vendido(request, id):
+    figura = get_object_or_404(Figura, id=id)
+    precio_venta = request.GET.get('precio_venta')
+    if precio_venta is not None:
+        try:
+            figura.precio_venta = int(precio_venta)
+        except ValueError:
+            figura.precio_venta = figura.precio
+    else:
+        figura.precio_venta = figura.precio
+    figura.estado_coleccion = 'vendido'
+    figura.save()
+    return redirect('bodega')
+
+def reintegrar_a_coleccion(request, id):
+    figura = get_object_or_404(Figura, id=id)
+    figura.estado_coleccion = 'coleccion'
+    figura.save()
+    return redirect('bodega')
 
 
 

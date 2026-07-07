@@ -5,6 +5,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Ben 10</title>
   <link rel="icon" type="image/png" href="/media/omnitrix/Ben_10_Omnitrix.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,28 +28,7 @@
     <div class="particles-container" id="global-particles"></div>
   </div>
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <a href="{% url 'home' %}" class="nav-logo">
-        <div class="omnitrix-mini"></div>
-        <span class="logo-text">BEN <span class="logo-num">10</span></span>
-      </a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="{% url 'home' %}" class="nav-link">Inicio</a></li>
-        <li><a href="{% url 'coleccion' %}" class="nav-link active">Colección</a></li>
-        <li><a href="{% url 'wishlist' %}" class="nav-link">Wishlist</a></li>
-        <li><a href="{% url 'dashboard' %}" class="nav-link">Panel</a></li>
-      </ul>
-      <button class="nav-profile-btn" id="openProfileBtn">
-        <img src="{{ perfil.avatar_url }}" class="nav-profile-avatar-img" alt="Avatar">
-        <span class="nav-profile-name">{{ perfil.nombre }}</span>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  {% include 'collector/includes/navbar.html' %}
 
   <!-- ===== COLLECTION HERO / CONTENT ===== -->
   <main class="collection-container container" style="padding-top: 130px; padding-bottom: 80px;">
@@ -112,14 +94,22 @@
                     </div>
                   </div>
 
-                  <button class="btn-secondary edit-figure-btn"
-                    style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
-                    data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                    data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                    data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                    data-subcategoria="{{ figura.subcategoria }}">
-                    Editar Figura
-                  </button>
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
+                      data-subcategoria="{{ figura.subcategoria }}"
+                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
                 </div>
               </div>
               {% endfor %}
@@ -178,14 +168,22 @@
                     </div>
                   </div>
 
-                  <button class="btn-secondary edit-figure-btn"
-                    style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
-                    data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                    data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                    data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                    data-subcategoria="{{ figura.subcategoria }}">
-                    Editar Figura
-                  </button>
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
+                      data-subcategoria="{{ figura.subcategoria }}"
+                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
                 </div>
               </div>
               {% endfor %}
@@ -244,14 +242,22 @@
                     </div>
                   </div>
 
-                  <button class="btn-secondary edit-figure-btn"
-                    style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
-                    data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                    data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                    data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                    data-subcategoria="{{ figura.subcategoria }}">
-                    Editar Figura
-                  </button>
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
+                      data-subcategoria="{{ figura.subcategoria }}"
+                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
                 </div>
               </div>
               {% endfor %}
@@ -310,14 +316,22 @@
                     </div>
                   </div>
 
-                  <button class="btn-secondary edit-figure-btn"
-                    style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
-                    data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                    data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                    data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                    data-subcategoria="{{ figura.subcategoria }}">
-                    Editar Figura
-                  </button>
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
+                      data-subcategoria="{{ figura.subcategoria }}"
+                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
                 </div>
               </div>
               {% endfor %}
@@ -376,14 +390,22 @@
                     </div>
                   </div>
 
-                  <button class="btn-secondary edit-figure-btn"
-                    style="margin-top: 15px; width: 100%; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green);"
-                    data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                    data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                    data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                    data-subcategoria="{{ figura.subcategoria }}">
-                    Editar Figura
-                  </button>
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
+                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
+                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
+                      data-subcategoria="{{ figura.subcategoria }}"
+                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
                 </div>
               </div>
               {% endfor %}

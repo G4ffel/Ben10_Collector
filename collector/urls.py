@@ -14,4 +14,8 @@ urlpatterns = [
     path('wishlist/delete/<int:id>/', views.eliminar_de_wishlist, name='eliminar_de_wishlist'),
     path('wishlist/edit/<int:id>/', views.editar_wishlist, name='editar_wishlist'),
     path('wishlist/mover/<int:wishlist_id>/', views.mover_a_coleccion, name='mover_a_coleccion'),
+    path('bodega/', views.bodega, name='bodega'),
+    path('mover-a-bodega/<int:id>/', views.mover_a_bodega, name='mover_a_bodega'),
+    path('mover-a-vendido/<int:id>/', views.mover_a_vendido, name='mover_a_vendido'),
+    path('reintegrar-a-coleccion/<int:id>/', views.reintegrar_a_coleccion, name='reintegrar_a_coleccion'),
 ]

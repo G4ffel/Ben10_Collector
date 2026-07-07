@@ -5,6 +5,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Ben 10</title>
   <link rel="icon" type="image/png" href="/media/omnitrix/Ben_10_Omnitrix.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,28 +28,7 @@
     <div class="particles-container" id="global-particles"></div>
   </div>
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <a href="{% url 'home' %}" class="nav-logo">
-        <div class="omnitrix-mini"></div>
-        <span class="logo-text">BEN <span class="logo-num">10</span></span>
-      </a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="{% url 'home' %}" class="nav-link">Inicio</a></li>
-        <li><a href="{% url 'coleccion' %}" class="nav-link">Colección</a></li>
-        <li><a href="{% url 'wishlist' %}" class="nav-link">Wishlist</a></li>
-        <li><a href="{% url 'dashboard' %}" class="nav-link active">Panel</a></li>
-      </ul>
-      <button class="nav-profile-btn" id="openProfileBtn">
-        <img src="{{ perfil.avatar_url }}" class="nav-profile-avatar-img" alt="Avatar">
-        <span class="nav-profile-name">{{ perfil.nombre }}</span>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  {% include 'collector/includes/navbar.html' %}
 
   <!-- ===== DASHBOARD CONTAINER ===== -->
   <main class="collection-container container" style="padding-top: 130px; padding-bottom: 80px;">
@@ -277,9 +259,14 @@
                     style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: var(--border-green);">
                     Editar
                   </button>
+                  <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
+                    style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff9900; color: #ff9900;"
+                    data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
+                    Bodega
+                  </a>
                   <a href="{% url 'eliminar_figura' figura.id %}" class="btn-secondary"
                     style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333;"
-                    onclick="return confirm('¿Seguro que deseas desintegrar a {{ figura.nombre }} de la base de datos galáctica?');">
+                    data-confirm="¿Seguro que deseas desintegrar a {{ figura.nombre }} de la base de datos galáctica?">
                     Eliminar
                   </a>
                 </div>
@@ -414,7 +401,7 @@
                       data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% endif %}">
                       Editar
                     </button>
-                    <a href="{% url 'eliminar_alien' alien.id %}" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333; font-family: var(--font-display);" onclick="return confirm('¿Seguro que deseas eliminar el registro de {{ alien.nombre }} de las especies conocidas?');">
+                    <a href="{% url 'eliminar_alien' alien.id %}" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333; font-family: var(--font-display);" data-confirm="¿Seguro que deseas eliminar el registro de {{ alien.nombre }} de las especies conocidas?">
                       Eliminar
                     </a>
                   </div>
@@ -447,26 +434,7 @@
   <script src="{% static 'js/dashboard.js' %}?v=1"></script>
   <script src="{% static 'js/coleccion.js' %}?v=3"></script>
 
-  <script>
-    function updateDashboardAlienFileLabel(input) {
-      const label = document.getElementById('dashboardAlienImageLabel');
-      if (label) {
-        if (input.files && input.files[0]) {
-          label.textContent = "✓ CARGADA";
-          label.style.borderColor = "var(--green-primary)";
-          label.style.color = "var(--dark-1)";
-          label.style.background = "linear-gradient(135deg, var(--green-primary), var(--green-mid))";
-          label.style.boxShadow = "0 0 15px var(--green-glow)";
-        } else {
-          label.textContent = "FOTO ALIEN";
-          label.style.borderColor = "var(--border-green)";
-          label.style.color = "var(--green-primary)";
-          label.style.background = "var(--dark-3)";
-          label.style.boxShadow = "none";
-        }
-      }
-    }
-  </script>
+
 
   <!-- ===== MODAL GALERÍA DE HOLOGRAMAS ===== -->
   <div class="modal-container" id="alienGalleryModal"

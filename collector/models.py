@@ -84,12 +84,19 @@ class Figura(models.Model):
         ('Ultimate Alien', 'Ultimate Alien'),
     ]
 
+    ESTADO_COLECCION_CHOICES = [
+        ('coleccion', 'En Colección'),
+        ('bodega', 'En Bodega'),
+        ('vendido', 'Vendido'),
+    ]
+
     nombre = models.CharField(
         max_length=100, 
         default='Fuego',
         verbose_name="Nombre del Alien"
     )
     precio = models.IntegerField(verbose_name="Precio (CLP)")
+    precio_venta = models.IntegerField(verbose_name="Precio de Venta (CLP)", null=True, blank=True)
     imagen = models.FileField(upload_to=figuras_upload_path, blank=True, null=True, verbose_name="Imagen de la Figura")
     fecha_adquisicion = models.DateField(verbose_name="Fecha de Adquisición")
     serie = models.CharField(
@@ -122,6 +129,12 @@ class Figura(models.Model):
         default='',
         blank=True,
         verbose_name="Subcategoría"
+    )
+    estado_coleccion = models.CharField(
+        max_length=20,
+        choices=ESTADO_COLECCION_CHOICES,
+        default='coleccion',
+        verbose_name="Estado de Colección"
     )
 
     class Meta:
