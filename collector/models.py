@@ -1,6 +1,8 @@
 from django.db import models
 
 def figuras_upload_path(instance, filename):
+    if instance.estado_coleccion in ['bodega', 'vendido']:
+        return f'bodega/{filename}'
     mapping = {
         'Ben 10': 'ben-10',
         'Ben 10 Alien Force': 'ben-10-alien-force',
