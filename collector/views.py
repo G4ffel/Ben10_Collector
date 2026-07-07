@@ -168,6 +168,21 @@ def dashboard(request):
     precio_promedio = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Avg('precio'))['precio__avg'] or 0
     precio_maximo = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Max('precio'))['precio__max'] or 0
 
+    # Bodega & Ventas Stats
+    total_bodega = Figura.objects.filter(estado_coleccion='bodega').count()
+    valor_bodega = Figura.objects.filter(estado_coleccion='bodega').aggregate(Sum('precio'))['precio__sum'] or 0
+    total_vendidos = Figura.objects.filter(estado_coleccion='vendido').count()
+    total_ventas = Figura.objects.filter(estado_coleccion='vendido').aggregate(
+        total=Sum(Coalesce('precio_venta', 'precio'))
+    )['total'] or 0
+    ganancia_total = Figura.objects.filter(estado_coleccion='vendido').aggregate(
+        total=Sum(Coalesce('precio_venta', F('precio')) - F('precio'))
+    )['total'] or 0
+
+    # Wishlist Stats
+    total_wishlist = WishlistItem.objects.count()
+    valor_wishlist = WishlistItem.objects.aggregate(Sum('precio'))['precio__sum'] or 0
+
     # Asegurar aliens cargados
     if Alien.objects.count() == 0:
         Alien.seed_default_aliens()
@@ -231,6 +246,13 @@ def dashboard(request):
         'serie_choices': Figura.SERIE_CHOICES,
         'aliens_por_serie': aliens_por_serie,
         'form': form,
+        'total_bodega': total_bodega,
+        'valor_bodega': valor_bodega,
+        'total_vendidos': total_vendidos,
+        'total_ventas': total_ventas,
+        'ganancia_total': ganancia_total,
+        'total_wishlist': total_wishlist,
+        'valor_wishlist': valor_wishlist,
     })
 
 def eliminar_figura(request, id):
