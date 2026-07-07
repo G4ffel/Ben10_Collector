@@ -5,7 +5,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ben 10 | Omnitrix Universe</title>
+  <title>Ben 10</title>
+  <link rel="icon" type="image/png" href="/media/omnitrix/Ben_10_Omnitrix.png" />
   <meta name="description"
     content="Entra al universo de Ben 10. Transforma, combate y descubre a todos los aliens del Omnitrix." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,6 +15,28 @@
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <style>
+    @keyframes float-bg-1 {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(3deg); }
+    }
+    @keyframes float-bg-2 {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(-4deg); }
+    }
+    @keyframes float-bg-3 {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-18px) rotate(2deg); }
+    }
+    @keyframes float-bg-4 {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(-3deg); }
+    }
+    @keyframes holo-float-container {
+      0%, 100% { transform: translate(-50%, -50%); }
+      50% { transform: translate(-50%, -52%); }
+    }
+  </style>
 </head>
 
 <body>
@@ -51,7 +74,7 @@
 
   <!-- ===== HERO SECTION ===== -->
   <section class="hero" id="home">
-    <div class="hero-content">
+    <div class="hero-content" style="position: relative; z-index: 1;">
       <div class="hero-badge">
         <span class="badge-dot"></span>
         OMNITRIX ACTIVADO
@@ -95,8 +118,16 @@
         </div>
       </div>
     </div>
+
+    <!-- CENTRAL HOLOGRAM PROJECTION AREA (ZONA CON LA X) -->
+    <div id="central-holo-projection" style="position: absolute; left: 52%; top: 50%; transform: translate(-50%, -50%); width: 1100px; height: 1100px; display: flex; align-items: center; justify-content: center; z-index: 1; pointer-events: none; animation: holo-float-container 6s ease-in-out infinite;">
+      <!-- IMAGE DISPLAY -->
+      <img id="centralHoloImg" src="/media/aliens/alien-x.png" alt="Holograma Central" 
+        style="max-height: 1000px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 0 45px rgba(0, 255, 65, 0.6)); opacity: 0.28; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); mix-blend-mode: screen;" />
+    </div>
+
     <div class="hero-visual">
-      <div class="omnitrix-main">
+      <div class="omnitrix-main" style="position: relative; z-index: 2;">
         <div class="omnitrix-outer">
           <div class="omnitrix-mid">
             <div class="omnitrix-core">
@@ -125,6 +156,49 @@
   {% include 'collector/includes/profile_modal.html' %}
 
   <script src="{% static 'js/profile-modal.js' %}"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const centralAliens = [
+        '/media/aliens/alien-x.png',
+        '/media/aliens/fuego-pantanoso-supremo.png',
+        '/media/aliens/goob.png',
+        '/media/aliens/fuego.png',
+        '/media/aliens/ben-tennyson.png'
+      ];
+
+      let currentIndex = 0;
+      const centralImg = document.getElementById('centralHoloImg');
+
+      if (centralImg) {
+        setInterval(() => {
+          currentIndex = (currentIndex + 1) % centralAliens.length;
+          const nextAlienImg = centralAliens[currentIndex];
+
+          // Animación de desaparición y escala (efecto glitch de entrada)
+          centralImg.style.opacity = '0';
+          centralImg.style.transform = 'scale(0.85) translateY(10px)';
+
+          setTimeout(() => {
+            // Actualizar imagen manteniendo la sombra verde original
+            centralImg.src = nextAlienImg;
+            centralImg.style.filter = 'drop-shadow(0 0 45px rgba(0, 255, 65, 0.6))';
+
+            // Ajustar escala y posición específica para Goop (goob.png) para igualar el tamaño
+            if (nextAlienImg.includes('goob.png')) {
+              centralImg.style.transform = 'scale(1.15) translateY(-9px)';
+            } else {
+              centralImg.style.transform = 'scale(1) translateY(0)';
+            }
+
+            // Animación de aparición
+            centralImg.style.opacity = '0.28';
+          }, 400);
+        }, 4000); // Rotación cada 4 segundos
+      }
+    });
+  </script>
 </body>
+</html>
 
 </html>
