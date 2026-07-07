@@ -32,7 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
     tabFiguresContent.style.display = 'flex';
     tabAliensContent.style.display = 'none';
     const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
-    if (alienGalleryBtn) alienGalleryBtn.style.display = 'none';
+    if (alienGalleryBtn) {
+      alienGalleryBtn.style.visibility = 'hidden';
+      alienGalleryBtn.style.pointerEvents = 'none';
+    }
   };
 
   const selectAliensTab = () => {
@@ -55,7 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
     tabFiguresContent.style.display = 'none';
     tabAliensContent.style.display = 'flex';
     const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
-    if (alienGalleryBtn) alienGalleryBtn.style.display = 'flex';
+    if (alienGalleryBtn) {
+      alienGalleryBtn.style.visibility = 'visible';
+      alienGalleryBtn.style.pointerEvents = 'auto';
+    }
   };
 
   const applyFilter = (serie) => {
@@ -296,6 +302,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (alienGalleryCloseX) alienGalleryCloseX.addEventListener('click', closeAlienGalleryModal);
   if (alienGalleryOverlay) alienGalleryOverlay.addEventListener('click', closeAlienGalleryModal);
+
+  // === ZOOM DE HOLOGRAMAS EN LA GALERÍA ===
+  const holoItems = document.querySelectorAll('.gallery-holo-item');
+  const zoomModal = document.getElementById('alienGalleryZoomModal');
+  const zoomImg = document.getElementById('zoomAlienImg');
+  const zoomName = document.getElementById('zoomAlienName');
+  const zoomSerie = document.getElementById('zoomAlienSerie');
+  const zoomOverlay = document.getElementById('alienGalleryZoomOverlay');
+  const zoomContent = document.getElementById('alienGalleryZoomContent');
+
+  holoItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const img = item.querySelector('img');
+      const nombre = item.getAttribute('title');
+      const wrapper = item.closest('.gallery-section-wrapper');
+      const serie = wrapper ? wrapper.querySelector('h3').textContent.trim() : '';
+
+      if (img && zoomModal && zoomImg && zoomName && zoomSerie) {
+        zoomImg.src = img.src;
+        zoomName.textContent = nombre;
+        zoomSerie.textContent = serie;
+
+        // Asignar colores según la serie
+        let color = 'var(--green-primary)';
+        let shadow = 'var(--green-glow)';
+        if (serie === 'Ben 10 Alien Force') {
+          color = '#00ccff';
+          shadow = 'rgba(0, 204, 255, 0.4)';
+        } else if (serie === 'Ben 10 Omniverse') {
+          color = '#d880ff';
+          shadow = 'rgba(216, 128, 255, 0.4)';
+        } else if (serie === 'Personajes') {
+          color = '#ffcc00';
+          shadow = 'rgba(255, 204, 0, 0.4)';
+        } else if (serie === 'Villanos') {
+          color = '#ff3333';
+          shadow = 'rgba(255, 51, 51, 0.4)';
+        }
+
+        zoomModal.style.borderColor = color;
+        zoomContent.style.borderColor = color;
+        zoomContent.style.boxShadow = `0 0 45px ${shadow}`;
+        zoomName.style.color = color;
+        zoomName.style.textShadow = `0 0 10px ${shadow}`;
+
+        zoomModal.style.display = 'flex';
+        setTimeout(() => {
+          zoomContent.style.transform = 'scale(1)';
+        }, 10);
+      }
+    });
+  });
+
+  const closeZoomModal = () => {
+    if (zoomModal) {
+      zoomContent.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        zoomModal.style.display = 'none';
+      }, 150);
+    }
+  };
+
+  if (zoomOverlay) zoomOverlay.addEventListener('click', closeZoomModal);
+  if (zoomContent) zoomContent.addEventListener('click', closeZoomModal);
 
   // Inicializar estado del Dashboard desde los parámetros URL iniciales
   const urlParams = new URLSearchParams(window.location.search);
