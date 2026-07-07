@@ -153,6 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Sincronizar URL del navegador
       window.history.pushState({}, '', response.url);
 
+      // Cerrar modal de edición si existe
+      const figureModal = document.getElementById('omniFormModal');
+      if (figureModal) {
+        figureModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
       // Re-aplicar estado de tabs activo
       const urlObj = new URL(response.url);
       const activeTab = urlObj.searchParams.get('tab');

@@ -121,6 +121,14 @@ def editar_figura(request, id):
         form = FiguraForm(request.POST, request.FILES, instance=figura)
         if form.is_valid():
             form.save()
+            referer = request.META.get('HTTP_REFERER', '')
+            if 'dashboard' in referer:
+                return redirect('dashboard')
+            return redirect('coleccion')
+        else:
+            referer = request.META.get('HTTP_REFERER', '')
+            if referer:
+                return redirect(referer)
     return redirect('coleccion')
 
 def dashboard(request):
@@ -183,6 +191,8 @@ def dashboard(request):
     figuras = paginator.get_page(page_number)
 
     aliens = Alien.objects.all().order_by('orden_aparicion')
+    aliens_por_serie = get_aliens_por_serie_data()
+    form = FiguraForm()
 
     return render(request, 'collector/dashboard.html', {
         'total_figuras': total_figuras,
@@ -207,6 +217,8 @@ def dashboard(request):
         'figuras': figuras,
         'aliens': aliens,
         'serie_choices': Figura.SERIE_CHOICES,
+        'aliens_por_serie': aliens_por_serie,
+        'form': form,
     })
 
 def eliminar_figura(request, id):

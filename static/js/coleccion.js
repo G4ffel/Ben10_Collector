@@ -258,8 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (overlay) overlay.addEventListener('click', closeModal);
 
   // Abrir modal para editar
-  document.querySelectorAll('.edit-figure-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.edit-figure-btn');
+    if (btn) {
+      e.preventDefault();
       const id = btn.getAttribute('data-id');
       const nombre = btn.getAttribute('data-nombre');
       const precio = btn.getAttribute('data-precio');
@@ -269,10 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const marca = btn.getAttribute('data-marca');
       const tamano = btn.getAttribute('data-tamano');
 
-      // Buscar la URL de la imagen en la tarjeta
+      // Buscar la URL de la imagen en la tarjeta or attribute
       const figureCard = btn.closest('.figure-card-omni');
       const imgEl = figureCard ? figureCard.querySelector('.figure-img-wrap img') : null;
-      const imagenUrl = imgEl ? imgEl.src : '';
+      const imagenUrl = btn.getAttribute('data-imagen') || (imgEl ? imgEl.src : '');
 
       if (formTitle) formTitle.textContent = "EDITAR FIGURA";
       if (form) form.action = `/coleccion/editar/${id}/`;
@@ -321,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
       }
-    });
+    }
   });
 
   // Modal de Detalle
