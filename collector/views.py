@@ -1,8 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum, Avg, Max
+from django.db.models import Sum, Avg, Max, Subquery, OuterRef
+from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
 from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm
 from .models import Figura, Perfil, Alien, WishlistItem
+
+def get_ordered_figures(queryset):
+    alien_order = Subquery(
+        Alien.objects.filter(nombre=OuterRef('nombre')).values('orden_aparicion')[:1]
+    )
+    return queryset.annotate(
+        alien_order=Coalesce(alien_order, 999)
+    ).order_by('alien_order', 'nombre')
 
 def get_aliens_por_serie_data():
     aliens = Alien.objects.all().order_by('orden_aparicion')
@@ -35,11 +44,11 @@ def coleccion(request):
     else:
         form = FiguraForm()
     
-    figuras_classic = Figura.objects.filter(serie='Ben 10')
-    figuras_af = Figura.objects.filter(serie='Ben 10 Alien Force')
-    figuras_ov = Figura.objects.filter(serie='Ben 10 Omniverse')
-    figuras_villanos = Figura.objects.filter(serie='Villanos')
-    figuras_personajes = Figura.objects.filter(serie='Personajes')
+    figuras_classic = get_ordered_figures(Figura.objects.filter(serie='Ben 10'))
+    figuras_af = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Alien Force'))
+    figuras_ov = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Omniverse'))
+    figuras_villanos = get_ordered_figures(Figura.objects.filter(serie='Villanos'))
+    figuras_personajes = get_ordered_figures(Figura.objects.filter(serie='Personajes'))
     figuras_count = Figura.objects.count()
     aliens = Alien.objects.all().order_by('orden_aparicion')
 
@@ -236,7 +245,7 @@ def api_figuras(request):
 
 
 def wishlist(request):
-    wishlist_items = WishlistItem.objects.all().order_by('-fecha_agregado')
+    wishlist_items = get_ordered_figures(WishlistItem.objects.all())
     aliens_por_serie = get_aliens_por_serie_data()
     form_wishlist = WishlistItemForm()
     form_figura = FiguraForm()
@@ -308,7 +317,7 @@ def mover_a_coleccion(request, wishlist_id):
             wishlist_item.delete()
             return redirect('coleccion')
         else:
-            wishlist_items = WishlistItem.objects.all().order_by('-fecha_agregado')
+            wishlist_items = get_ordered_figures(WishlistItem.objects.all())
             aliens_por_serie = get_aliens_por_serie_data()
             form_wishlist = WishlistItemForm()
             return render(request, 'collector/wishlist.html', {

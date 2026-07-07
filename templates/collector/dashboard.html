@@ -205,7 +205,7 @@
       </div>
 
       <!-- CONTENIDO DE TAB 1: INVENTARIO DE FIGURAS -->
-      <div id="tabFiguresContent" style="display: block;">
+      <div id="tabFiguresContent" style="display: block; min-height: 560px;">
         {% if figuras %}
         <table class="omni-hud-table" style="width: 100%; border-collapse: collapse; text-align: left;">
           <thead>
@@ -286,14 +286,14 @@
         {% endif %}
 
         {% else %}
-        <div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-body);">
+        <div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-body); display: flex; align-items: center; justify-content: center; min-height: 480px;">
           Base de datos vacía. Registra figuras en la colección para visualizar analíticas.
         </div>
         {% endif %}
       </div>
 
       <!-- CONTENIDO DE TAB 2: BASE DE DATOS DE ALIENS -->
-      <div id="tabAliensContent" style="display: none; flex-direction: column; gap: 20px;">
+      <div id="tabAliensContent" style="display: none; flex-direction: column; gap: 20px; min-height: 560px;">
         <!-- Contenedor con filtros y formulario acoplados elegantemente -->
         <div style="display: flex; flex-direction: column; gap: 20px; width: 100%; border-bottom: 1px solid rgba(0, 255, 65, 0.05); padding-bottom: 25px;">
           <!-- Filtros de Series -->
