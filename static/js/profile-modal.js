@@ -299,6 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Ocultar otros paneles y mostrar el de figuras favoritas
       if (subPanelAvatar) subPanelAvatar.style.display = 'none';
       if (subPanelData) subPanelData.style.display = 'none';
+      if (subPanelBanner) subPanelBanner.style.display = 'none';
       if (subPanelFavFigures) subPanelFavFigures.style.display = 'flex';
       if (avatarPickerSection) avatarPickerSection.classList.add('open');
 
