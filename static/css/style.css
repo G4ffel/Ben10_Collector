@@ -2221,6 +2221,9 @@ input[type=number] {
   border: 2px solid var(--green-primary);
   box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   background: radial-gradient(circle, var(--dark-2) 0%, var(--dark-4) 100%);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 .perfil-avatar-circle-large.avatar-classic {
@@ -2305,7 +2308,7 @@ input[type=number] {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin: 25px 0 10px 0;
+  margin: 5px 0 10px 0;
   display: block;
 }
 
@@ -2314,6 +2317,75 @@ input[type=number] {
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
   margin-bottom: 10px;
+}
+
+.perfil-gallery-container {
+  padding: 15px 35px 35px 35px;
+}
+
+.perfil-btn-container {
+  margin-top: 25px;
+}
+
+.close-profile-btn-custom {
+  padding: 12px;
+  cursor: pointer;
+}
+
+/* ============================================
+   TRANSICIONES DE PERFIL CUANDO EL MODAL ESTÁ LISTO
+   ============================================ */
+#profileModal.ready .profile-sidebar {
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.3s ease,
+              border-color 0.4s ease,
+              border-width 0.4s ease;
+}
+
+#profileModal.ready .perfil-avatar-container {
+  transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .perfil-avatar-circle-large {
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              margin 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s,
+              box-shadow 0.3s;
+}
+
+#profileModal.ready .perfil-name-large {
+  transition: font-size 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .perfil-stats-row {
+  transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .perfil-stat-val {
+  transition: font-size 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .perfil-stat-lbl {
+  transition: font-size 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .perfil-gallery-title {
+  transition: margin 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .perfil-gallery-grid {
+  transition: gap 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .perfil-gallery-container {
+  transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#profileModal.ready .close-profile-btn-custom {
+  transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .perfil-gallery-slot {
@@ -2621,6 +2693,145 @@ input[type=number] {
     transform: translateX(0);
   }
 }
+
+/* Menú Lateral del Perfil - Animación de Desplazamiento */
+.profile-sidebar {
+  display: flex !important; /* Siempre flex para permitir transiciones de visualización */
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden; /* Evitar barras de desplazamiento horizontal durante la transición */
+  
+  /* Estado Inicial (Cerrado) */
+  width: 0;
+  max-width: 0;
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  opacity: 0;
+  border-right: 0px solid rgba(0, 255, 65, 0) !important;
+}
+
+/* Estado Abierto (Escritorio) */
+.profile-sidebar.open {
+  width: 430px;
+  max-width: 52%;
+  padding: 30px 18px !important;
+  opacity: 1;
+  border-right: 1px solid rgba(0, 255, 65, 0.15) !important;
+}
+
+/* Evitar que el contenido interno de configuración se comprima/deforme durante la transición */
+.profile-sidebar > div {
+  width: 394px; /* Ancho fijo para mantener estable el diseño */
+  flex-shrink: 0;
+}
+
+/* Soporte de Animación y Adaptación Responsiva para Móviles */
+@media (max-width: 768px) {
+  .profile-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    height: 100%;
+    background: var(--dark-2); /* Fondo sólido en móvil para ocultar la tarjeta detrás */
+  }
+
+  .profile-sidebar.open {
+    width: 100%;
+    max-width: 100%;
+    padding: 30px 18px !important;
+    opacity: 1;
+    border-right: none !important;
+  }
+
+  .profile-sidebar > div {
+    width: 100%; /* Permitir que ocupe todo el ancho en móviles */
+  }
+  /* Cambiar a distribución 3-2 en móviles para que las ranuras se mantengan grandes y legibles */
+  .perfil-gallery-grid {
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .perfil-gallery-slot:nth-child(1),
+  .perfil-gallery-slot:nth-child(2),
+  .perfil-gallery-slot:nth-child(3) {
+    grid-column: span 2 !important;
+  }
+
+  .perfil-gallery-slot:nth-child(4) {
+    grid-column: 2 / span 2 !important;
+  }
+
+  .perfil-gallery-slot:nth-child(5) {
+    grid-column: 4 / span 2 !important;
+  }
+}
+
+/* Reajuste visual cuando el menú de configuración lateral izquierdo está abierto (Escritorio) */
+#avatarPickerSection.open ~ #profileMainColumn .perfil-avatar-container {
+  padding: 15px 20px;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-avatar-circle-large {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 8px auto;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-name-large {
+  font-size: 1.15rem;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-stats-row {
+  padding: 12px 0;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-stat-val {
+  font-size: 1.05rem;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-stat-lbl {
+  font-size: 0.55rem;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-container {
+  padding: 10px 20px 20px 20px;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-title {
+  margin: 0 0 8px 0;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-grid {
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 5px;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(1),
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(2),
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(3) {
+  grid-column: span 2;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(5) {
+  grid-column: 4 / span 2;
+}
+
+#avatarPickerSection.open ~ #profileMainColumn .close-profile-btn-custom {
+  padding: 8px 10px;
+}
+
 
 /* ============================================
    DETALLE DE FIGURA PREMIUM MODAL

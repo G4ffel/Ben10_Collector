@@ -23,13 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const openProfileModal = () => {
     if (viewCard) viewCard.style.display = 'flex';
-    if (avatarPickerSection) avatarPickerSection.style.display = 'none';
-    if (pModal) pModal.style.display = 'flex';
+    if (avatarPickerSection) avatarPickerSection.classList.remove('open');
+    if (pModal) {
+      pModal.classList.remove('ready');
+      pModal.style.display = 'flex';
+      setTimeout(() => {
+        pModal.classList.add('ready');
+      }, 50);
+    }
     document.body.style.overflow = 'hidden';
   };
 
   const closeProfileModal = () => {
-    if (pModal) pModal.style.display = 'none';
+    if (pModal) {
+      pModal.style.display = 'none';
+      pModal.classList.remove('ready');
+    }
+    if (avatarPickerSection) avatarPickerSection.classList.remove('open');
     document.body.style.overflow = '';
   };
 
@@ -52,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cerrar panel lateral (para botones ✕)
   document.querySelectorAll('.close-picker-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (avatarPickerSection) avatarPickerSection.style.display = 'none';
+      if (avatarPickerSection) avatarPickerSection.classList.remove('open');
     });
   });
 
@@ -66,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (subPanelFavFigures) subPanelFavFigures.style.display = 'none';
       if (subPanelBanner) subPanelBanner.style.display = 'none';
       if (subPanelAvatar) subPanelAvatar.style.display = 'flex';
-      if (avatarPickerSection) avatarPickerSection.style.display = 'flex';
+      if (avatarPickerSection) avatarPickerSection.classList.add('open');
     });
   }
 
@@ -77,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (subPanelFavFigures) subPanelFavFigures.style.display = 'none';
       if (subPanelBanner) subPanelBanner.style.display = 'none';
       if (subPanelData) subPanelData.style.display = 'flex';
-      if (avatarPickerSection) avatarPickerSection.style.display = 'flex';
+      if (avatarPickerSection) avatarPickerSection.classList.add('open');
     });
   }
 
@@ -88,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (subPanelFavFigures) subPanelFavFigures.style.display = 'none';
       if (subPanelData) subPanelData.style.display = 'none';
       if (subPanelBanner) subPanelBanner.style.display = 'flex';
-      if (avatarPickerSection) avatarPickerSection.style.display = 'flex';
+      if (avatarPickerSection) avatarPickerSection.classList.add('open');
     });
   }
 
@@ -265,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Ocultar el panel de configuración
-            if (avatarPickerSection) avatarPickerSection.style.display = 'none';
+            if (avatarPickerSection) avatarPickerSection.classList.remove('open');
           }
         })
         .catch(err => console.error('Error al actualizar datos:', err));
@@ -290,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (subPanelAvatar) subPanelAvatar.style.display = 'none';
       if (subPanelData) subPanelData.style.display = 'none';
       if (subPanelFavFigures) subPanelFavFigures.style.display = 'flex';
-      if (avatarPickerSection) avatarPickerSection.style.display = 'flex';
+      if (avatarPickerSection) avatarPickerSection.classList.add('open');
 
       // Mostrar cargando
       if (favFiguresLoading) favFiguresLoading.style.display = 'block';
@@ -526,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             });
             
-            if (avatarPickerSection) avatarPickerSection.style.display = 'none';
+            if (avatarPickerSection) avatarPickerSection.classList.remove('open');
           }
         })
         .catch(err => console.error('Error al actualizar figura favorita:', err));
@@ -548,7 +558,7 @@ window.openPerfilEditPanel = function () {
     document.body.style.overflow = 'hidden';
   }
 
-  if (ap) ap.style.display = 'flex';
+  if (ap) ap.classList.add('open');
   if (spA) spA.style.display = 'none';
   if (spF) spF.style.display = 'none';
   if (spB) spB.style.display = 'none';
@@ -569,7 +579,7 @@ window.openBannerPickerPanel = function () {
     document.body.style.overflow = 'hidden';
   }
 
-  if (ap) ap.style.display = 'flex';
+  if (ap) ap.classList.add('open');
   if (spA) spA.style.display = 'none';
   if (spD) spD.style.display = 'none';
   if (spF) spF.style.display = 'none';
