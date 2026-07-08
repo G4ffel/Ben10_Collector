@@ -2313,8 +2313,9 @@ input[type=number] {
 }
 
 .perfil-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
   margin-bottom: 10px;
 }
@@ -2388,7 +2389,12 @@ input[type=number] {
   transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+#profileModal.ready .perfil-gallery-slot {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, width 0s;
+}
+
 .perfil-gallery-slot {
+  width: calc(20% - 10px);
   aspect-ratio: 1 / 1;
   border-radius: 8px;
   border: 1px solid rgba(0, 255, 65, 0.12);
@@ -2398,7 +2404,6 @@ input[type=number] {
   justify-content: center;
   overflow: hidden;
   position: relative;
-  transition: var(--transition);
   cursor: pointer;
 }
 
@@ -2753,23 +2758,8 @@ input[type=number] {
     width: 100%; /* Permitir que ocupe todo el ancho en móviles */
   }
   /* Cambiar a distribución 3-2 en móviles para que las ranuras se mantengan grandes y legibles */
-  .perfil-gallery-grid {
-    grid-template-columns: repeat(6, 1fr) !important;
-    gap: 12px !important;
-  }
-
-  .perfil-gallery-slot:nth-child(1),
-  .perfil-gallery-slot:nth-child(2),
-  .perfil-gallery-slot:nth-child(3) {
-    grid-column: span 2 !important;
-  }
-
-  .perfil-gallery-slot:nth-child(4) {
-    grid-column: 2 / span 2 !important;
-  }
-
-  .perfil-gallery-slot:nth-child(5) {
-    grid-column: 4 / span 2 !important;
+  .perfil-gallery-slot {
+    width: calc(33.333% - 8px) !important;
   }
 }
 
@@ -2809,23 +2799,13 @@ input[type=number] {
 }
 
 #avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-grid {
-  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
   margin-bottom: 5px;
 }
 
-#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(1),
-#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(2),
-#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(3) {
-  grid-column: span 2;
-}
-
-#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(4) {
-  grid-column: 2 / span 2;
-}
-
-#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot:nth-child(5) {
-  grid-column: 4 / span 2;
+#avatarPickerSection.open ~ #profileMainColumn .perfil-gallery-slot {
+  width: calc(33.333% - 8px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #avatarPickerSection.open ~ #profileMainColumn .close-profile-btn-custom {
