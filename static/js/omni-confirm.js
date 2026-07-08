@@ -110,3 +110,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, true); // Use capture phase to intercept before inline or normal event handlers
 });
+
+// ===== GLOBAL SCROLL RESTORATION =====
+window.addEventListener('beforeunload', () => {
+  sessionStorage.setItem('scroll_' + window.location.pathname, window.scrollY);
+});
+
+(function() {
+  const scrollKey = 'scroll_' + window.location.pathname;
+  const savedScroll = sessionStorage.getItem(scrollKey);
+  if (savedScroll !== null) {
+    const instantScroll = () => {
+      const htmlEl = document.documentElement;
+      const prevBehavior = htmlEl.style.scrollBehavior;
+      htmlEl.style.scrollBehavior = 'auto'; // Temporarily disable smooth scroll animation
+      window.scrollTo(0, parseFloat(savedScroll));
+      htmlEl.style.scrollBehavior = prevBehavior; // Restore original scroll behavior
+    };
+
+    // Restore immediately to prevent initial jump
+    instantScroll();
+    
+    // Also restore after DOM content loads and elements render
+    document.addEventListener('DOMContentLoaded', () => {
+      instantScroll();
+      
+      // Secondary fallback check after images/content finish rendering to guarantee position
+      setTimeout(() => {
+        instantScroll();
+        sessionStorage.removeItem(scrollKey);
+      }, 100);
+    });
+  }
+})();

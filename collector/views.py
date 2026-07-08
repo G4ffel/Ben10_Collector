@@ -291,13 +291,13 @@ def editar_perfil(request):
 from django.http import JsonResponse
 
 def api_figuras(request):
-    figuras = get_ordered_figures_by_series(Figura.objects.all())
+    figuras = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion='coleccion'))
     data = []
     for f in figuras:
         data.append({
             'id': f.id,
             'nombre': f.nombre,
-            'imagen_url': f.imagen.url,
+            'imagen_url': f.imagen.url if f.imagen else '/media/omnitrix/Ben_10_Omnitrix.png',
             'serie': f.serie,
             'estado': f.estado,
             'marca': f.marca,

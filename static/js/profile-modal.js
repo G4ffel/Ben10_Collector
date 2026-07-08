@@ -169,7 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 'fantasmatico': '/media/icon/Fantasmatico.jpg',
                 'fuego': '/media/icon/Fuego.webp',
                 'goop': '/media/icon/Goop.png',
-                'ultra_t': '/media/icon/Ultra-T.jpg'
+                'ultra_t': '/media/icon/Ultra-T.jpg',
+                'ben_10k': '/media/icon/ben-10mil.jpg',
+                'ben_10k_2': '/media/icon/ben-10mil-2.jpg',
+                'ben_10k_3': '/media/icon/ben-10mil-3.jpg'
               };
               const newUrl = avatarMap[selectedVal] || avatarMap['ben_clasico'];
 

@@ -264,6 +264,9 @@ class Perfil(models.Model):
         ('fuego', 'Fuego'),
         ('goop', 'Goop'),
         ('ultra_t', 'Ultra T'),
+        ('ben_10k', 'Ben 10.000 (Diseño 1)'),
+        ('ben_10k_2', 'Ben 10.000 (Diseño 2)'),
+        ('ben_10k_3', 'Ben 10.000 (Diseño 3)'),
     ]
     OMNITRIX_CHOICES = [
         ('Clásico', 'Omnitrix Clásico'),
@@ -326,6 +329,9 @@ class Perfil(models.Model):
             'fuego': '/media/icon/Fuego.webp',
             'goop': '/media/icon/Goop.png',
             'ultra_t': '/media/icon/Ultra-T.jpg',
+            'ben_10k': '/media/icon/ben-10mil.jpg',
+            'ben_10k_2': '/media/icon/ben-10mil-2.jpg',
+            'ben_10k_3': '/media/icon/ben-10mil-3.jpg',
         }
         return mapping.get(self.avatar, '/media/icon/Ben-Clasico.jpg')
 
