@@ -282,11 +282,24 @@ document.addEventListener('DOMContentLoaded', () => {
   if (detailCloseBtn) detailCloseBtn.addEventListener('click', closeDetailModal);
   if (detailOverlay) detailOverlay.addEventListener('click', closeDetailModal);
 
+  const detailDeleteBtn = document.getElementById('modalDetailDeleteBtn');
+  if (detailDeleteBtn) {
+    detailDeleteBtn.addEventListener('click', () => {
+      const id = detailDeleteBtn.getAttribute('data-id');
+      if (id) {
+        if (confirm('¿Estás seguro de que deseas eliminar esta figura de tu colección? Esta acción no se puede deshacer.')) {
+          window.location.href = `/coleccion/eliminar/${id}/`;
+        }
+      }
+    });
+  }
+
   document.querySelectorAll('.figure-card-omni').forEach(card => {
     card.addEventListener('click', (e) => {
       // Si se hizo click en el botón editar, no abrir detalles
       if (e.target.closest('.edit-figure-btn')) return;
 
+      const id = card.getAttribute('data-id');
       const nombre = card.getAttribute('data-nombre');
       const precio = card.getAttribute('data-precio');
       const fecha = card.getAttribute('data-fecha');
@@ -298,6 +311,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const imagen = card.getAttribute('data-imagen');
 
       // Rellenar modal
+      if (detailDeleteBtn) {
+        if (id) {
+          detailDeleteBtn.setAttribute('data-id', id);
+          detailDeleteBtn.style.display = 'block';
+        } else {
+          detailDeleteBtn.style.display = 'none';
+        }
+      }
+
       document.getElementById('detailAlienImg').src = imagen;
       document.getElementById('detailAlienImg').alt = nombre;
       document.getElementById('detailModalTitle').textContent = `DETALLE DE ${nombre}`;

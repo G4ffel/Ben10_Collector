@@ -117,5 +117,49 @@ class WishlistEditForm(forms.ModelForm):
         }
 
 
+class WishlistCustomForm(forms.ModelForm):
+    nombre = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'cta-input custom-input',
+            'placeholder': 'Ej. Muy Grande'
+        }),
+        label="Nombre del Alien / Figura",
+        required=True
+    )
+
+    class Meta:
+        model = WishlistItem
+        fields = ['nombre', 'precio', 'imagen', 'fecha_adquisicion', 'serie', 'estado', 'marca', 'tamano', 'subcategoria']
+        widgets = {
+            'precio': forms.NumberInput(attrs={
+                'class': 'cta-input custom-input',
+                'placeholder': 'Ej. 15000'
+            }),
+            'imagen': forms.ClearableFileInput(attrs={
+                'class': 'file-input-custom',
+                'accept': 'image/*'
+            }),
+            'fecha_adquisicion': forms.DateInput(attrs={
+                'class': 'cta-input custom-input',
+                'type': 'date'
+            }),
+            'serie': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'estado': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'marca': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'tamano': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'subcategoria': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            })
+        }
+
+
 
 

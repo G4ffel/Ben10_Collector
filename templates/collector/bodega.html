@@ -74,6 +74,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
           {% for figura in figuras_bodega %}
           <div class="figure-card-omni" style="cursor: pointer; border-color: rgba(255, 153, 0, 0.2);"
+            data-id="{{ figura.id }}"
             data-nombre="{{ figura.nombre }}"
             data-precio="{{ figura.precio }}"
             data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
@@ -154,6 +155,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
           {% for figura in figuras_vendidos %}
           <div class="figure-card-omni" style="cursor: pointer; border-color: rgba(0, 255, 65, 0.2);"
+            data-id="{{ figura.id }}"
             data-nombre="{{ figura.nombre }}"
             data-precio="{{ figura.precio }}"
             data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"

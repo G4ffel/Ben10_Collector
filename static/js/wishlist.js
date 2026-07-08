@@ -329,6 +329,90 @@ document.addEventListener('DOMContentLoaded', () => {
   const addOverlay = document.getElementById('wishlistAddOverlay');
   if (addOverlay) addOverlay.addEventListener('click', closeAddModal);
 
+  // === MODAL WISHLIST CUSTOM ===
+  const customModal = document.getElementById('wishlistCustomModal');
+  const openCustomBtn = document.getElementById('openCustomWishlistBtn');
+  const closeCustomBtnX = document.getElementById('wishlistCustomFormCloseX');
+  const cancelCustomBtn = document.getElementById('wishlistCustomFormCancel');
+  const customFileLabelBtn = document.getElementById('wishlistCustomFileLabelBtn');
+  const customFileInput = document.querySelector('#wishlistCustomModal input[type="file"]');
+  const customFileChosenName = document.getElementById('wishlistCustomFileChosenName');
+  const customAlienPreviewImg = document.getElementById('wishlistCustomAlienPreviewImg');
+  const customAlienPreviewText = document.getElementById('wishlistCustomAlienPreviewText');
+
+  const openCustomModal = () => {
+    if (customModal) {
+      customModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  const closeCustomModal = () => {
+    if (customModal) {
+      customModal.classList.remove('active');
+      document.body.style.overflow = '';
+      const customForm = document.querySelector('#wishlistCustomModal form');
+      if (customForm) customForm.reset();
+      
+      // Reset preview
+      if (customAlienPreviewImg) {
+        customAlienPreviewImg.src = '/media/omnitrix/Ben_10_Omnitrix.png';
+        customAlienPreviewImg.style.animation = 'omni-spin 25s linear infinite';
+        customAlienPreviewImg.style.width = '130px';
+        customAlienPreviewImg.style.height = '130px';
+        customAlienPreviewImg.style.borderRadius = '0';
+        customAlienPreviewImg.style.padding = '0';
+      }
+      if (customAlienPreviewText) {
+        customAlienPreviewText.style.display = 'block';
+      }
+      if (customFileChosenName) {
+        customFileChosenName.textContent = "Sin archivos seleccionados";
+      }
+    }
+  };
+
+  if (openCustomBtn) openCustomBtn.addEventListener('click', openCustomModal);
+  if (closeCustomBtnX) closeCustomBtnX.addEventListener('click', closeCustomModal);
+  if (cancelCustomBtn) cancelCustomBtn.addEventListener('click', closeCustomModal);
+  const customOverlay = document.getElementById('wishlistCustomOverlay');
+  if (customOverlay) customOverlay.addEventListener('click', closeCustomModal);
+
+  // Trigger file click when clicking button
+  if (customFileLabelBtn && customFileInput) {
+    customFileLabelBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      customFileInput.click();
+    });
+  }
+
+  // Handle image selection and show preview
+  if (customFileInput) {
+    customFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (customFileChosenName) customFileChosenName.textContent = file.name;
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (customAlienPreviewImg) {
+            customAlienPreviewImg.src = event.target.result;
+            customAlienPreviewImg.style.animation = 'none';
+            customAlienPreviewImg.style.width = '100%';
+            customAlienPreviewImg.style.height = '100%';
+            customAlienPreviewImg.style.objectFit = 'cover';
+            customAlienPreviewImg.style.borderRadius = '0';
+            customAlienPreviewImg.style.padding = '0';
+          }
+          if (customAlienPreviewText) {
+            customAlienPreviewText.style.display = 'none';
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
   // === MODAL CONFIGURAR Y EDITAR EN WISHLIST ===
   const editModal = document.getElementById('wishlistEditModal');
   const closeEditBtnX = document.getElementById('wishlistEditCloseX');

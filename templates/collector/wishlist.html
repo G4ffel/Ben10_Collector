@@ -39,9 +39,14 @@
       <h2 class="sub-title-omni" style="margin-bottom: 0; border: none; padding-left: 0;">
         Aliens deseados (<span class="green-text">{{ wishlist_items|length }}</span>)
       </h2>
-      <button class="btn-primary" id="openAddWishlistBtn" style="cursor: pointer;">
-        + Agregar Alien
-      </button>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-secondary" id="openCustomWishlistBtn" style="cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); box-shadow: none;">
+          + Alien Personalizado
+        </button>
+        <button class="btn-primary" id="openAddWishlistBtn" style="cursor: pointer;">
+          + Agregar Alien
+        </button>
+      </div>
     </div>
 
     <!-- LISTADO DE WISHLIST -->
@@ -464,6 +469,9 @@
       </form>
     </div>
   </div>
+
+  <!-- ===== MODAL FORMULARIO WISHLIST PERSONALIZADO ===== -->
+  {% include 'collector/includes/wishlist_custom_modal.html' %}
 
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
   {% include 'collector/includes/profile_modal.html' %}

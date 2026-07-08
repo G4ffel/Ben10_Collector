@@ -3,7 +3,7 @@ from django.views.decorators.cache import never_cache
 from django.db.models import Sum, Avg, Max, Subquery, OuterRef, Case, When, Value, IntegerField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
-from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm
+from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm, WishlistCustomForm
 from .models import Figura, Perfil, Alien, WishlistItem
 
 def get_ordered_figures(queryset):
@@ -187,25 +187,30 @@ def dashboard(request):
     if Alien.objects.count() == 0:
         Alien.seed_default_aliens()
 
-    # Calcular completitud de colecciones únicas basadas en aliens disponibles
-    total_posibles_classic = Alien.objects.filter(serie_default='Ben 10').count()
-    unicos_classic = Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion').values('nombre').distinct().count()
+    # Calcular completitud de colecciones basadas en wishlist + coleccion (Total = Wishlist + Coleccion, Tengo = Coleccion)
+    unicos_classic = Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion').count()
+    wishlist_classic_count = WishlistItem.objects.filter(serie='Ben 10').count()
+    total_posibles_classic = unicos_classic + wishlist_classic_count
     completitud_classic = int((unicos_classic / total_posibles_classic) * 100) if total_posibles_classic > 0 else 0
     
-    total_posibles_af = Alien.objects.filter(serie_default='Ben 10 Alien Force').count()
-    unicos_af = Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion').values('nombre').distinct().count()
+    unicos_af = Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion').count()
+    wishlist_af_count = WishlistItem.objects.filter(serie='Ben 10 Alien Force').count()
+    total_posibles_af = unicos_af + wishlist_af_count
     completitud_af = int((unicos_af / total_posibles_af) * 100) if total_posibles_af > 0 else 0
 
-    total_posibles_ov = Alien.objects.filter(serie_default='Ben 10 Omniverse').count()
-    unicos_ov = Figura.objects.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion').values('nombre').distinct().count()
+    unicos_ov = Figura.objects.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion').count()
+    wishlist_ov_count = WishlistItem.objects.filter(serie='Ben 10 Omniverse').count()
+    total_posibles_ov = unicos_ov + wishlist_ov_count
     completitud_ov = int((unicos_ov / total_posibles_ov) * 100) if total_posibles_ov > 0 else 0
 
-    total_posibles_villanos = Alien.objects.filter(serie_default='Villanos').count()
-    unicos_villanos = Figura.objects.filter(serie='Villanos', estado_coleccion='coleccion').values('nombre').distinct().count()
+    unicos_villanos = Figura.objects.filter(serie='Villanos', estado_coleccion='coleccion').count()
+    wishlist_villanos_count = WishlistItem.objects.filter(serie='Villanos').count()
+    total_posibles_villanos = unicos_villanos + wishlist_villanos_count
     completitud_villanos = int((unicos_villanos / total_posibles_villanos) * 100) if total_posibles_villanos > 0 else 0
 
-    total_posibles_personajes = Alien.objects.filter(serie_default='Personajes').count()
-    unicos_personajes = Figura.objects.filter(serie='Personajes', estado_coleccion='coleccion').values('nombre').distinct().count()
+    unicos_personajes = Figura.objects.filter(serie='Personajes', estado_coleccion='coleccion').count()
+    wishlist_personajes_count = WishlistItem.objects.filter(serie='Personajes').count()
+    total_posibles_personajes = unicos_personajes + wishlist_personajes_count
     completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
 
     figuras_list = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion='coleccion'))
@@ -258,6 +263,11 @@ def dashboard(request):
 def eliminar_figura(request, id):
     figura = get_object_or_404(Figura, id=id)
     figura.delete()
+    referer = request.META.get('HTTP_REFERER', '')
+    if 'bodega' in referer:
+        return redirect('bodega')
+    elif 'coleccion' in referer:
+        return redirect('coleccion')
     return redirect('dashboard')
 
 def eliminar_alien(request, id):
@@ -334,6 +344,7 @@ def wishlist(request):
     form_wishlist = WishlistItemForm()
     form_figura = FiguraForm()
     form_wishlist_edit = WishlistEditForm()
+    form_wishlist_custom = WishlistCustomForm()
 
     return render(request, 'collector/wishlist.html', {
         'wishlist_items': wishlist_items,
@@ -341,6 +352,7 @@ def wishlist(request):
         'form_wishlist': form_wishlist,
         'form_figura': form_figura,
         'form_wishlist_edit': form_wishlist_edit,
+        'form_wishlist_custom': form_wishlist_custom,
         'aliens_por_serie': aliens_por_serie,
     })
 
@@ -360,6 +372,10 @@ def agregar_a_wishlist(request):
                 except Alien.DoesNotExist:
                     pass
                 item.save()
+        elif 'precio' in request.POST:
+            form = WishlistCustomForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
         else:
             form = WishlistItemForm(request.POST)
             if form.is_valid():
