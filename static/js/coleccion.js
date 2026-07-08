@@ -8,14 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const imageHint = document.getElementById('imageHint');
   const imageInput = document.querySelector('#omniFigureForm input[type="file"]');
 
-  // Campos del formulario
   const nombreInput = document.getElementById('id_nombre') || document.querySelector('#omniFigureForm [name="nombre"]');
   const precioInput = document.querySelector('#omniFigureForm [name="precio"]');
   const fechaInput = document.querySelector('#omniFigureForm [name="fecha_adquisicion"]');
   const serieSelect = document.querySelector('#omniFigureForm select[name="serie"]');
   const fileChosenName = document.getElementById('fileChosenName');
-  const autocompleteInput = document.getElementById('alienAutocompleteInput');
-  const autocompleteList = document.getElementById('alienAutocompleteList');
 
   // Relación de aliens por serie cargada desde la base de datos
   let aliensPorSerie = {
@@ -37,138 +34,83 @@ document.addEventListener('DOMContentLoaded', () => {
     aliensPorSerie = window.aliensPorSerieDb;
   }
 
-  const renderAutocompleteList = (serieSelectedValue, searchQuery = '') => {
-    if (!nombreInput || !autocompleteList) return;
+  // Filtrar opciones del select nativo de nombre según la serie seleccionada
+  const filterNombreSelect = (serieSelectedValue) => {
+    if (!nombreInput) return;
     const permitidos = aliensPorSerie[serieSelectedValue] || [];
-    const query = searchQuery.toLowerCase().trim();
-
-    autocompleteList.innerHTML = ''; // Limpiar lista
-    let primerVisible = null;
-    let valorActualValido = false;
-
-    // Sincronizar el select nativo de Django si la búsqueda es coincidencia exacta de algún alien permitido
-    const exactMatch = permitidos.find(a => (typeof a === 'object' && a.nombre.toLowerCase().trim() === query));
-    if (exactMatch) {
-      nombreInput.value = exactMatch.nombre;
-    }
-
-    // Map objects to names if needed
     const permitidosNombres = permitidos.map(a => typeof a === 'string' ? a : a.nombre);
 
-    // Leemos las opciones del select nativo de Django para generar los li
+    let firstVisible = null;
+    let currentValueValid = false;
+
     Array.from(nombreInput.options).forEach(option => {
       const alienName = option.value;
+      if (!alienName) return; // Skip empty/placeholder options
       const perteneceSerie = (permitidosNombres.length === 0) || permitidosNombres.some(p => p.toLowerCase().trim() === alienName.toLowerCase().trim());
-      const coincideBusqueda = alienName.toLowerCase().includes(query);
 
-      if (perteneceSerie && coincideBusqueda) {
-        const li = document.createElement('li');
-        li.textContent = alienName;
-        li.addEventListener('click', () => {
-          if (autocompleteInput) autocompleteInput.value = alienName;
-          nombreInput.value = alienName; // Sincroniza al select oculto de Django
-          autocompleteList.style.display = 'none';
-
-          // Actualizar previsualización al alien seleccionado de la base de datos (tanto al añadir como al editar)
-          const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre.toLowerCase().trim() === alienName.toLowerCase().trim()));
-          const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
-          const previewImg = document.getElementById('figureAddAlienPreviewImg');
-          const previewText = document.getElementById('figureAddAlienPreviewText');
-          if (previewImg && (!imageInput || !imageInput.files || imageInput.files.length === 0)) {
-            previewImg.src = defaultImgUrl;
-            if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
-              previewImg.style.animation = 'none';
-              previewImg.style.width = '100%';
-              previewImg.style.height = '100%';
-              previewImg.style.objectFit = 'cover';
-              previewImg.style.borderRadius = '0';
-              previewImg.style.padding = '0';
-              previewImg.style.mixBlendMode = 'normal';
-              if (previewText) previewText.style.display = 'none';
-            } else {
-              previewImg.style.animation = 'omni-spin 25s linear infinite';
-              previewImg.style.width = '130px';
-              previewImg.style.height = '130px';
-              previewImg.style.padding = '0';
-              previewImg.style.borderRadius = '0';
-              previewImg.style.mixBlendMode = 'normal';
-              if (previewText) previewText.style.display = 'block';
-            }
-          }
-        });
-        autocompleteList.appendChild(li);
-
-        if (!primerVisible) primerVisible = alienName;
-        if (alienName.toLowerCase().trim() === nombreInput.value.toLowerCase().trim()) valorActualValido = true;
+      if (perteneceSerie) {
+        option.style.display = '';
+        option.disabled = false;
+        if (!firstVisible) firstVisible = alienName;
+        if (alienName === nombreInput.value) currentValueValid = true;
+      } else {
+        option.style.display = 'none';
+        option.disabled = true;
       }
     });
 
-    // Si el valor seleccionado en el select nativo no es válido en esta serie/filtro, lo actualizamos al primero válido
-    if (!valorActualValido && primerVisible) {
-      nombreInput.value = primerVisible;
-      if (document.activeElement !== autocompleteInput && autocompleteInput) {
-        autocompleteInput.value = primerVisible;
-      }
+    // Si el valor actual no es válido para esta serie, seleccionar el primero válido
+    if (!currentValueValid && firstVisible) {
+      nombreInput.value = firstVisible;
     }
 
-    // Actualizar previsualización para el valor actual si estamos añadiendo una figura
-    if (nombreInput && formTitle && formTitle.textContent === "AÑADIR NUEVA FIGURA") {
-      const currentName = exactMatch ? exactMatch.nombre : nombreInput.value;
-      const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre.toLowerCase().trim() === currentName.toLowerCase().trim()));
-      const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
-      const previewImg = document.getElementById('figureAddAlienPreviewImg');
-      const previewText = document.getElementById('figureAddAlienPreviewText');
-      if (previewImg && (!imageInput || !imageInput.files || imageInput.files.length === 0)) {
-        previewImg.src = defaultImgUrl;
-        if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
-          previewImg.style.animation = 'none';
-          previewImg.style.width = '100%';
-          previewImg.style.height = '100%';
-          previewImg.style.objectFit = 'cover';
-          previewImg.style.borderRadius = '0';
-          previewImg.style.padding = '0';
-          previewImg.style.mixBlendMode = 'normal';
-          if (previewText) previewText.style.display = 'none';
-        } else {
-          previewImg.style.animation = 'omni-spin 25s linear infinite';
-          previewImg.style.width = '130px';
-          previewImg.style.height = '130px';
-          previewImg.style.padding = '0';
-          previewImg.style.borderRadius = '0';
-          previewImg.style.mixBlendMode = 'normal';
-          if (previewText) previewText.style.display = 'block';
-        }
+    // Actualizar previsualización
+    updateAlienPreview(serieSelectedValue, nombreInput.value);
+  };
+
+  // Actualizar imagen de previsualización según el alien seleccionado
+  const updateAlienPreview = (serieValue, alienName) => {
+    const permitidos = aliensPorSerie[serieValue] || [];
+    const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre.toLowerCase().trim() === alienName.toLowerCase().trim()));
+    const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
+    const previewImg = document.getElementById('figureAddAlienPreviewImg');
+    const previewText = document.getElementById('figureAddAlienPreviewText');
+    if (previewImg && (!imageInput || !imageInput.files || imageInput.files.length === 0)) {
+      previewImg.src = defaultImgUrl;
+      if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
+        previewImg.style.animation = 'none';
+        previewImg.style.width = '100%';
+        previewImg.style.height = '100%';
+        previewImg.style.objectFit = 'cover';
+        previewImg.style.borderRadius = '0';
+        previewImg.style.padding = '0';
+        previewImg.style.mixBlendMode = 'normal';
+        if (previewText) previewText.style.display = 'none';
+      } else {
+        previewImg.style.animation = 'omni-spin 25s linear infinite';
+        previewImg.style.width = '130px';
+        previewImg.style.height = '130px';
+        previewImg.style.padding = '0';
+        previewImg.style.borderRadius = '0';
+        previewImg.style.mixBlendMode = 'normal';
+        if (previewText) previewText.style.display = 'block';
       }
     }
   };
 
-  // Control del dropdown autocomplete
-  if (autocompleteInput) {
-    const showAllOptions = () => {
-      autocompleteList.style.display = 'block';
-      renderAutocompleteList(serieSelect.value, ''); // Mostrar todas las opciones de la serie
-    };
-
-    autocompleteInput.addEventListener('focus', showAllOptions);
-    autocompleteInput.addEventListener('click', showAllOptions);
-
-    autocompleteInput.addEventListener('input', (e) => {
-      renderAutocompleteList(serieSelect.value, e.target.value);
+  // Escuchar cambios en el select nativo de nombre para actualizar previsualización
+  if (nombreInput) {
+    nombreInput.addEventListener('change', () => {
+      if (serieSelect) {
+        updateAlienPreview(serieSelect.value, nombreInput.value);
+      }
     });
   }
-
-  // Cerrar dropdown al hacer click fuera
-  document.addEventListener('click', (e) => {
-    if (autocompleteInput && autocompleteList && !autocompleteInput.contains(e.target) && !autocompleteList.contains(e.target)) {
-      autocompleteList.style.display = 'none';
-    }
-  });
 
   // Escuchar cambios en la serie
   if (serieSelect) {
     serieSelect.addEventListener('change', () => {
-      if (autocompleteInput) autocompleteInput.value = ''; // Limpiar buscador al cambiar serie
-      renderAutocompleteList(serieSelect.value, '');
+      filterNombreSelect(serieSelect.value);
     });
   }
 
@@ -207,11 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modal) {
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
-      // Si la serie está seleccionada, actualizamos el buscador de inmediato
+      // Si la serie está seleccionada, filtramos las opciones del select
       if (serieSelect) {
-        renderAutocompleteList(serieSelect.value, '');
-        // Sincronizar el input de autocomplete con el select nativo
-        if (autocompleteInput) autocompleteInput.value = nombreInput.value;
+        filterNombreSelect(serieSelect.value);
       }
     }
   };
@@ -279,14 +219,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (formTitle) formTitle.textContent = "EDITAR FIGURA";
       if (form) form.action = `/coleccion/editar/${id}/`;
 
-      if (nombreInput) nombreInput.value = nombre;
-      if (autocompleteInput) autocompleteInput.value = nombre;
       if (precioInput) precioInput.value = precio;
       if (fechaInput) fechaInput.value = fecha;
       if (serieSelect) {
         serieSelect.value = serie;
-        renderAutocompleteList(serieSelect.value, '');
+        filterNombreSelect(serieSelect.value);
       }
+      if (nombreInput) nombreInput.value = nombre;
 
       const estadoSelect = document.querySelector('select[name="estado"]');
       const marcaSelect = document.querySelector('select[name="marca"]');

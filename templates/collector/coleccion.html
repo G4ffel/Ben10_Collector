@@ -74,9 +74,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen.url }}">
+                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
+                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-classic">
                   {{ figura.serie }}
@@ -148,9 +148,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen.url }}">
+                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
+                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-af">
                   {{ figura.serie }}
@@ -222,9 +222,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen.url }}">
+                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
+                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-ov">
                   {{ figura.serie }}
@@ -296,9 +296,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen.url }}">
+                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
+                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-personajes">
                   {{ figura.serie }}
@@ -370,9 +370,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen.url }}">
+                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  <img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />
+                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-villanos">
                   {{ figura.serie }}
