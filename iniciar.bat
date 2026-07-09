@@ -1,37 +1,40 @@
 @echo off
 title Ben 10 Collector Launcher
 echo ====================================================
-echo   VERIFICANDO SERVICIOS DE BASE DE DATOS (LARAGON)...
+echo   VERIFICANDO BASE DE DATOS...
 echo ====================================================
 
-:: Comprobar si Laragon ya se esta ejecutando en los procesos de Windows
-tasklist /nh /fi "imagename eq laragon.exe" | find /i "laragon.exe" >nul
-if %errorlevel% neq 0 (
-    echo Laragon no esta activo. Iniciando Laragon...
-    if exist "C:\laragon\laragon.exe" (
+:: Comprobar si Laragon está activo (solo si existe en la ruta por defecto)
+if exist "C:\laragon\laragon.exe" (
+    tasklist /nh /fi "imagename eq laragon.exe" | find /i "laragon.exe" >nul
+    if %errorlevel% neq 0 (
+        echo Iniciando base de datos Laragon...
         start "" "C:\laragon\laragon.exe"
-        :: Esperar 3 segundos para permitir que MySQL cargue sus servicios
         timeout /t 3 /nobreak >nul
     ) else (
-        echo [ADVERTENCIA] No se encontro Laragon en C:\laragon\laragon.exe. Asegurate de iniciar tu base de datos MySQL manualmente.
+        echo Base de datos Laragon ya esta activa.
     )
 ) else (
-    echo Laragon ya se esta ejecutando.
+    echo Laragon no detectado. Se utilizara Base de Datos local SQLite (sin Laragon).
 )
+
+:: Aplicar migraciones necesarias
+echo Aplicando migraciones de Base de Datos...
+python manage.py migrate --noinput
 
 echo.
 echo ====================================================
 echo   INICIANDO SERVIDOR OMNITRIX UNIVERSE...
 echo ====================================================
 
-:: Iniciar el servidor de desarrollo de Django en una ventana independiente
+:: Iniciar el servidor de desarrollo de Django en segundo plano
 start "Servidor Django" cmd /k "python manage.py runserver"
 
-:: Esperar 2 segundos para permitir que el servidor se levante por completo
+:: Esperar a que el servidor se levante
 timeout /t 2 /nobreak >nul
 
-:: Abrir la aplicacion web en Google Chrome
-echo Abriendo la aplicacion en Google Chrome...
-start chrome http://127.0.0.1:8000/
+:: Abrir la aplicación en el navegador por defecto
+echo Abriendo la aplicacion en el navegador...
+start http://127.0.0.1:8000/
 
 exit
