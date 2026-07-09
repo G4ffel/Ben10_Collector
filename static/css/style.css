@@ -104,7 +104,7 @@ img { max-width: 100%; display: block; }
 .navbar.scrolled {
   background: rgba(5, 12, 5, 0.92);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-green);
+  border-bottom: 1px solid #004d13;
   padding: 12px 0;
   box-shadow: 0 4px 40px rgba(0, 255, 65, 0.08);
 }
@@ -3123,6 +3123,13 @@ input[type=number] {
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
+}
+
+/* Forzar opciones de select a fondo oscuro y texto claro */
+select option {
+  background-color: #0a150a !important;
+  color: #ffffff !important;
+  font-family: var(--font-body) !important;
 }
 
 
