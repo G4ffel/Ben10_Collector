@@ -165,12 +165,13 @@ img { max-width: 100%; display: block; }
   font-family: var(--font-display);
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   color: var(--text-secondary);
   padding: 8px 14px;
   border-radius: 6px;
   transition: var(--transition);
   position: relative;
+  text-transform: uppercase;
 }
 
 .nav-link::after {
@@ -189,6 +190,7 @@ img { max-width: 100%; display: block; }
 .nav-link:hover,
 .nav-link.active {
   color: var(--green-primary);
+  text-shadow: 0 0 8px var(--green-glow);
 }
 
 .nav-link:hover::after,
@@ -3039,6 +3041,89 @@ input[type=number] {
 }
 
 
+/* Overrides para selects en cajas HUD */
+.hud-info-box select {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  padding-right: 20px !important;
+  font-family: var(--font-body) !important;
+  font-size: 1.1rem !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  outline: none !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300ff41%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0px center !important;
+  background-size: 12px auto !important;
+}
+
+/* Estilos para inputs de fecha y selector de calendario en cajas HUD */
+.hud-info-box input[type="date"] {
+  color-scheme: dark !important;
+  font-family: var(--font-display) !important;
+}
+.hud-info-box input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) !important;
+  cursor: pointer !important;
+  opacity: 0.7 !important;
+  transition: opacity 0.2s ease !important;
+}
+.hud-info-box input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1 !important;
+}
+
+/* ── HUD-BOX OVERRIDES: quita el borde/fondo propio de .custom-input dentro de cajas HUD ── */
+/* Esto aplica a todos los modales: figure_modal, wishlist edit, wishlist confirm, etc.       */
+.hud-info-box .custom-input,
+.hud-info-box input.custom-input,
+.hud-info-box select.custom-input,
+.hud-info-box input[type="date"].custom-input {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  font-family: var(--font-display) !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  outline: none !important;
+  width: 100% !important;
+}
+
+/* Selects dentro de HUD-box: quitar fondo y borde, mantener flecha verde */
+.hud-info-box select.custom-input,
+.hud-info-box select.select-custom {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  padding-right: 28px !important;
+  box-shadow: none !important;
+  font-family: var(--font-body) !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%2300ff41' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0px center !important;
+  background-size: 20px auto !important;
+}
+
+.hud-info-box select.custom-input:focus,
+.hud-info-box select.select-custom:focus {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
 
 
 

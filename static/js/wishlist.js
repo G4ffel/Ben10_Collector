@@ -1,715 +1,184 @@
+/**
+ * wishlist.js
+ * Lógica de página de wishlist (no-modal).
+ * Los modales han sido separados en:
+ *   - modal-wishlist-add.js    (wishlistAddModal: Agregar alien)
+ *   - modal-wishlist-custom.js (wishlistCustomModal: Alien personalizado)
+ *   - modal-wishlist-edit.js   (wishlistEditModal: Editar alien)
+ *   - modal-wishlist-move.js   (moveToCollectionModal: Mover a colección)
+ */
 document.addEventListener('DOMContentLoaded', () => {
-  // === MODAL AGREGAR ALIEN A WISHLIST ===
-  const addModal = document.getElementById('wishlistAddModal');
-  const openAddBtn = document.getElementById('openAddWishlistBtn');
-  const closeAddBtnX = document.getElementById('wishlistAddCloseX');
-  const cancelAddBtn = document.getElementById('wishlistAddCancel');
-  const addForm = document.querySelector('#wishlistAddModal form');
-
-  // Autocomplete inputs
-  const autocompleteInput = document.getElementById('wishlistAlienInput');
-  const autocompleteList = document.getElementById('wishlistAlienList');
-  const nombreSelect = document.querySelector('#wishlistAddModal select[name="nombre"]');
-  const serieSelect = document.querySelector('#wishlistAddModal select[name="serie"]');
-
-  let aliensPorSerie = {
-    'Ben 10': [],
-    'Ben 10 Alien Force': [],
-    'Ben 10 Omniverse': [],
-    'Personajes': [],
-    'Villanos': []
-  };
-
-  const aliensDataEl = document.getElementById('aliens-por-serie-data');
-  if (aliensDataEl) {
-    try {
-      aliensPorSerie = JSON.parse(aliensDataEl.textContent);
-    } catch (e) {
-      console.error("Error parsing aliens JSON data:", e);
-    }
-  }
-
-  let selectedAliens = new Set();
-
-  const updateSelectedAliensUI = () => {
-    if (autocompleteInput) {
-      if (selectedAliens.size === 0) {
-        autocompleteInput.value = '';
-      } else if (selectedAliens.size === 1) {
-        autocompleteInput.value = Array.from(selectedAliens)[0];
-      } else {
-        autocompleteInput.value = `${selectedAliens.size} seleccionados (${Array.from(selectedAliens).join(', ')})`;
-      }
-    }
-
-    let container = document.getElementById('nombresMultipleContainer');
-    if (!container && addForm) {
-      container = document.createElement('div');
-      container.id = 'nombresMultipleContainer';
-      container.style.display = 'none';
-      addForm.appendChild(container);
-    }
-    if (container) {
-      container.innerHTML = '';
-      selectedAliens.forEach(nombre => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'nombres_multiple';
-        input.value = nombre;
-        container.appendChild(input);
-      });
-    }
-
-    if (nombreSelect) {
-      if (selectedAliens.size > 0) {
-        nombreSelect.value = Array.from(selectedAliens)[0];
-      }
-    }
-
-    const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
-    const previewText = document.getElementById('wishlistAddAlienPreviewText');
-    if (previewImg) {
-      if (selectedAliens.size > 0) {
-        const primerAlien = Array.from(selectedAliens)[0];
-        const permitidos = aliensPorSerie[serieSelect.value] || [];
-        const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre === primerAlien));
-        const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
-        
-        previewImg.src = defaultImgUrl;
-        if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
-          previewImg.style.animation = 'none';
-          previewImg.style.width = '100%';
-          previewImg.style.height = '100%';
-          previewImg.style.objectFit = 'cover';
-          previewImg.style.borderRadius = '0';
-          previewImg.style.padding = '0';
-          previewImg.style.mixBlendMode = 'normal';
-          if (previewText) previewText.style.display = 'none';
-        }
-      } else {
-        previewImg.src = '/media/omnitrix/Ben_10_Omnitrix.png';
-        previewImg.style.animation = 'omni-spin 25s linear infinite';
-        previewImg.style.width = '100px';
-        previewImg.style.height = '100px';
-        previewImg.style.padding = '0';
-        previewImg.style.borderRadius = '0';
-        previewImg.style.mixBlendMode = 'normal';
-        if (previewText) previewText.style.display = 'block';
-      }
-    }
-  };
-
-  const renderAutocompleteList = (serieSelectedValue, searchQuery = '') => {
-    if (!nombreSelect || !autocompleteList) return;
-    const permitidos = aliensPorSerie[serieSelectedValue] || [];
-    const query = searchQuery.toLowerCase().trim();
-
-    autocompleteList.innerHTML = '';
-    let primerVisible = null;
-    let valorActualValido = false;
-
-    // Map objects to names
-    const permitidosNombres = permitidos.map(a => typeof a === 'string' ? a : a.nombre);
-
-    Array.from(nombreSelect.options).forEach(option => {
-      const alienName = option.value;
-      const perteneceSerie = (permitidosNombres.length === 0) || permitidosNombres.includes(alienName);
-      const coincideBusqueda = alienName.toLowerCase().includes(query);
-
-      if (perteneceSerie && coincideBusqueda) {
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
-        li.style.padding = '10px 16px';
-        li.style.cursor = 'pointer';
-
-        // Checkbox box
-        const check = document.createElement('span');
-        check.className = 'hud-checkbox-box';
-        check.style.display = 'inline-block';
-        check.style.width = '14px';
-        check.style.height = '14px';
-        check.style.border = '1px solid var(--border-green)';
-        check.style.borderRadius = '3px';
-        check.style.marginRight = '12px';
-        check.style.position = 'relative';
-        check.style.background = 'var(--dark-3)';
-        check.style.flexShrink = '0';
-        check.style.transition = 'all 0.2s ease';
-
-        // Checkmark dot inside
-        const dot = document.createElement('span');
-        dot.style.position = 'absolute';
-        dot.style.top = '2px';
-        dot.style.left = '2px';
-        dot.style.width = '8px';
-        dot.style.height = '8px';
-        dot.style.borderRadius = '1px';
-        dot.style.background = 'var(--green-primary)';
-        dot.style.boxShadow = '0 0 5px var(--green-glow)';
-        dot.style.transition = 'opacity 0.2s ease';
-        
-        if (selectedAliens.has(alienName)) {
-          check.style.borderColor = 'var(--green-primary)';
-          check.style.background = 'rgba(0, 255, 65, 0.15)';
-          dot.style.opacity = '1';
-        } else {
-          dot.style.opacity = '0';
-        }
-        check.appendChild(dot);
-        li.appendChild(check);
-
-        // Text label
-        const textSpan = document.createElement('span');
-        textSpan.textContent = alienName;
-        li.appendChild(textSpan);
-
-        // Toggle selection on click
-        li.addEventListener('click', (e) => {
-          e.stopPropagation(); // Evitar cerrar el dropdown al clickar
-          
-          if (selectedAliens.has(alienName)) {
-            selectedAliens.delete(alienName);
-            check.style.borderColor = 'var(--border-green)';
-            check.style.background = 'var(--dark-3)';
-            dot.style.opacity = '0';
-          } else {
-            selectedAliens.add(alienName);
-            check.style.borderColor = 'var(--green-primary)';
-            check.style.background = 'rgba(0, 255, 65, 0.15)';
-            dot.style.opacity = '1';
-          }
-          updateSelectedAliensUI();
-        });
-
-        autocompleteList.appendChild(li);
-
-        if (!primerVisible) primerVisible = alienName;
-        if (alienName === nombreSelect.value) valorActualValido = true;
-      }
-    });
-
-    if (!valorActualValido && primerVisible) {
-      nombreSelect.value = primerVisible;
-    }
-
-    const currentName = nombreSelect.value;
-    const matchObj = permitidos.find(a => (typeof a === 'object' && a.nombre === currentName));
-    const defaultImgUrl = matchObj ? matchObj.imagen_url : '/media/omnitrix/Ben_10_Omnitrix.png';
-    const previewImg = document.getElementById('wishlistAddAlienPreviewImg');
-    const previewText = document.getElementById('wishlistAddAlienPreviewText');
-    if (previewImg) {
-      previewImg.src = defaultImgUrl;
-      if (defaultImgUrl !== '/media/omnitrix/Ben_10_Omnitrix.png') {
-        previewImg.style.animation = 'none';
-        previewImg.style.width = '100%';
-        previewImg.style.height = '100%';
-        previewImg.style.objectFit = 'cover';
-        previewImg.style.borderRadius = '0';
-        previewImg.style.padding = '0';
-        previewImg.style.mixBlendMode = 'normal';
-        if (previewText) previewText.style.display = 'none';
-      } else {
-        previewImg.style.animation = 'omni-spin 25s linear infinite';
-        previewImg.style.width = '100px';
-        previewImg.style.height = '100px';
-        previewImg.style.padding = '0';
-        previewImg.style.borderRadius = '0';
-        previewImg.style.mixBlendMode = 'normal';
-        if (previewText) previewText.style.display = 'block';
-      }
-    }
-  };
-
-  if (autocompleteInput) {
-    const showOptions = () => {
-      autocompleteList.style.display = 'block';
-      if (customSerieOptions) customSerieOptions.style.display = 'none';
-      renderAutocompleteList(serieSelect.value, '');
-    };
-    autocompleteInput.addEventListener('focus', showOptions);
-    autocompleteInput.addEventListener('click', showOptions);
-    autocompleteInput.addEventListener('input', (e) => {
-      if (customSerieOptions) customSerieOptions.style.display = 'none';
-      renderAutocompleteList(serieSelect.value, e.target.value);
-    });
-  }
-
-  document.addEventListener('click', (e) => {
-    if (autocompleteInput && autocompleteList && !autocompleteInput.contains(e.target) && !autocompleteList.contains(e.target)) {
-      autocompleteList.style.display = 'none';
-    }
-  });
-
-  if (serieSelect) {
-    serieSelect.addEventListener('change', () => {
-      if (autocompleteInput) autocompleteInput.value = '';
-      renderAutocompleteList(serieSelect.value, '');
-      const customText = document.getElementById('wishlistCustomSerieText');
-      if (customText) customText.textContent = serieSelect.value;
-    });
-  }
-
-  // === CUSTOM SELECT FOR SERIE DE ORIGEN ===
-  const customSerieSelect = document.getElementById('wishlistCustomSerieSelect');
-  const customSerieTrigger = document.getElementById('wishlistCustomSerieTrigger');
-  const customSerieOptions = document.getElementById('wishlistCustomSerieOptions');
-  const customSerieText = document.getElementById('wishlistCustomSerieText');
-
-  if (customSerieTrigger && customSerieOptions) {
-    customSerieTrigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isVisible = customSerieOptions.style.display === 'block';
-      customSerieOptions.style.display = isVisible ? 'none' : 'block';
-      if (!isVisible && autocompleteList) {
-        autocompleteList.style.display = 'none';
-      }
-    });
-
-    customSerieOptions.querySelectorAll('li').forEach(option => {
-      option.addEventListener('click', (e) => {
-        const val = option.getAttribute('data-value');
-        if (customSerieText) customSerieText.textContent = val;
-        if (serieSelect) {
-          serieSelect.value = val;
-          serieSelect.dispatchEvent(new Event('change'));
-        }
-        customSerieOptions.style.display = 'none';
-      });
-    });
-
-    document.addEventListener('click', (e) => {
-      if (customSerieSelect && !customSerieSelect.contains(e.target)) {
-        customSerieOptions.style.display = 'none';
-      }
-    });
-  }
-
-  const addModalTitle = document.getElementById('wishlistAddModalTitle');
-  const addSubmitBtn = document.getElementById('wishlistAddSubmitBtn');
-  const wishlistAddForm = document.getElementById('wishlistAddForm');
-
-  const openAddModal = () => {
-    if (addModal) {
-      if (addModalTitle) addModalTitle.textContent = "AGREGAR ALIEN A WISHLIST";
-      if (addSubmitBtn) addSubmitBtn.textContent = "AÑADIR A WISHLIST";
-      if (wishlistAddForm) wishlistAddForm.action = "/wishlist/add/";
-      
-      addModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      
-      if (selectedAliens) {
-        selectedAliens.clear();
-        updateSelectedAliensUI();
-      }
-      
-      if (serieSelect) {
-        if (customSerieText) customSerieText.textContent = serieSelect.value;
-        renderAutocompleteList(serieSelect.value, '');
-      }
-    }
-  };
-
-  const closeAddModal = () => {
-    if (addModal) {
-      addModal.classList.remove('active');
-      document.body.style.overflow = '';
-      if (addForm) addForm.reset();
-      if (customSerieText && serieSelect) customSerieText.textContent = serieSelect.value;
-      if (selectedAliens) {
-        selectedAliens.clear();
-        updateSelectedAliensUI();
-      }
-    }
-  };
-
-  if (openAddBtn) openAddBtn.addEventListener('click', openAddModal);
-  if (closeAddBtnX) closeAddBtnX.addEventListener('click', closeAddModal);
-  if (cancelAddBtn) cancelAddBtn.addEventListener('click', closeAddModal);
-  const addOverlay = document.getElementById('wishlistAddOverlay');
-  if (addOverlay) addOverlay.addEventListener('click', closeAddModal);
-
-  // === MODAL WISHLIST CUSTOM ===
-  const customModal = document.getElementById('wishlistCustomModal');
-  const openCustomBtn = document.getElementById('openCustomWishlistBtn');
-  const closeCustomBtnX = document.getElementById('wishlistCustomFormCloseX');
-  const cancelCustomBtn = document.getElementById('wishlistCustomFormCancel');
-  const customFileLabelBtn = document.getElementById('wishlistCustomFileLabelBtn');
-  const customFileInput = document.querySelector('#wishlistCustomModal input[type="file"]');
-  const customFileChosenName = document.getElementById('wishlistCustomFileChosenName');
-  const customAlienPreviewImg = document.getElementById('wishlistCustomAlienPreviewImg');
-  const customAlienPreviewText = document.getElementById('wishlistCustomAlienPreviewText');
-
-  const openCustomModal = () => {
-    if (customModal) {
-      customModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-  };
-
-  const closeCustomModal = () => {
-    if (customModal) {
-      customModal.classList.remove('active');
-      document.body.style.overflow = '';
-      const customForm = document.querySelector('#wishlistCustomModal form');
-      if (customForm) customForm.reset();
-      
-      // Reset preview
-      if (customAlienPreviewImg) {
-        customAlienPreviewImg.src = '/media/omnitrix/Ben_10_Omnitrix.png';
-        customAlienPreviewImg.style.animation = 'omni-spin 25s linear infinite';
-        customAlienPreviewImg.style.width = '130px';
-        customAlienPreviewImg.style.height = '130px';
-        customAlienPreviewImg.style.borderRadius = '0';
-        customAlienPreviewImg.style.padding = '0';
-      }
-      if (customAlienPreviewText) {
-        customAlienPreviewText.style.display = 'block';
-      }
-      if (customFileChosenName) {
-        customFileChosenName.textContent = "Sin archivos seleccionados";
-      }
-    }
-  };
-
-  if (openCustomBtn) openCustomBtn.addEventListener('click', openCustomModal);
-  if (closeCustomBtnX) closeCustomBtnX.addEventListener('click', closeCustomModal);
-  if (cancelCustomBtn) cancelCustomBtn.addEventListener('click', closeCustomModal);
-  const customOverlay = document.getElementById('wishlistCustomOverlay');
-  if (customOverlay) customOverlay.addEventListener('click', closeCustomModal);
-
-  // Trigger file click when clicking button
-  if (customFileLabelBtn && customFileInput) {
-    customFileLabelBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      customFileInput.click();
-    });
-  }
-
-  // Handle image selection and show preview
-  if (customFileInput) {
-    customFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (customFileChosenName) customFileChosenName.textContent = file.name;
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (customAlienPreviewImg) {
-            customAlienPreviewImg.src = event.target.result;
-            customAlienPreviewImg.style.animation = 'none';
-            customAlienPreviewImg.style.width = '100%';
-            customAlienPreviewImg.style.height = '100%';
-            customAlienPreviewImg.style.objectFit = 'cover';
-            customAlienPreviewImg.style.borderRadius = '0';
-            customAlienPreviewImg.style.padding = '0';
-          }
-          if (customAlienPreviewText) {
-            customAlienPreviewText.style.display = 'none';
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  // === MODAL CONFIGURAR Y EDITAR EN WISHLIST ===
-  const editModal = document.getElementById('wishlistEditModal');
-  const closeEditBtnX = document.getElementById('wishlistEditCloseX');
-  const cancelEditBtn = document.getElementById('wishlistEditCancel');
-  const editForm = document.getElementById('wishlistEditForm');
-  const editAlienImgWrap = document.getElementById('editAlienImgWrap');
-  const editFileImage = document.getElementById('editFileImage');
-  const editAlienPreviewImg = document.getElementById('editAlienPreviewImg');
-  const editImageUploadPlaceholder = document.getElementById('editImageUploadPlaceholder');
-  const editFilenameOverlay = document.getElementById('editFilenameOverlay');
-  const editFileChosenName = document.getElementById('editFileChosenName');
-  const editDisplayAlienSerie = document.getElementById('editDisplayAlienSerie');
-  const editAlienNombreVal = document.getElementById('editAlienNombreVal');
-  const editAlienSerieVal = document.getElementById('editAlienSerieVal');
-  const editTitle = document.getElementById('wishlistEditTitle');
-
-  const openEditModal = (btn) => {
-    const id = btn.getAttribute('data-id');
-    const nombre = btn.getAttribute('data-nombre');
-    const serie = btn.getAttribute('data-serie');
-    const precio = btn.getAttribute('data-precio') || '0';
-    const fecha = btn.getAttribute('data-fecha') || '';
-    const estado = btn.getAttribute('data-estado') || 'excelente';
-    const marca = btn.getAttribute('data-marca') || 'original';
-    const tamano = btn.getAttribute('data-tamano') || 'mediano';
-    const subcategoria = btn.getAttribute('data-subcategoria') || '';
-    const imagenUrl = btn.getAttribute('data-imagen') || '';
-
-    if (editForm) {
-      editForm.action = `/wishlist/edit/${id}/`;
-    }
-
-    if (editAlienNombreVal) editAlienNombreVal.value = nombre;
-    if (editAlienSerieVal) editAlienSerieVal.value = serie;
-    if (editTitle) editTitle.textContent = `DETALLE DE ${nombre.toUpperCase()}`;
-    if (editDisplayAlienSerie) editDisplayAlienSerie.textContent = serie;
-
-    // Set form fields
-    const precioField = document.getElementById('edit_id_precio');
-    const fechaField = document.getElementById('edit_id_fecha_adquisicion');
-    const estadoField = document.getElementById('edit_id_estado');
-    const marcaField = document.getElementById('edit_id_marca');
-    const tamanoField = document.getElementById('edit_id_tamano');
-    const subcategoriaField = document.getElementById('edit_id_subcategoria');
-
-    if (precioField) precioField.value = precio;
-    if (fechaField) fechaField.value = fecha;
-    if (estadoField) estadoField.value = estado;
-    if (marcaField) marcaField.value = marca;
-    if (tamanoField) tamanoField.value = tamano;
-    if (subcategoriaField) subcategoriaField.value = subcategoria;
-
-    // Setup image preview
-    if (imagenUrl) {
-      if (editAlienPreviewImg) {
-        editAlienPreviewImg.src = imagenUrl;
-        editAlienPreviewImg.style.display = 'block';
-      }
-      if (editImageUploadPlaceholder) editImageUploadPlaceholder.style.display = 'none';
-      if (editFilenameOverlay) editFilenameOverlay.style.display = 'block';
-      if (editFileChosenName) editFileChosenName.textContent = "Imagen actual cargada";
-    } else {
-      if (editAlienPreviewImg) {
-        editAlienPreviewImg.src = '';
-        editAlienPreviewImg.style.display = 'none';
-      }
-      if (editImageUploadPlaceholder) editImageUploadPlaceholder.style.display = 'flex';
-      if (editFilenameOverlay) editFilenameOverlay.style.display = 'none';
-      if (editFileChosenName) editFileChosenName.textContent = "Sin archivo";
-    }
-
-    if (editModal) {
-      editModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-  };
-
-  const closeEditModal = () => {
-    if (editModal) {
-      editModal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    if (editForm) editForm.reset();
-  };
-
-  if (closeEditBtnX) closeEditBtnX.addEventListener('click', closeEditModal);
-  if (cancelEditBtn) cancelEditBtn.addEventListener('click', closeEditModal);
-  const editOverlay = document.getElementById('wishlistEditOverlay');
-  if (editOverlay) editOverlay.addEventListener('click', closeEditModal);
-
-  if (editAlienImgWrap && editFileImage) {
-    editAlienImgWrap.addEventListener('click', () => {
-      editFileImage.click();
-    });
-  }
-
-  if (editFileImage) {
-    editFileImage.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (editFileChosenName) {
-          editFileChosenName.textContent = file.name;
-        }
-        if (editFilenameOverlay) {
-          editFilenameOverlay.style.display = 'block';
-        }
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (editAlienPreviewImg) {
-            editAlienPreviewImg.src = event.target.result;
-            editAlienPreviewImg.style.display = 'block';
-          }
-          if (editImageUploadPlaceholder) {
-            editImageUploadPlaceholder.style.display = 'none';
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  // Bind click to edit buttons
-  document.querySelectorAll('.edit-wishlist-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      openEditModal(btn);
-    });
-  });
-
-
-  // === MODAL CONFIGURAR Y MOVER A LA COLECCION ===
-  const moveModal = document.getElementById('moveToCollectionModal');
-  const closeMoveBtnX = document.getElementById('moveToCollectionCloseX');
-  const cancelMoveBtn = document.getElementById('moveToCollectionCancel');
-  const moveForm = document.getElementById('moveToCollectionForm');
-
-  const moveToCollectionTitle = document.getElementById('moveToCollectionTitle');
-  const displayAlienSerie = document.getElementById('displayAlienSerie');
-  const moveAlienNombreVal = document.getElementById('moveAlienNombreVal');
-  const moveAlienSerieVal = document.getElementById('moveAlienSerieVal');
-
-  const moveAlienImgWrap = document.getElementById('moveAlienImgWrap');
-  const moveImageInput = document.getElementById('moveFileImage');
-  const moveFileChosenName = document.getElementById('moveFileChosenName');
-  const imageUploadPlaceholder = document.getElementById('imageUploadPlaceholder');
-  const moveAlienPreviewImg = document.getElementById('moveAlienPreviewImg');
-  const filenameOverlay = document.getElementById('filenameOverlay');
-
-  // Trigger file click when clicking the wrapper card
-  if (moveAlienImgWrap && moveImageInput) {
-    moveAlienImgWrap.addEventListener('click', () => {
-      moveImageInput.click();
-    });
-  }
-
-  // Handle image selection and show live preview
-  if (moveImageInput) {
-    moveImageInput.addEventListener('change', () => {
-      if (moveImageInput.files && moveImageInput.files.length > 0) {
-        const file = moveImageInput.files[0];
-        
-        if (moveFileChosenName) moveFileChosenName.textContent = file.name;
-        if (filenameOverlay) filenameOverlay.style.display = 'block';
-        
-        // Read file content for live preview
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (moveAlienPreviewImg) {
-            moveAlienPreviewImg.src = e.target.result;
-            moveAlienPreviewImg.style.display = 'block';
-          }
-          if (imageUploadPlaceholder) {
-            imageUploadPlaceholder.style.display = 'none';
-          }
-        };
-        reader.readAsDataURL(file);
-      } else {
-        resetImagePreview();
-      }
-    });
-  }
-
-  const resetImagePreview = () => {
-    if (moveAlienPreviewImg) {
-      moveAlienPreviewImg.src = '';
-      moveAlienPreviewImg.style.display = 'none';
-    }
-    if (imageUploadPlaceholder) {
-      imageUploadPlaceholder.style.display = 'flex';
-    }
-    if (filenameOverlay) {
-      filenameOverlay.style.display = 'none';
-    }
-    if (moveFileChosenName) {
-      moveFileChosenName.textContent = "Sin archivo";
-    }
-  };
-
-  const openMoveModal = (btn) => {
-    if (moveModal) {
-      const id = btn.getAttribute('data-id');
-      const nombre = btn.getAttribute('data-nombre');
-      const serie = btn.getAttribute('data-serie');
-      const precio = btn.getAttribute('data-precio') || '0';
-      const fecha = btn.getAttribute('data-fecha') || '';
-      const estado = btn.getAttribute('data-estado') || 'excelente';
-      const marca = btn.getAttribute('data-marca') || 'original';
-      const tamano = btn.getAttribute('data-tamano') || 'mediano';
-      const subcategoria = btn.getAttribute('data-subcategoria') || '';
-      const imagenUrl = btn.getAttribute('data-imagen') || '';
-
-      if (moveToCollectionTitle) moveToCollectionTitle.textContent = "DETALLE DE " + nombre.toUpperCase();
-      if (displayAlienSerie) displayAlienSerie.textContent = serie;
-      if (moveAlienNombreVal) moveAlienNombreVal.value = nombre;
-      if (moveAlienSerieVal) moveAlienSerieVal.value = serie;
-
-      if (moveForm) {
-        moveForm.action = `/wishlist/mover/${id}/`;
-      }
-
-      // Prefill fields
-      const precioField = document.getElementById('id_precio');
-      const fechaField = document.getElementById('id_fecha_adquisicion');
-      const estadoField = document.getElementById('id_estado');
-      const marcaField = document.getElementById('id_marca');
-      const tamanoField = document.getElementById('id_tamano');
-      const subcategoriaField = document.getElementById('id_subcategoria');
-
-      if (precioField) precioField.value = precio;
-      if (fechaField) fechaField.value = fecha;
-      if (estadoField) estadoField.value = estado;
-      if (marcaField) marcaField.value = marca;
-      if (tamanoField) tamanoField.value = tamano;
-      if (subcategoriaField) subcategoriaField.value = subcategoria;
-
-      // Image preview
-      if (imagenUrl) {
-        if (moveAlienPreviewImg) {
-          moveAlienPreviewImg.src = imagenUrl;
-          moveAlienPreviewImg.style.display = 'block';
-        }
-        if (imageUploadPlaceholder) imageUploadPlaceholder.style.display = 'none';
-        if (filenameOverlay) filenameOverlay.style.display = 'block';
-        if (moveFileChosenName) moveFileChosenName.textContent = "Imagen desde wishlist";
-      } else {
-        resetImagePreview();
-      }
-
-      moveModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-  };
-
-  const closeMoveModal = () => {
-    if (moveModal) {
-      moveModal.classList.remove('active');
-      document.body.style.overflow = '';
-      if (moveForm) moveForm.reset();
-      resetImagePreview();
-    }
-  };
-
-  document.querySelectorAll('.move-to-collection-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      openMoveModal(btn);
-    });
-  });
-
-  if (closeMoveBtnX) closeMoveBtnX.addEventListener('click', closeMoveModal);
-  if (cancelMoveBtn) cancelMoveBtn.addEventListener('click', closeMoveModal);
-  const moveOverlay = document.getElementById('moveToCollectionOverlay');
-  if (moveOverlay) moveOverlay.addEventListener('click', closeMoveModal);
-
-  // === CARGAR ERRORES DE VALIDACION AUTOMATICAMENTE ===
-  const errorMarker = document.getElementById('error-moving-id-marker');
-  if (errorMarker) {
-    const errorId = errorMarker.getAttribute('data-id');
-    const matchedBtn = document.querySelector(`.wishlist-card[data-id="${errorId}"] .move-to-collection-btn`);
-    if (matchedBtn) {
-      openMoveModal(matchedBtn);
-    }
-  }
-
   // Hover fluorescent glow effect on placeholder images inside wishlist cards
   document.querySelectorAll('.wishlist-card').forEach(card => {
     const placeholder = card.querySelector('.wishlist-placeholder-img');
     card.addEventListener('mouseenter', () => {
-      if(placeholder) {
+      if (placeholder) {
         placeholder.style.filter = 'none opacity(0.85) drop-shadow(0 0 15px var(--green-primary))';
         placeholder.style.transform = 'scale(1.15) rotate(5deg)';
       }
     });
     card.addEventListener('mouseleave', () => {
-      if(placeholder) {
+      if (placeholder) {
         placeholder.style.filter = 'grayscale(1) opacity(0.2) drop-shadow(0 0 10px rgba(0, 255, 65, 0.15))';
         placeholder.style.transform = 'scale(1) rotate(0deg)';
       }
     });
   });
+
+  // Lógica para descargar foto de wishlist con html2canvas
+  const downloadBtn = document.getElementById('downloadWishlistBtn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      const originalOpacity = downloadBtn.style.opacity;
+      downloadBtn.disabled = true;
+      downloadBtn.style.opacity = '0.5';
+
+      // 1. Obtener todos los elementos de la wishlist del DOM actual
+      const items = [];
+      document.querySelectorAll('.wishlist-card').forEach(card => {
+        const nombre = card.getAttribute('data-nombre');
+        const imgEl = card.querySelector('.figure-img-wrap img');
+        const imgUrl = imgEl ? imgEl.src : '/media/omnitrix/Ben_10_Omnitrix.png';
+        items.push({ nombre, imgUrl });
+      });
+
+      if (items.length === 0) {
+        alert('No hay elementos en la wishlist para descargar.');
+        downloadBtn.disabled = false;
+        downloadBtn.style.opacity = originalOpacity;
+        return;
+      }
+
+      // 2. Crear contenedor temporal fuera de pantalla para el renderizado
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.top = '-9999px';
+      container.style.left = '-9999px';
+      container.style.width = '850px';
+      container.style.padding = '45px';
+      container.style.boxSizing = 'border-box';
+      // Fondo oscuro cyberpunk con gradiente radial y líneas de escaneo
+      container.style.background = 'linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, #0c210c 0%, #030803 100%)';
+      container.style.backgroundSize = '100% 4px, 100% 100%';
+      container.style.border = '2px solid #00ff41';
+      container.style.borderRadius = '20px';
+      container.style.boxShadow = '0 0 50px rgba(0, 255, 65, 0.3)';
+      container.style.fontFamily = "'Orbitron', sans-serif";
+      container.style.color = '#ffffff';
+
+      // Cabecera del poster
+      const header = document.createElement('div');
+      header.style.textAlign = 'center';
+      header.style.marginBottom = '40px';
+      header.style.borderBottom = '1px solid rgba(0, 255, 65, 0.2)';
+      header.style.paddingBottom = '20px';
+      
+      const title = document.createElement('h1');
+      title.textContent = 'WISHLIST GALÁCTICA';
+      title.style.fontSize = '2.2rem';
+      title.style.color = '#00ff41';
+      title.style.letterSpacing = '4px';
+      title.style.margin = '0 0 8px 0';
+      title.style.textShadow = '0 0 15px rgba(0, 255, 65, 0.6)';
+      
+      const subtitle = document.createElement('p');
+      subtitle.textContent = 'BEN 10 COLLECTOR';
+      subtitle.style.fontSize = '0.85rem';
+      subtitle.style.color = '#a0ffa0';
+      subtitle.style.letterSpacing = '3px';
+      subtitle.style.margin = '0';
+      subtitle.style.opacity = '0.8';
+
+      header.appendChild(title);
+      header.appendChild(subtitle);
+      container.appendChild(header);
+
+      // Grid de aliens
+      const grid = document.createElement('div');
+      grid.style.display = 'grid';
+      grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+      grid.style.gap = '25px';
+
+      items.forEach(item => {
+        const itemBox = document.createElement('div');
+        itemBox.style.border = '1px solid rgba(0, 255, 65, 0.2)';
+        itemBox.style.borderRadius = '14px';
+        itemBox.style.padding = '20px';
+        itemBox.style.background = 'rgba(5, 12, 5, 0.85)';
+        itemBox.style.display = 'flex';
+        itemBox.style.flexDirection = 'column';
+        itemBox.style.alignItems = 'center';
+        itemBox.style.justifyContent = 'center';
+        itemBox.style.boxShadow = '0 0 20px rgba(0, 255, 65, 0.08)';
+        itemBox.style.boxSizing = 'border-box';
+
+        // Caja de imagen
+        const imgWrap = document.createElement('div');
+        imgWrap.style.width = '100%';
+        imgWrap.style.aspectRatio = '1 / 1';
+        imgWrap.style.display = 'flex';
+        imgWrap.style.alignItems = 'center';
+        imgWrap.style.justifyContent = 'center';
+        imgWrap.style.overflow = 'hidden';
+        imgWrap.style.background = 'radial-gradient(circle, rgba(0, 255, 65, 0.06), transparent 75%)';
+        imgWrap.style.marginBottom = '15px';
+        imgWrap.style.borderRadius = '10px';
+
+        const img = document.createElement('img');
+        img.src = item.imgUrl;
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '100%';
+        img.style.objectFit = 'contain';
+
+        imgWrap.appendChild(img);
+        itemBox.appendChild(imgWrap);
+
+        // Nombre del alien
+        const nameLabel = document.createElement('h3');
+        nameLabel.textContent = item.nombre;
+        nameLabel.style.fontSize = '1.1rem';
+        nameLabel.style.color = '#ffffff';
+        nameLabel.style.margin = '0';
+        nameLabel.style.textAlign = 'center';
+        nameLabel.style.textTransform = 'uppercase';
+        nameLabel.style.letterSpacing = '1.5px';
+        nameLabel.style.fontFamily = "'Orbitron', sans-serif";
+        nameLabel.style.fontWeight = '700';
+        nameLabel.style.textShadow = '0 0 8px rgba(255, 255, 255, 0.1)';
+
+        itemBox.appendChild(nameLabel);
+        grid.appendChild(itemBox);
+      });
+
+      container.appendChild(grid);
+      document.body.appendChild(container);
+
+      // Generar canvas
+      html2canvas(container, {
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#030803',
+        scale: 2,
+        logging: false
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'mi_wishlist_ben10.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // Limpiar y restaurar
+        document.body.removeChild(container);
+        downloadBtn.disabled = false;
+        downloadBtn.style.opacity = originalOpacity;
+      }).catch(err => {
+        console.error('Error al generar la imagen:', err);
+        alert('Hubo un error al generar la imagen.');
+        if (document.body.contains(container)) {
+          document.body.removeChild(container);
+        }
+        downloadBtn.disabled = false;
+        downloadBtn.style.opacity = originalOpacity;
+      });
+    });
+  }
 });

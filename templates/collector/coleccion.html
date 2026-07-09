@@ -40,9 +40,14 @@
       <h2 class="sub-title-omni" style="margin-bottom: 0; border: none; padding-left: 0;">
         Mis Figuras (<span class="green-text">{{ figuras_count }}</span>)
       </h2>
-      <button class="btn-primary" id="openAddModalBtn" style="cursor: pointer;">
-        + Añadir Figura
-      </button>
+      <div style="display: flex; gap: 15px;">
+        <button class="btn-secondary" id="openCustomModalBtn" style="cursor: pointer; border-color: var(--border-green); font-family: var(--font-display);">
+          + Alien Personalizado
+        </button>
+        <button class="btn-primary" id="openAddModalBtn" style="cursor: pointer;">
+          + Agregar Alien
+        </button>
+      </div>
     </div>
 
     <!-- LISTADO DE FIGURAS (SEPARADO POR SECCIONES DE SERIE) -->
@@ -442,9 +447,14 @@
   <!-- ===== MODAL DETALLE DE FIGURA ===== -->
   {% include 'collector/includes/detail_modal.html' %}
 
+  <!-- ===== MODAL ALIEN PERSONALIZADO FIGURA ===== -->
+  {% include 'collector/includes/figure_custom_modal.html' %}
+
   <!-- ===== DATOS PARA JAVASCRIPT ===== -->
   {{ aliens_por_serie|json_script:"aliens-por-serie-data" }}
-  <script src="{% static 'js/coleccion.js' %}?v=3"></script>
+  <script src="{% static 'js/modal-figure.js' %}?v=1"></script>
+  <script src="{% static 'js/modal-detail.js' %}?v=1"></script>
+  <script src="{% static 'js/modal-figure-custom.js' %}?v=1"></script>
 
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
   {% include 'collector/includes/profile_modal.html' %}

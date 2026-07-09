@@ -1,44 +1,45 @@
-<!-- ===== MODAL FORMULARIO WISHLIST PERSONALIZADO ===== -->
-<div class="transform-modal" id="wishlistCustomModal">
-  <div class="modal-overlay" id="wishlistCustomOverlay"></div>
+<!-- ===== MODAL FORMULARIO FIGURA PERSONALIZADO ===== -->
+<div class="transform-modal" id="figureCustomModal">
+  <div class="modal-overlay" id="figureCustomOverlay"></div>
   <div class="modal-content" style="max-width: 920px; width: 95%; text-align: left; padding: 45px; border-color: var(--green-primary); display: flex; flex-direction: column; gap: 24px; transition: var(--transition);">
     <div class="form-header-omni"
       style="margin-bottom: 0px; border-bottom: 1px solid var(--border-green); padding-bottom: 18px; display: flex; align-items: center; gap: 15px; width: 100%;">
       <div class="omni-radar" style="width: 16px; height: 16px;"></div>
-      <h2 id="wishlistCustomFormTitle"
+      <h2 id="figureCustomFormTitle"
         style="font-family: var(--font-display); font-size: 1.6rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">AÑADIR ALIEN PERSONALIZADO</h2>
-      <button type="button" id="wishlistCustomFormCloseX"
+      <button type="button" id="figureCustomFormCloseX"
         style="margin-left: auto; background: none; border: none; color: var(--green-primary); font-size: 1.8rem; cursor: pointer; outline: none; transition: transform 0.2s ease, color 0.2s ease;" onmouseover="this.style.color='#ffffff'; this.style.transform='scale(1.15) rotate(90deg)'" onmouseout="this.style.color='var(--green-primary)'; this.style.transform='none'">✕</button>
     </div>
 
-    <form method="POST" enctype="multipart/form-data" class="omni-form-fields" id="wishlistCustomFormSubmit"
-      action="{% url 'agregar_a_wishlist' %}" style="margin: 0; padding: 0; width: 100%;">
+    <form method="POST" enctype="multipart/form-data" class="omni-form-fields" id="figureCustomFormSubmit"
+      action="{% url 'coleccion' %}" style="margin: 0; padding: 0; width: 100%;">
       {% csrf_token %}
+      <input type="hidden" name="is_custom" value="1" />
 
       <div class="detail-container" style="display: grid; grid-template-columns: 400px 400px; gap: 40px; width: 100%; align-items: center; justify-content: center; margin-bottom: 24px;">
         
         <!-- Lado Izquierdo: Holograma Previsualización (Clickable) -->
-        <div class="detail-img-wrap" id="wishlistCustomAlienPreviewImgWrap" 
+        <div class="detail-img-wrap" id="figureCustomAlienPreviewImgWrap" 
           style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; width: 400px; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); position: relative; flex-shrink: 0; aspect-ratio: 1 / 1; cursor: pointer; transition: var(--transition);"
           onmouseover="this.style.borderColor='var(--green-primary)'; this.style.boxShadow='0 0 40px rgba(0, 255, 65, 0.3)'"
           onmouseout="this.style.borderColor='var(--border-green)'; this.style.boxShadow='0 0 30px rgba(0, 255, 65, 0.15)'">
           
-          <div id="wishlistCustomImageUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; text-align: center; z-index: 2; position: relative;">
-            <img src="/media/omnitrix/Ben_10_Omnitrix.png" id="wishlistCustomAlienPreviewImg" alt="Omnitrix Database" style="width: 130px; height: 130px; filter: drop-shadow(0 0 12px var(--green-primary)); animation: omni-spin 25s linear infinite;" />
-            <span id="wishlistCustomAlienPreviewText" style="font-family: var(--font-display); font-size: 0.9rem; color: var(--green-primary); letter-spacing: 2px; margin-top: 20px; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow); font-weight: bold;">Base de Datos Omnitrix</span>
+          <div id="figureCustomImageUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; text-align: center; z-index: 2; position: relative;">
+            <img src="/media/omnitrix/Ben_10_Omnitrix.png" id="figureCustomAlienPreviewImg" alt="Omnitrix Database" style="width: 130px; height: 130px; filter: drop-shadow(0 0 12px var(--green-primary)); animation: omni-spin 25s linear infinite;" />
+            <span id="figureCustomAlienPreviewText" style="font-family: var(--font-display); font-size: 0.9rem; color: var(--green-primary); letter-spacing: 2px; margin-top: 20px; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow); font-weight: bold;">Base de Datos Omnitrix</span>
           </div>
 
           <!-- Imagen previsualización absoluta (cubre todo el wrapper al cargar) -->
-          <img id="wishlistCustomPreviewFull" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5;" />
+          <img id="figureCustomPreviewFull" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5;" />
 
           <!-- Input real de imagen oculto -->
           <div style="display: none;">
-            {{ form_wishlist_custom.imagen }}
+            {{ form_custom.imagen }}
           </div>
 
           <!-- Overlay con nombre de archivo seleccionado -->
-          <div id="wishlistCustomFilenameOverlay" style="display: none; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(5, 12, 5, 0.92); border-top: 1px solid var(--border-green); padding: 12px 18px; text-align: center; z-index: 10;">
-            <span id="wishlistCustomFileChosenName" style="color: var(--green-primary); font-family: var(--font-body); font-size: 0.85rem; text-shadow: 0 0 5px var(--green-glow); word-break: break-all; font-weight: 500;">Sin archivo</span>
+          <div id="figureCustomFilenameOverlay" style="display: none; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(5, 12, 5, 0.92); border-top: 1px solid var(--border-green); padding: 12px 18px; text-align: center; z-index: 10;">
+            <span id="figureCustomFileChosenName" style="color: var(--green-primary); font-family: var(--font-body); font-size: 0.85rem; text-shadow: 0 0 5px var(--green-glow); word-break: break-all; font-weight: 500;">Sin archivo</span>
           </div>
         </div>
 
@@ -47,22 +48,22 @@
           
           <!-- Serie de Origen -->
           <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form_wishlist_custom.serie.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SERIE DE ORIGEN</label>
-            {{ form_wishlist_custom.serie }}
+            <label for="{{ form_custom.serie.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SERIE DE ORIGEN</label>
+            {{ form_custom.serie }}
           </div>
 
           <!-- Nombre -->
           <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form_wishlist_custom.nombre.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">NOMBRE DEL ALIEN / FIGURA</label>
-            {{ form_wishlist_custom.nombre }}
+            <label for="{{ form_custom.nombre.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">NOMBRE DEL ALIEN / FIGURA</label>
+            {{ form_custom.nombre }}
           </div>
 
           <!-- Precio (Glow Green) -->
           <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="id_custom_precio" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">PRECIO DE ADQUISICIÓN</label>
+            <label for="id_custom_fig_precio" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">PRECIO DE ADQUISICIÓN</label>
             <div style="display: flex; align-items: center; gap: 5px;">
               <span style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">$</span>
-              <input type="number" name="precio" id="id_custom_precio" placeholder="0" min="0"
+              <input type="number" name="precio" id="id_custom_fig_precio" placeholder="0" min="0"
                 style="background: transparent; border: none; font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary); outline: none; width: 100%; padding: 0; margin: 0;" />
               <span style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">CLP</span>
             </div>
@@ -70,33 +71,33 @@
 
           <!-- Fecha de Adquisición -->
           <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="id_custom_fecha_adquisicion" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">FECHA DE ADQUISICIÓN</label>
-            <input type="date" name="fecha_adquisicion" id="id_custom_fecha_adquisicion" style="color-scheme: dark; border: none; background: transparent; padding: 0; font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; outline: none; width: 100%; font-weight: 700; letter-spacing: 1px;" />
+            <label for="id_custom_fig_fecha_adquisicion" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">FECHA DE ADQUISICIÓN</label>
+            <input type="date" name="fecha_adquisicion" id="id_custom_fig_fecha_adquisicion" style="color-scheme: dark; border: none; background: transparent; padding: 0; font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; outline: none; width: 100%; font-weight: 700; letter-spacing: 1px;" />
           </div>
 
           <!-- Estado y Marca Grid -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-              <label for="{{ form_wishlist_custom.estado.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">ESTADO</label>
-              {{ form_wishlist_custom.estado }}
+              <label for="{{ form_custom.estado.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">ESTADO</label>
+              {{ form_custom.estado }}
             </div>
 
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-              <label for="{{ form_wishlist_custom.marca.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">MARCA</label>
-              {{ form_wishlist_custom.marca }}
+              <label for="{{ form_custom.marca.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">MARCA</label>
+              {{ form_custom.marca }}
             </div>
           </div>
 
           <!-- Tamaño y Subcategoría Grid -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-              <label for="{{ form_wishlist_custom.tamano.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">TAMAÑO</label>
-              {{ form_wishlist_custom.tamano }}
+              <label for="{{ form_custom.tamano.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">TAMAÑO</label>
+              {{ form_custom.tamano }}
             </div>
 
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-              <label for="{{ form_wishlist_custom.subcategoria.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SUBCATEGORÍA</label>
-              {{ form_wishlist_custom.subcategoria }}
+              <label for="{{ form_custom.subcategoria.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SUBCATEGORÍA</label>
+              {{ form_custom.subcategoria }}
             </div>
           </div>
 
@@ -104,16 +105,15 @@
       </div>
 
       <div style="display: flex; gap: 12px; width: 100%; max-width: 730px; margin: 0 auto;">
-        <button type="button" class="btn-secondary" id="wishlistCustomFormCancel"
+        <button type="button" class="btn-secondary" id="figureCustomFormCancel"
           style="flex: 1; justify-content: center; padding: 14px 20px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px;">
           CANCELAR
         </button>
-        <button type="submit" class="btn-primary" id="wishlistCustomFormSubmitBtn"
+        <button type="submit" class="btn-primary" id="figureCustomFormSubmitBtn"
           style="flex: 2; justify-content: center; padding: 14px 20px; cursor: pointer; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;">
-          GUARDAR EN WISHLIST
+          GUARDAR FIGURA
         </button>
       </div>
     </form>
   </div>
 </div>
-

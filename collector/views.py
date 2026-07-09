@@ -3,7 +3,7 @@ from django.views.decorators.cache import never_cache
 from django.db.models import Sum, Avg, Max, Subquery, OuterRef, Case, When, Value, IntegerField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
-from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm, WishlistCustomForm
+from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm, WishlistCustomForm, FiguraCustomForm
 from .models import Figura, Perfil, Alien, WishlistItem
 
 def get_ordered_figures(queryset):
@@ -49,7 +49,11 @@ def get_aliens_por_serie_data():
 @never_cache
 def coleccion(request):
     if request.method == 'POST':
-        form = FiguraForm(request.POST, request.FILES)
+        if 'is_custom' in request.POST:
+            form = FiguraCustomForm(request.POST, request.FILES)
+        else:
+            form = FiguraForm(request.POST, request.FILES)
+        
         if form.is_valid():
             figura = form.save(commit=False)
             if not figura.imagen:
@@ -63,6 +67,8 @@ def coleccion(request):
             return redirect('coleccion')
     else:
         form = FiguraForm()
+    
+    form_custom = FiguraCustomForm()
     
     figuras_classic = get_ordered_figures(Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion'))
     figuras_af = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion'))
@@ -112,6 +118,7 @@ def coleccion(request):
         'figuras_villanos_count': figuras_villanos_count,
         'figuras_count': figuras_count,
         'form': form,
+        'form_custom': form_custom,
         'aliens': aliens,
         'aliens_por_serie': aliens_por_serie
     })

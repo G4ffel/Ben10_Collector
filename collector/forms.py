@@ -105,10 +105,20 @@ class WishlistItemForm(forms.ModelForm):
 
 
 class WishlistEditForm(forms.ModelForm):
+    nombre = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'cta-input custom-input',
+            'placeholder': 'Ej. Fuego'
+        }),
+        label="Nombre del Alien",
+        required=True
+    )
+
     class Meta:
         model = WishlistItem
-        fields = ['precio', 'imagen', 'fecha_adquisicion', 'estado', 'marca', 'tamano', 'subcategoria']
+        fields = ['nombre', 'serie', 'precio', 'imagen', 'fecha_adquisicion', 'estado', 'marca', 'tamano', 'subcategoria']
         widgets = {
+            'serie': forms.Select(attrs={'class': 'cta-input custom-input select-custom'}),
             'fecha_adquisicion': forms.DateInput(attrs={'type': 'date', 'class': 'cta-input custom-input select-custom'}),
             'estado': forms.Select(attrs={'class': 'cta-input custom-input select-custom'}),
             'marca': forms.Select(attrs={'class': 'cta-input custom-input select-custom'}),
@@ -159,6 +169,51 @@ class WishlistCustomForm(forms.ModelForm):
                 'class': 'cta-input custom-input select-custom'
             })
         }
+
+
+class FiguraCustomForm(forms.ModelForm):
+    nombre = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'cta-input custom-input',
+            'placeholder': 'Ej. Muy Grande'
+        }),
+        label="Nombre del Alien / Figura",
+        required=True
+    )
+
+    class Meta:
+        model = Figura
+        fields = ['nombre', 'precio', 'imagen', 'fecha_adquisicion', 'serie', 'estado', 'marca', 'tamano', 'subcategoria']
+        widgets = {
+            'precio': forms.NumberInput(attrs={
+                'class': 'cta-input custom-input',
+                'placeholder': 'Ej. 15000'
+            }),
+            'imagen': forms.ClearableFileInput(attrs={
+                'class': 'file-input-custom',
+                'accept': 'image/*'
+            }),
+            'fecha_adquisicion': forms.DateInput(attrs={
+                'class': 'cta-input custom-input',
+                'type': 'date'
+            }),
+            'serie': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'estado': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'marca': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'tamano': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            }),
+            'subcategoria': forms.Select(attrs={
+                'class': 'cta-input custom-input select-custom'
+            })
+        }
+
 
 
 

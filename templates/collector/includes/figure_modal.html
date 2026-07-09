@@ -17,64 +17,91 @@
 
       <div class="detail-container" style="display: grid; grid-template-columns: 400px 400px; gap: 40px; width: 100%; align-items: center; justify-content: center; margin-bottom: 24px;">
         
-        <!-- Lado Izquierdo: Holograma Previsualización -->
-        <div class="detail-img-wrap" style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; width: 400px; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); position: relative; flex-shrink: 0; aspect-ratio: 1 / 1;">
-          <img src="/media/omnitrix/Ben_10_Omnitrix.png" id="figureAddAlienPreviewImg" alt="Omnitrix Database" style="width: 130px; height: 130px; filter: drop-shadow(0 0 12px var(--green-primary)); animation: omni-spin 25s linear infinite;" />
-          <span id="figureAddAlienPreviewText" style="font-family: var(--font-display); font-size: 0.9rem; color: var(--green-primary); letter-spacing: 2px; margin-top: 20px; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow); font-weight: bold;">Base de Datos Omnitrix</span>
+        <!-- Lado Izquierdo: Holograma Previsualización (Clickable) -->
+        <div class="detail-img-wrap" id="figureAddAlienPreviewImgWrap" 
+          style="border: 2px solid var(--border-green); border-radius: 16px; overflow: hidden; background: linear-gradient(rgba(0, 255, 65, 0.02) 50%, rgba(0, 0, 0, 0.3) 50%), radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, rgba(5, 12, 5, 0.95) 100%); background-size: 100% 4px, 100% 100%; width: 400px; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.15); position: relative; flex-shrink: 0; aspect-ratio: 1 / 1; cursor: pointer; transition: var(--transition);"
+          onmouseover="this.style.borderColor='var(--green-primary)'; this.style.boxShadow='0 0 40px rgba(0, 255, 65, 0.3)'"
+          onmouseout="this.style.borderColor='var(--border-green)'; this.style.boxShadow='0 0 30px rgba(0, 255, 65, 0.15)'">
+          
+          <div id="figureAddImageUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; text-align: center; z-index: 2; position: relative;">
+            <img src="/media/omnitrix/Ben_10_Omnitrix.png" id="figureAddAlienPreviewImg" alt="Omnitrix Database" style="width: 130px; height: 130px; filter: drop-shadow(0 0 12px var(--green-primary)); animation: omni-spin 25s linear infinite;" />
+            <span id="figureAddAlienPreviewText" style="font-family: var(--font-display); font-size: 0.9rem; color: var(--green-primary); letter-spacing: 2px; margin-top: 20px; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow); font-weight: bold;">Base de Datos Omnitrix</span>
+          </div>
+
+          <!-- Imagen previsualización absoluta (cubre todo el wrapper al cargar) -->
+          <img id="figureAddPreviewFull" src="" alt="Vista previa" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5;" />
+
+          <!-- Input real de imagen oculto -->
+          <div style="display: none;">
+            {{ form.imagen }}
+          </div>
+
+          <!-- Overlay con nombre de archivo seleccionado -->
+          <div id="figureAddFilenameOverlay" style="display: none; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(5, 12, 5, 0.92); border-top: 1px solid var(--border-green); padding: 12px 18px; text-align: center; z-index: 10;">
+            <span id="fileChosenName" style="color: var(--green-primary); font-family: var(--font-body); font-size: 0.85rem; text-shadow: 0 0 5px var(--green-glow); word-break: break-all; font-weight: 500;">Sin archivo</span>
+          </div>
         </div>
 
         <!-- Lado Derecho: HUD Inputs -->
         <div class="detail-info-wrap hud-scrollbar" style="display: flex; flex-direction: column; gap: 14px; height: 400px; overflow-y: auto; padding-right: 8px; box-sizing: border-box;">
           
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+          <!-- Serie de Origen -->
+          <div class="hud-info-box" id="formSerieBox" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
             <label for="{{ form.serie.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SERIE DE ORIGEN</label>
             {{ form.serie }}
           </div>
 
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form.subcategoria.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SUBCATEGORÍA (OPCIONAL)</label>
-            {{ form.subcategoria }}
+          <!-- Serie de Origen (Read-Only) -->
+          <div class="hud-info-box" id="formSerieReadOnlyBox" style="display: none; background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; flex-direction: column; position: relative;">
+            <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px;">SERIE DE ORIGEN</span>
+            <span id="formSerieReadOnlyText" style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: #ffffff; text-transform: uppercase;">-</span>
           </div>
 
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+          <!-- Nombre -->
+          <div class="hud-info-box" id="formNombreBox" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
             <label for="{{ form.nombre.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">NOMBRE DEL ALIEN / FIGURA</label>
             {{ form.nombre }}
           </div>
 
+          <!-- Precio de Adquisición (Glow Green) -->
           <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form.estado.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">ESTADO</label>
-            {{ form.estado }}
-          </div>
-
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form.marca.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">MARCA</label>
-            {{ form.marca }}
-          </div>
-
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form.tamano.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">TAMAÑO</label>
-            {{ form.tamano }}
-          </div>
-
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form.precio.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">PRECIO (CLP)</label>
-            {{ form.precio }}
-          </div>
-
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form.fecha_adquisicion.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">FECHA DE ADQUISICIÓN</label>
-            {{ form.fecha_adquisicion }}
-          </div>
-
-          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
-            <label for="{{ form.imagen.id_for_label }}" class="file-label-custom-btn" id="fileLabelBtn" style="margin: 0; padding: 10px 16px; font-size: 0.75rem; font-family: var(--font-display); letter-spacing: 0.5px; border-radius: 8px; text-align: center; cursor: pointer; width: 100%; box-sizing: border-box;">
-              📁 Seleccionar Imagen
-            </label>
-            <div class="file-input-wrapper" style="display: none;">
-              {{ form.imagen }}
+            <label for="id_precio" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">PRECIO DE ADQUISICIÓN</label>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">$</span>
+              <input type="number" name="precio" id="id_precio" placeholder="10000" min="0"
+                style="background: transparent; border: none; font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary); outline: none; width: 100%; padding: 0; margin: 0;" />
+              <span style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">CLP</span>
             </div>
-            <span id="fileChosenName" style="color: var(--green-primary); font-size: 0.85rem; text-align: center; display: block; margin-top: 6px; font-family: var(--font-body); font-weight: 500; text-shadow: 0 0 5px var(--green-glow);">Sin archivos seleccionados</span>
-            <small id="imageHint" style="color: var(--text-muted); font-size: 0.75rem; display: none; text-align: center; margin-top: 4px;">(Dejar en blanco para mantener la imagen actual)</small>
+          </div>
+
+          <!-- Fecha de Adquisición -->
+          <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+            <label for="id_fecha_adquisicion" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">FECHA DE ADQUISICIÓN</label>
+            <input type="date" name="fecha_adquisicion" id="id_fecha_adquisicion" style="color-scheme: dark; border: none; background: transparent; padding: 0; font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; outline: none; width: 100%; font-weight: 700; letter-spacing: 1px;" />
+          </div>
+
+          <!-- Estado y Marca Grid -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+              <label for="{{ form.estado.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">ESTADO</label>
+              {{ form.estado }}
+            </div>
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+              <label for="{{ form.marca.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">MARCA</label>
+              {{ form.marca }}
+            </div>
+          </div>
+
+          <!-- Tamaño y Subcategoría Grid -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+              <label for="{{ form.tamano.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">TAMAÑO</label>
+              {{ form.tamano }}
+            </div>
+            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+              <label for="{{ form.subcategoria.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SUBCATEGORÍA</label>
+              {{ form.subcategoria }}
+            </div>
           </div>
 
         </div>
