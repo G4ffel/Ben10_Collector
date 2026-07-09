@@ -10,12 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-try:
-    import pymysql
-    pymysql.version_info = (2, 2, 5, "final", 0)
-    pymysql.install_as_MySQLdb()
-except ImportError:
-    pass
+import pymysql
+pymysql.version_info = (2, 2, 5, "final", 0)
+pymysql.install_as_MySQLdb()
 
 from pathlib import Path
 
@@ -81,36 +78,16 @@ WSGI_APPLICATION = 'Ben10_Collector.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-import socket
-
-def is_mysql_available(host="127.0.0.1", port=3306):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(0.5)
-    try:
-        s.connect((host, port))
-        s.close()
-        return True
-    except Exception:
-        return False
-
-if is_mysql_available():
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'alien_collection',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': '127.0.0.1',
-            'PORT': '3306',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alien_collection',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 
 # Password validation
