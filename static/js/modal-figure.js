@@ -308,4 +308,10 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => targetBtn.click(), 150);
     }
   }
+
+  // Auto-open modal if there are validation errors
+  const errorMarker = document.getElementById('standard-form-error-marker');
+  if (errorMarker) {
+    openModal();
+  }
 });

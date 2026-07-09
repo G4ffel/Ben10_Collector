@@ -272,4 +272,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (addOverlay) addOverlay.addEventListener('click', closeAddModal);
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAddModal(); });
+
+  // Auto-open modal if there are validation errors
+  const errorMarker = document.getElementById('standard-wishlist-error-marker');
+  if (errorMarker) {
+    openAddModal();
+  }
 });

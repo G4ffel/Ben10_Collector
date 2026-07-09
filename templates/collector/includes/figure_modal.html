@@ -49,6 +49,9 @@
           <div class="hud-info-box" id="formSerieBox" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
             <label for="{{ form.serie.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SERIE DE ORIGEN</label>
             {{ form.serie }}
+            {% if form.serie.errors %}
+              <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.serie.errors.0 }}</span>
+            {% endif %}
           </div>
 
           <!-- Serie de Origen (Read-Only) -->
@@ -61,6 +64,9 @@
           <div class="hud-info-box" id="formNombreBox" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
             <label for="{{ form.nombre.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">NOMBRE DEL ALIEN / FIGURA</label>
             {{ form.nombre }}
+            {% if form.nombre.errors %}
+              <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.nombre.errors.0 }}</span>
+            {% endif %}
           </div>
 
           <!-- Precio de Adquisición (Glow Green) -->
@@ -68,16 +74,22 @@
             <label for="id_precio" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">PRECIO DE ADQUISICIÓN</label>
             <div style="display: flex; align-items: center; gap: 5px;">
               <span style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">$</span>
-              <input type="number" name="precio" id="id_precio" placeholder="10000" min="0"
+              <input type="number" name="precio" id="id_precio" value="0" min="0"
                 style="background: transparent; border: none; font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary); outline: none; width: 100%; padding: 0; margin: 0;" />
               <span style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--green-primary); text-shadow: 0 0 10px var(--green-primary);">CLP</span>
             </div>
+            {% if form.precio.errors %}
+              <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.precio.errors.0 }}</span>
+            {% endif %}
           </div>
 
           <!-- Fecha de Adquisición -->
           <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
             <label for="id_fecha_adquisicion" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">FECHA DE ADQUISICIÓN</label>
-            <input type="date" name="fecha_adquisicion" id="id_fecha_adquisicion" style="color-scheme: dark; border: none; background: transparent; padding: 0; font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; outline: none; width: 100%; font-weight: 700; letter-spacing: 1px;" />
+            <input type="date" name="fecha_adquisicion" id="id_fecha_adquisicion" value="{% now 'Y-m-d' %}" style="color-scheme: dark; border: none; background: transparent; padding: 0; font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; outline: none; width: 100%; font-weight: 700; letter-spacing: 1px;" />
+            {% if form.fecha_adquisicion.errors %}
+              <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.fecha_adquisicion.errors.0 }}</span>
+            {% endif %}
           </div>
 
           <!-- Estado y Marca Grid -->
@@ -85,10 +97,16 @@
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
               <label for="{{ form.estado.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">ESTADO</label>
               {{ form.estado }}
+              {% if form.estado.errors %}
+                <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.estado.errors.0 }}</span>
+              {% endif %}
             </div>
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
               <label for="{{ form.marca.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">MARCA</label>
               {{ form.marca }}
+              {% if form.marca.errors %}
+                <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.marca.errors.0 }}</span>
+              {% endif %}
             </div>
           </div>
 
@@ -97,10 +115,16 @@
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
               <label for="{{ form.tamano.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">TAMAÑO</label>
               {{ form.tamano }}
+              {% if form.tamano.errors %}
+                <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.tamano.errors.0 }}</span>
+              {% endif %}
             </div>
             <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
               <label for="{{ form.subcategoria.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SUBCATEGORÍA</label>
               {{ form.subcategoria }}
+              {% if form.subcategoria.errors %}
+                <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.subcategoria.errors.0 }}</span>
+              {% endif %}
             </div>
           </div>
 

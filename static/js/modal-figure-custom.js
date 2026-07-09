@@ -100,4 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCustomModal(); });
+
+  // Auto-open modal if there are validation errors
+  const errorMarker = document.getElementById('custom-form-error-marker');
+  if (errorMarker) {
+    openCustomModal();
+  }
 });

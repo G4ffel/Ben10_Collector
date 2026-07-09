@@ -289,7 +289,7 @@
               {% for fav_fig in perfil.get_fav_figuras %}
               <div class="perfil-gallery-slot {% if fav_fig %}has-img{% endif %}" data-slot-index="{{ forloop.counter0 }}" title="{{ fav_fig.nombre|default:'Slot Vacío' }}">
                 {% if fav_fig %}
-                <img src="{{ fav_fig.imagen.url }}" alt="{{ fav_fig.nombre }}">
+                <img src="{{ fav_fig.imagen_url }}" alt="{{ fav_fig.nombre }}">
                 {% else %}
                 <img src="" alt="" onerror="this.style.display='none';">
                 {% endif %}

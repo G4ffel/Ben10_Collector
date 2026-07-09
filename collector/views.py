@@ -48,27 +48,20 @@ def get_aliens_por_serie_data():
 
 @never_cache
 def coleccion(request):
+    form = FiguraForm()
+    form_custom = FiguraCustomForm()
+    
     if request.method == 'POST':
         if 'is_custom' in request.POST:
-            form = FiguraCustomForm(request.POST, request.FILES)
+            form_custom = FiguraCustomForm(request.POST, request.FILES)
+            if form_custom.is_valid():
+                figura = form_custom.save()
+                return redirect('coleccion')
         else:
             form = FiguraForm(request.POST, request.FILES)
-        
-        if form.is_valid():
-            figura = form.save(commit=False)
-            if not figura.imagen:
-                try:
-                    alien_db = Alien.objects.get(nombre=figura.nombre)
-                    if alien_db.imagen:
-                        figura.imagen = alien_db.imagen
-                except Alien.DoesNotExist:
-                    pass
-            figura.save()
-            return redirect('coleccion')
-    else:
-        form = FiguraForm()
-    
-    form_custom = FiguraCustomForm()
+            if form.is_valid():
+                figura = form.save()
+                return redirect('coleccion')
     
     figuras_classic = get_ordered_figures(Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion'))
     figuras_af = get_ordered_figures(Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion'))
@@ -372,28 +365,86 @@ def agregar_a_wishlist(request):
         if nombres and serie:
             for nombre in nombres:
                 item = WishlistItem(nombre=nombre, serie=serie)
-                try:
-                    alien_db = Alien.objects.get(nombre=nombre)
-                    if alien_db.imagen:
-                        item.imagen = alien_db.imagen
-                except Alien.DoesNotExist:
-                    pass
                 item.save()
+            return redirect('wishlist')
         elif 'precio' in request.POST:
-            form = WishlistCustomForm(request.POST, request.FILES)
-            if form.is_valid():
-                form.save()
+            form_wishlist_custom = WishlistCustomForm(request.POST, request.FILES)
+            if form_wishlist_custom.is_valid():
+                form_wishlist_custom.save()
+                return redirect('wishlist')
+            else:
+                wishlist_items = get_ordered_figures_by_series(WishlistItem.objects.all())
+                wishlist_classic = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10'))
+                wishlist_af = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Alien Force'))
+                wishlist_ov = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Omniverse'))
+                wishlist_villanos = get_ordered_figures(WishlistItem.objects.filter(serie='Villanos'))
+                wishlist_personajes = get_ordered_figures(WishlistItem.objects.filter(serie='Personajes'))
+
+                wishlist_sections = []
+                if wishlist_classic.exists():
+                    wishlist_sections.append(('Ben 10 (Clásico)', 'var(--green-primary)', wishlist_classic))
+                if wishlist_af.exists():
+                    wishlist_sections.append(('Ben 10 Alien Force', '#3b82f6', wishlist_af))
+                if wishlist_ov.exists():
+                    wishlist_sections.append(('Ben 10 Omniverse', '#8b5cf6', wishlist_ov))
+                if wishlist_personajes.exists():
+                    wishlist_sections.append(('Personajes', '#eab308', wishlist_personajes))
+                if wishlist_villanos.exists():
+                    wishlist_sections.append(('Villanos', '#ef4444', wishlist_villanos))
+
+                aliens_por_serie = get_aliens_por_serie_data()
+                form_wishlist = WishlistItemForm()
+                form_figura = FiguraForm()
+                form_wishlist_edit = WishlistEditForm()
+
+                return render(request, 'collector/wishlist.html', {
+                    'wishlist_items': wishlist_items,
+                    'wishlist_sections': wishlist_sections,
+                    'form_wishlist': form_wishlist,
+                    'form_figura': form_figura,
+                    'form_wishlist_edit': form_wishlist_edit,
+                    'form_wishlist_custom': form_wishlist_custom,
+                    'aliens_por_serie': aliens_por_serie,
+                })
         else:
-            form = WishlistItemForm(request.POST)
-            if form.is_valid():
-                item = form.save(commit=False)
-                try:
-                    alien_db = Alien.objects.get(nombre=item.nombre)
-                    if alien_db.imagen:
-                        item.imagen = alien_db.imagen
-                except Alien.DoesNotExist:
-                    pass
-                item.save()
+            form_wishlist = WishlistItemForm(request.POST)
+            if form_wishlist.is_valid():
+                form_wishlist.save()
+                return redirect('wishlist')
+            else:
+                wishlist_items = get_ordered_figures_by_series(WishlistItem.objects.all())
+                wishlist_classic = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10'))
+                wishlist_af = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Alien Force'))
+                wishlist_ov = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Omniverse'))
+                wishlist_villanos = get_ordered_figures(WishlistItem.objects.filter(serie='Villanos'))
+                wishlist_personajes = get_ordered_figures(WishlistItem.objects.filter(serie='Personajes'))
+
+                wishlist_sections = []
+                if wishlist_classic.exists():
+                    wishlist_sections.append(('Ben 10 (Clásico)', 'var(--green-primary)', wishlist_classic))
+                if wishlist_af.exists():
+                    wishlist_sections.append(('Ben 10 Alien Force', '#3b82f6', wishlist_af))
+                if wishlist_ov.exists():
+                    wishlist_sections.append(('Ben 10 Omniverse', '#8b5cf6', wishlist_ov))
+                if wishlist_personajes.exists():
+                    wishlist_sections.append(('Personajes', '#eab308', wishlist_personajes))
+                if wishlist_villanos.exists():
+                    wishlist_sections.append(('Villanos', '#ef4444', wishlist_villanos))
+
+                aliens_por_serie = get_aliens_por_serie_data()
+                form_figura = FiguraForm()
+                form_wishlist_edit = WishlistEditForm()
+                form_wishlist_custom = WishlistCustomForm()
+
+                return render(request, 'collector/wishlist.html', {
+                    'wishlist_items': wishlist_items,
+                    'wishlist_sections': wishlist_sections,
+                    'form_wishlist': form_wishlist,
+                    'form_figura': form_figura,
+                    'form_wishlist_edit': form_wishlist_edit,
+                    'form_wishlist_custom': form_wishlist_custom,
+                    'aliens_por_serie': aliens_por_serie,
+                })
     return redirect('wishlist')
 
 
@@ -420,21 +471,15 @@ def mover_a_coleccion(request, wishlist_id):
         post_data['nombre'] = wishlist_item.nombre
         post_data['serie'] = wishlist_item.serie
         
-        files = request.FILES.copy()
-        if not files.get('imagen') and wishlist_item.imagen:
-            files['imagen'] = wishlist_item.imagen
-            
-        form = FiguraForm(post_data, files)
+        is_custom = not Alien.objects.filter(nombre=wishlist_item.nombre).exists()
+        if is_custom:
+            form = FiguraCustomForm(post_data, request.FILES)
+        else:
+            form = FiguraForm(post_data, request.FILES)
         if form.is_valid():
             figura = form.save(commit=False)
-            # If still no image (neither uploaded nor copied from wishlist), copy default from database
-            if not figura.imagen:
-                try:
-                    alien_db = Alien.objects.get(nombre=figura.nombre)
-                    if alien_db.imagen:
-                        figura.imagen = alien_db.imagen
-                except Alien.DoesNotExist:
-                    pass
+            if not figura.imagen and wishlist_item.imagen:
+                figura.imagen = wishlist_item.imagen
             figura.save()
             wishlist_item.delete()
             return redirect('coleccion')
@@ -480,13 +525,6 @@ def bodega(request):
         if form.is_valid():
             figura = form.save(commit=False)
             figura.estado_coleccion = 'bodega'
-            if not figura.imagen:
-                try:
-                    alien_db = Alien.objects.get(nombre=figura.nombre)
-                    if alien_db.imagen:
-                        figura.imagen = alien_db.imagen
-                except Alien.DoesNotExist:
-                    pass
             figura.save()
             return redirect('bodega')
     else:

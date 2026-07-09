@@ -1,7 +1,7 @@
 from django.db import models
 
 def figuras_upload_path(instance, filename):
-    if instance.estado_coleccion in ['bodega', 'vendido']:
+    if hasattr(instance, 'estado_coleccion') and instance.estado_coleccion in ['bodega', 'vendido']:
         return f'bodega/{filename}'
     mapping = {
         'Ben 10': 'ben-10',
@@ -10,7 +10,8 @@ def figuras_upload_path(instance, filename):
         'Personajes': 'personajes',
         'Villanos': 'villanos'
     }
-    folder = mapping.get(instance.serie, 'otros')
+    serie = getattr(instance, 'serie', 'Ben 10')
+    folder = mapping.get(serie, 'otros')
     return f'figuras/{folder}/{filename}'
 
 def aliens_db_upload_path(instance, filename):
@@ -146,6 +147,28 @@ class Figura(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.serie})"
+
+    @property
+    def imagen_url(self):
+        if self.imagen:
+            return self.imagen.url
+        try:
+            alien_db = Alien.objects.get(nombre=self.nombre)
+            if alien_db.imagen:
+                return alien_db.imagen.url
+        except Alien.DoesNotExist:
+            pass
+        return '/media/omnitrix/Ben_10_Omnitrix.png'
+
+    @property
+    def has_real_image(self):
+        if self.imagen:
+            return True
+        try:
+            alien_db = Alien.objects.get(nombre=self.nombre)
+            return bool(alien_db.imagen)
+        except Alien.DoesNotExist:
+            return False
 
 
 class Alien(models.Model):
@@ -395,3 +418,25 @@ class WishlistItem(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.serie}) [Wishlist]"
+
+    @property
+    def imagen_url(self):
+        if self.imagen:
+            return self.imagen.url
+        try:
+            alien_db = Alien.objects.get(nombre=self.nombre)
+            if alien_db.imagen:
+                return alien_db.imagen.url
+        except Alien.DoesNotExist:
+            pass
+        return '/media/omnitrix/Ben_10_Omnitrix.png'
+
+    @property
+    def has_real_image(self):
+        if self.imagen:
+            return True
+        try:
+            alien_db = Alien.objects.get(nombre=self.nombre)
+            return bool(alien_db.imagen)
+        except Alien.DoesNotExist:
+            return False

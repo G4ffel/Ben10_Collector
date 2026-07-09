@@ -80,9 +80,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-classic">
                   {{ figura.serie }}
@@ -107,7 +107,7 @@
                       data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
                       data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
                       data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      data-imagen="{{ figura.imagen_url }}">
                       Editar
                     </button>
                     <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
@@ -155,9 +155,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-af">
                   {{ figura.serie }}
@@ -182,7 +182,7 @@
                       data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
                       data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
                       data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      data-imagen="{{ figura.imagen_url }}">
                       Editar
                     </button>
                     <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
@@ -230,9 +230,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-ov">
                   {{ figura.serie }}
@@ -257,7 +257,7 @@
                       data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
                       data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
                       data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      data-imagen="{{ figura.imagen_url }}">
                       Editar
                     </button>
                     <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
@@ -305,9 +305,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-personajes">
                   {{ figura.serie }}
@@ -332,7 +332,7 @@
                       data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
                       data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
                       data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      data-imagen="{{ figura.imagen_url }}">
                       Editar
                     </button>
                     <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
@@ -380,9 +380,9 @@
                 data-marca="{{ figura.get_marca_display }}"
                 data-tamano="{{ figura.get_tamano_display }}"
                 data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-villanos">
                   {{ figura.serie }}
@@ -407,7 +407,7 @@
                       data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
                       data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
                       data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                      data-imagen="{{ figura.imagen_url }}">
                       Editar
                     </button>
                     <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
@@ -452,6 +452,14 @@
 
   <!-- ===== DATOS PARA JAVASCRIPT ===== -->
   {{ aliens_por_serie|json_script:"aliens-por-serie-data" }}
+
+  <!-- Inyección de marcadores de error si existieron fallos en validación -->
+  {% if form_custom.errors %}
+    <span id="custom-form-error-marker" style="display: none;"></span>
+  {% endif %}
+  {% if form.errors %}
+    <span id="standard-form-error-marker" style="display: none;"></span>
+  {% endif %}
   <script src="{% static 'js/modal-figure.js' %}?v=1"></script>
   <script src="{% static 'js/modal-detail.js' %}?v=1"></script>
   <script src="{% static 'js/modal-figure-custom.js' %}?v=1"></script>

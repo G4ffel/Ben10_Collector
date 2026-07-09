@@ -69,8 +69,8 @@
             data-serie="{{ item.serie }}">
             
             <div class="figure-img-wrap" style="border-bottom: none; display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1 / 1; background: radial-gradient(circle, rgba(0, 255, 65, 0.05), transparent 70%); position: relative; overflow: hidden;">
-              {% if item.imagen %}
-                <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" 
+              {% if item.has_real_image %}
+                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" 
                   style="width: 100%; height: 100%; object-fit: cover; padding: 0;" />
               {% else %}
                 <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Wanted" 
@@ -101,7 +101,7 @@
                   data-marca="{{ item.marca }}"
                   data-tamano="{{ item.tamano }}"
                   data-subcategoria="{{ item.subcategoria }}"
-                  data-imagen="{% if item.imagen %}{{ item.imagen.url }}{% endif %}">
+                  data-imagen="{{ item.imagen_url }}">
                   Coleccionar
                 </button>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -116,7 +116,7 @@
                     data-marca="{{ item.marca }}"
                     data-tamano="{{ item.tamano }}"
                     data-subcategoria="{{ item.subcategoria }}"
-                    data-imagen="{% if item.imagen %}{{ item.imagen.url }}{% endif %}">
+                    data-imagen="{{ item.imagen_url }}">
                     Editar
                   </button>
                   <a href="{% url 'eliminar_de_wishlist' item.id %}" class="btn-secondary" 
@@ -492,6 +492,14 @@
   <!-- Inyección de ID con error si existió fallo en validación -->
   {% if error_moving_id %}
     <span id="error-moving-id-marker" data-id="{{ error_moving_id }}" style="display: none;"></span>
+  {% endif %}
+
+  <!-- Inyección de marcadores de error si existieron fallos en validación -->
+  {% if form_wishlist_custom.errors %}
+    <span id="custom-wishlist-error-marker" style="display: none;"></span>
+  {% endif %}
+  {% if form_wishlist.errors %}
+    <span id="standard-wishlist-error-marker" style="display: none;"></span>
   {% endif %}
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

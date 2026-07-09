@@ -83,10 +83,10 @@
             data-marca="{{ figura.get_marca_display }}"
             data-tamano="{{ figura.get_tamano_display }}"
             data-subcategoria="{{ figura.subcategoria }}"
-            data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+            data-imagen="{{ figura.imagen_url }}">
             
             <div class="figure-img-wrap" style="border-bottom: none;">
-              {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" style="width: 100%; height: 100%; object-fit: contain;" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+              {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" style="width: 100%; height: 100%; object-fit: contain;" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
             </div>
 
             <span class="figure-serie-badge" style="position: absolute; top: 10px; right: 10px; border: 1px solid #ff9900 !important; background: rgba(5, 12, 5, 0.95) !important; color: #ff9900 !important; font-weight: bold !important; text-shadow: 0 0 5px rgba(255, 153, 0, 0.8) !important; box-shadow: 0 0 10px rgba(255, 153, 0, 0.3) !important;">
@@ -113,7 +113,7 @@
                   data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
                   data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
                   data-subcategoria="{{ figura.subcategoria }}"
-                  data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+                  data-imagen="{{ figura.imagen_url }}">
                   Editar
                 </a>
                 <a href="javascript:void(0)" class="bodega-btn bodega-btn-primary sell-figure-btn"
@@ -164,10 +164,10 @@
             data-marca="{{ figura.get_marca_display }}"
             data-tamano="{{ figura.get_tamano_display }}"
             data-subcategoria="{{ figura.subcategoria }}"
-            data-imagen="{% if figura.imagen %}{{ figura.imagen.url }}{% endif %}">
+            data-imagen="{{ figura.imagen_url }}">
             
             <div class="figure-img-wrap" style="border-bottom: none; filter: grayscale(0.5) opacity(0.8);">
-              {% if figura.imagen %}<img src="{{ figura.imagen.url }}" alt="{{ figura.nombre }}" style="width: 100%; height: 100%; object-fit: contain;" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+              {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" style="width: 100%; height: 100%; object-fit: contain;" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
             </div>
 
             <span class="figure-serie-badge" style="position: absolute; top: 10px; right: 10px; border: 1px solid #00ff41 !important; background: rgba(5, 12, 5, 0.95) !important; color: #00ff41 !important; font-weight: bold !important; text-shadow: 0 0 5px rgba(0, 255, 65, 0.8) !important; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;">
