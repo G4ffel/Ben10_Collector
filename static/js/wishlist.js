@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
       header.style.paddingBottom = '20px';
       
       const title = document.createElement('h1');
-      title.textContent = 'WISHLIST GALÁCTICA';
+      title.textContent = 'WISHLIST';
       title.style.fontSize = '2.2rem';
       title.style.color = '#00ff41';
       title.style.letterSpacing = '4px';
