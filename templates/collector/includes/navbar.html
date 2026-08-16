@@ -10,6 +10,7 @@
         <li><a href="{% url 'home' %}" class="nav-link {% if request.path == '/' %}active{% endif %}">Inicio</a></li>
         <li><a href="{% url 'coleccion' %}" class="nav-link {% if 'coleccion' in request.path %}active{% endif %}">Colección</a></li>
         <li><a href="{% url 'wishlist' %}" class="nav-link {% if 'wishlist' in request.path %}active{% endif %}">Wishlist</a></li>
+        <li><a href="{% url 'base_de_datos' %}" class="nav-link {% if 'base-de-datos' in request.path or 'base_de_datos' in request.path %}active{% endif %}">Base de Datos</a></li>
         <li><a href="{% url 'bodega' %}" class="nav-link {% if 'bodega' in request.path %}active{% endif %}">Bodega</a></li>
         <li><a href="{% url 'dashboard' %}" class="nav-link {% if 'dashboard' in request.path %}active{% endif %}">Panel</a></li>
       </ul>

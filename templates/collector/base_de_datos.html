@@ -1,0 +1,757 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Base de Datos de Especies - Ben 10 Collector</title>
+  <link rel="icon" type="image/png" href="/media/omnitrix/Ben_10_Omnitrix.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5" />
+
+  <style>
+    /* ===== ESTILOS ESPECÍFICOS DE LA REDISEÑADA BASE DE DATOS ===== */
+    .db-header-banner {
+      background: rgba(10, 21, 10, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-green);
+      border-radius: 16px;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 25px rgba(0, 255, 65, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .db-title-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .db-omni-core {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--green-primary), var(--dark-2));
+      border: 2px solid var(--green-primary);
+      box-shadow: 0 0 20px var(--green-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulseGlow 3s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 10px var(--green-glow); transform: scale(1); }
+      100% { box-shadow: 0 0 25px var(--green-glow); transform: scale(1.05); }
+    }
+
+    .db-omni-core img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .db-search-bar {
+      position: relative;
+      min-width: 260px;
+      flex-grow: 1;
+      max-width: 380px;
+    }
+
+    .db-search-input {
+      width: 100%;
+      background: rgba(0, 255, 65, 0.04);
+      border: 1px solid var(--border-green);
+      border-radius: 10px;
+      padding: 12px 18px 12px 44px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: #ffffff;
+      outline: none;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .db-search-input:focus {
+      border-color: var(--green-primary);
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+      background: rgba(0, 255, 65, 0.08);
+    }
+
+    .db-search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--green-primary);
+      pointer-events: none;
+    }
+
+    .view-toggle-group {
+      display: flex;
+      background: var(--dark-3);
+      border: 1px solid var(--border-green);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .view-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-toggle-btn.active {
+      background: rgba(0, 255, 65, 0.15);
+      color: var(--green-primary);
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.15);
+      font-weight: bold;
+    }
+
+    /* FILTROS POR SERIE EN CHIPS */
+    .series-chips-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .series-chip {
+      background: rgba(10, 21, 10, 0.5);
+      border: 1px solid rgba(0, 255, 65, 0.2);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: bold;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
+      white-space: nowrap;
+    }
+
+    .series-chip .chip-count {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 2px 7px;
+      font-size: 0.7rem;
+    }
+
+    .series-chip.active[data-filter="all"] {
+      background: rgba(0, 255, 65, 0.12);
+      border-color: var(--green-primary);
+      color: var(--green-primary);
+      box-shadow: 0 0 12px var(--green-glow);
+    }
+
+    .series-chip.active[data-filter="Ben 10"] {
+      background: rgba(0, 255, 65, 0.12);
+      border-color: var(--green-primary);
+      color: var(--green-primary);
+      box-shadow: 0 0 12px var(--green-glow);
+    }
+
+    .series-chip.active[data-filter="Ben 10 Alien Force"] {
+      background: rgba(0, 204, 255, 0.12);
+      border-color: #00ccff;
+      color: #00ccff;
+      box-shadow: 0 0 12px rgba(0, 204, 255, 0.4);
+    }
+
+    .series-chip.active[data-filter="Ben 10 Omniverse"] {
+      background: rgba(216, 128, 255, 0.12);
+      border-color: #d880ff;
+      color: #d880ff;
+      box-shadow: 0 0 12px rgba(216, 128, 255, 0.4);
+    }
+
+    .series-chip.active[data-filter="Personajes"] {
+      background: rgba(255, 204, 0, 0.12);
+      border-color: #ffcc00;
+      color: #ffcc00;
+      box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+    }
+
+    .series-chip.active[data-filter="Villanos"] {
+      background: rgba(255, 51, 51, 0.12);
+      border-color: #ff3333;
+      color: #ff3333;
+      box-shadow: 0 0 12px rgba(255, 51, 51, 0.4);
+    }
+
+    /* GRID DE TARJETAS DE ALIEN */
+    .aliens-grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 22px;
+      margin-bottom: 50px;
+    }
+
+    .alien-card-omni {
+      background: rgba(12, 25, 12, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 255, 65, 0.15);
+      border-radius: 14px;
+      padding: 22px 18px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .alien-card-omni:hover {
+      transform: translateY(-6px);
+      border-color: var(--green-primary);
+      box-shadow: 0 8px 25px rgba(0, 255, 65, 0.2);
+      background: rgba(14, 30, 14, 0.8);
+    }
+
+    .alien-card-avatar-wrapper {
+      width: 95px;
+      height: 95px;
+      border-radius: 50%;
+      padding: 3px;
+      background: radial-gradient(circle, rgba(0, 255, 65, 0.2), transparent);
+      border: 2px solid var(--border-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      position: relative;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .alien-card-omni:hover .alien-card-avatar-wrapper {
+      border-color: var(--green-primary);
+      box-shadow: 0 0 20px var(--green-glow);
+    }
+
+    .alien-card-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--dark-3);
+    }
+
+    .alien-card-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 8px 0;
+      text-align: center;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+    }
+
+    .alien-card-omni:hover .alien-card-title {
+      color: var(--green-primary);
+      text-shadow: 0 0 8px var(--green-glow);
+    }
+
+    .alien-card-badge {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    .alien-card-actions {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      justify-content: center;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0, 255, 65, 0.08);
+    }
+
+    .alien-card-btn {
+      flex: 1;
+      padding: 6px 10px;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== BACKGROUND ANIMADO GLOBAL ===== -->
+  <div class="global-bg">
+    <div class="energy-ring ring-1"></div>
+    <div class="energy-ring ring-2"></div>
+    <div class="energy-ring ring-3"></div>
+    <div class="particles-container" id="global-particles"></div>
+  </div>
+
+  {% include 'collector/includes/navbar.html' %}
+
+  <!-- ===== CONTAINER PRINCIPAL ===== -->
+  <main class="collection-container container" style="padding-top: 125px; padding-bottom: 80px;">
+    
+    <!-- HEADER BANNER DE BASE DE DATOS -->
+    <div class="db-header-banner">
+      <!-- IZQUIERDA: TÍTULO Y SUBTÍTULO -->
+      <div class="db-title-group">
+        <div class="db-omni-core">
+          <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Omnitrix Core" />
+        </div>
+        <div>
+          <h1 class="main-title-omni" style="font-size: 1.6rem; margin: 0; text-transform: uppercase; letter-spacing: 2px;">BASE DE DATOS</h1>
+          <p style="font-family: var(--font-display); font-size: 0.75rem; color: var(--green-primary); letter-spacing: 1.5px; margin: 2px 0 0 0; text-transform: uppercase; text-shadow: 0 0 8px var(--green-glow);">
+            CÓDICE DE ESPECIES Y REGISTROS DEL OMNITRIX
+          </p>
+        </div>
+      </div>
+
+      <!-- DERECHA: BOTONES DE ACCIÓN Y CAMBIO DE VISTA -->
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <!-- COMMUTADOR DE VISTA GRID / TABLA -->
+        <div class="view-toggle-group">
+          <button type="button" id="viewGridBtn" class="view-toggle-btn active" title="Vista de Tarjetas">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span>TARJETAS</span>
+          </button>
+          <button type="button" id="viewTableBtn" class="view-toggle-btn" title="Vista de Tabla">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="8" y1="6" x2="21" y2="6"></line>
+              <line x1="8" y1="12" x2="21" y2="12"></line>
+              <line x1="8" y1="18" x2="21" y2="18"></line>
+              <line x1="3" y1="6" x2="3.01" y2="6"></line>
+              <line x1="3" y1="12" x2="3.01" y2="12"></line>
+              <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            <span>TABLA</span>
+          </button>
+        </div>
+
+        <!-- BOTÓN VER GALERÍA DE HOLOGRAMAS -->
+        <button type="button" id="openAlienGalleryBtn" class="btn-secondary" style="font-family: var(--font-display); font-size: 0.75rem; padding: 8px 14px; border-color: var(--border-green); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; height: 38px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6" />
+            <path d="M9 21H3v-6" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+          <span>HOLOGRAMAS</span>
+        </button>
+
+        <!-- BOTÓN NUEVA ESPECIE (ABRE MODAL FUTURISTA) -->
+        <button type="button" id="openAddAlienModalBtn" class="btn-primary" style="font-family: var(--font-display); font-size: 0.75rem; padding: 8px 16px; letter-spacing: 0.5px; height: 38px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+          <span>+ NUEVA ESPECIE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- FILTROS POR SERIE (IZQUIERDA) Y BUSCADOR (DERECHA) A LA PAR EN LA MISMA LÍNEA -->
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; width: 100%;">
+      <!-- CHIPS DE CATEGORÍAS -->
+      <div class="series-chips-bar" style="margin-bottom: 0; flex-wrap: wrap; flex: 1;">
+        <button type="button" class="series-chip active" data-filter="all">
+          <span>TODAS</span>
+          <span class="chip-count">{{ total_aliens }}</span>
+        </button>
+        <button type="button" class="series-chip" data-filter="Ben 10">
+          <span>CLÁSICO</span>
+          <span class="chip-count">{{ total_classic }}</span>
+        </button>
+        <button type="button" class="series-chip" data-filter="Ben 10 Alien Force">
+          <span>ALIEN FORCE</span>
+          <span class="chip-count">{{ total_af }}</span>
+        </button>
+        <button type="button" class="series-chip" data-filter="Ben 10 Omniverse">
+          <span>OMNIVERSE</span>
+          <span class="chip-count">{{ total_ov }}</span>
+        </button>
+        <button type="button" class="series-chip" data-filter="Personajes">
+          <span>PERSONAJES</span>
+          <span class="chip-count">{{ total_personajes }}</span>
+        </button>
+        <button type="button" class="series-chip" data-filter="Villanos">
+          <span>VILLANOS</span>
+          <span class="chip-count">{{ total_villanos }}</span>
+        </button>
+      </div>
+
+      <!-- BUSCADOR A LA PAR EN LA MISMA FILA DERECHA -->
+      <div class="db-search-bar" style="min-width: 200px; max-width: 260px; margin: 0; flex-shrink: 0;">
+        <svg class="db-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="alienSearchInput" class="db-search-input" placeholder="Buscar especie..." autocomplete="off" style="padding: 8px 14px 8px 38px; font-size: 0.8rem;" />
+      </div>
+    </div>
+
+    <!-- VISTA 1: GRID DE TARJETAS HOLOGRÁFICAS DE ALIENS -->
+    <div id="alienGridView" class="aliens-grid-container">
+      {% if aliens %}
+        {% for alien in aliens %}
+        <div class="alien-card-omni alien-item" data-name="{{ alien.nombre|lower }}" data-serie="{{ alien.serie_default }}" data-nombre-real="{{ alien.nombre }}" data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% else %}/media/omnitrix/Ben_10_Omnitrix.png{% endif %}" style="cursor: pointer;">
+          <div class="alien-card-avatar-wrapper">
+            {% if alien.imagen %}
+              <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" class="alien-card-avatar-img" />
+            {% else %}
+              <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="No image" class="alien-card-avatar-img" style="opacity: 0.35; filter: grayscale(1);" />
+            {% endif %}
+          </div>
+          <h3 class="alien-card-title">{{ alien.nombre }}</h3>
+          <span class="figure-serie-badge alien-card-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% elif alien.serie_default == 'Ben 10 Omniverse' %}serie-ov{% elif alien.serie_default == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}">
+            {{ alien.serie_default }}
+          </span>
+          
+          <div class="alien-card-actions">
+            <button type="button" class="alien-card-btn edit-alien-db-btn" style="border: 1px solid var(--border-green); background: rgba(0,255,65,0.05); color: var(--green-primary);"
+              data-id="{{ alien.id }}"
+              data-nombre="{{ alien.nombre }}"
+              data-serie="{{ alien.serie_default }}"
+              data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% endif %}">
+              Editar
+            </button>
+            <a href="{% url 'eliminar_alien' alien.id %}" class="alien-card-btn" style="border: 1px solid rgba(255,51,51,0.4); background: rgba(255,51,51,0.05); color: #ff3333;" data-confirm="¿Seguro que deseas eliminar a {{ alien.nombre }} de la base de datos?">
+              Eliminar
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted); font-family: var(--font-body);">
+          No hay especies registradas en la base de datos.
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- VISTA 2: TABLA DE DATOS FUTURISTA (OCULTA POR DEFECTO) -->
+    <div id="alienTableView" style="display: none; background: rgba(10, 21, 10, 0.65); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border-green); border-radius: 12px; padding: 25px; box-shadow: 0 0 15px rgba(0,255,65,0.02); margin-bottom: 50px;">
+      <div class="hud-scrollbar" style="overflow-y: auto; max-height: 600px;">
+        <table class="omni-hud-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-green); font-family: var(--font-display); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+              <th style="padding: 12px 15px;">Especie</th>
+              <th style="padding: 12px 15px;">Serie de Origen</th>
+              <th style="padding: 12px 15px; text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for alien in aliens %}
+            <tr class="table-row-hover alien-item" data-name="{{ alien.nombre|lower }}" data-serie="{{ alien.serie_default }}" data-nombre-real="{{ alien.nombre }}" data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% else %}/media/omnitrix/Ben_10_Omnitrix.png{% endif %}" style="border-bottom: 1px solid rgba(0,255,65,0.05); cursor: pointer;">
+              <td style="padding: 12px 15px; display: flex; align-items: center; gap: 15px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(0, 255, 65, 0.2); background: var(--dark-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  {% if alien.imagen %}
+                    <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="No image" style="max-width: 65%; max-height: 65%; filter: grayscale(1) opacity(0.35);" />
+                  {% endif %}
+                </div>
+                <span style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+                  {{ alien.nombre }}
+                </span>
+              </td>
+              <td style="padding: 12px 15px;">
+                <span class="figure-serie-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% elif alien.serie_default == 'Ben 10 Omniverse' %}serie-ov{% elif alien.serie_default == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}" style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
+                  {{ alien.serie_default }}
+                </span>
+              </td>
+              <td style="padding: 12px 15px; text-align: center;">
+                <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                  <button type="button" class="btn-secondary edit-alien-db-btn" style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: var(--border-green); font-family: var(--font-display);"
+                    data-id="{{ alien.id }}"
+                    data-nombre="{{ alien.nombre }}"
+                    data-serie="{{ alien.serie_default }}"
+                    data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% endif %}">
+                    Editar
+                  </button>
+                  <a href="{% url 'eliminar_alien' alien.id %}" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border-color: #ff3333; color: #ff3333; font-family: var(--font-display);" data-confirm="¿Seguro que deseas eliminar el registro de {{ alien.nombre }}?">
+                    Eliminar
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===== MODAL DE REGISTRO / EDICIÓN DE ESPECIE (FUTURISTA) ===== -->
+  <div class="modal-container" id="alienFormModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(12px); background: rgba(0, 0, 0, 0.75);">
+    <div class="modal-overlay" id="alienFormOverlay" style="position: absolute; width: 100%; height: 100%; cursor: pointer;"></div>
+    
+    <div class="modal-content-wrapper" style="max-width: 680px; width: 92%; background: var(--dark-2); border: 1px solid var(--border-green); border-radius: 18px; position: relative; z-index: 2001; box-shadow: 0 0 40px rgba(0, 255, 65, 0.2); overflow: hidden;">
+      
+      <!-- MODAL HEADER -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; border-bottom: 1px solid rgba(0, 255, 65, 0.15); background: rgba(0, 255, 65, 0.03);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="omnitrix-mini" style="width: 18px; height: 18px;"></div>
+          <h2 id="alienFormModalTitle" style="font-family: var(--font-display); font-size: 1.2rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 8px var(--green-glow);">REGISTRAR NUEVA ESPECIE</h2>
+        </div>
+        <button type="button" id="alienFormCloseX" style="background: none; border: none; color: var(--green-primary); font-size: 1.6rem; cursor: pointer; outline: none;">✕</button>
+      </div>
+
+      <!-- MODAL BODY CON VISTA PREVIA EN VIVO -->
+      <div style="padding: 28px; display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center;">
+        
+        <!-- PANEL IZQUIERDO: HOLOGRAMA PREVIEW -->
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding-right: 15px; border-right: 1px solid rgba(0, 255, 65, 0.1);">
+          <div style="width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--green-primary); padding: 4px; background: radial-gradient(circle, rgba(0, 255, 65, 0.1), var(--dark-3)); box-shadow: 0 0 25px rgba(0, 255, 65, 0.25); display: flex; align-items: center; justify-content: center; position: relative;">
+            <img id="modalAlienPreviewImg" src="/media/omnitrix/Ben_10_Omnitrix.png" alt="Preview" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+          </div>
+          <span id="modalAlienPreviewText" style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); letter-spacing: 1px; font-weight: bold; text-transform: uppercase; text-shadow: 0 0 6px var(--green-glow);">ESPECIE</span>
+        </div>
+
+        <!-- PANEL DERECHO: FORMULARIO -->
+        <form method="POST" action="{% url 'base_de_datos' %}" enctype="multipart/form-data" id="alienForm" style="display: flex; flex-direction: column; gap: 16px; margin: 0;">
+          {% csrf_token %}
+          <input type="hidden" name="alien_id" id="modalAlienIdInput" value="" />
+          
+          <div>
+            <label style="display: block; font-family: var(--font-display); font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase;">Nombre de la Especie</label>
+            <input type="text" name="alien_nombre" id="modalAlienNombreInput" placeholder="Ej: Fuego, Humungousaur..." required class="cta-input custom-input" style="width: 100%; font-size: 0.85rem; padding: 10px 14px; margin: 0; font-family: var(--font-body);" />
+          </div>
+          
+          <div>
+            <label style="display: block; font-family: var(--font-display); font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase;">Serie por Defecto</label>
+            <select name="serie_default" id="modalAlienSerieSelect" class="cta-input custom-input select-custom" style="width: 100%; font-size: 0.85rem; padding: 10px 14px; margin: 0; font-family: var(--font-body); background-color: var(--dark-3);">
+              {% for val, label in serie_choices %}
+              <option value="{{ val }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label style="display: block; font-family: var(--font-display); font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase;">Imagen / Foto Alienígena</label>
+            <div class="file-input-wrapper" style="width: 100%; margin: 0;">
+              <input type="file" name="alien_imagen" id="modalAlienImage" accept="image/*" class="file-input-custom" onchange="updateModalAlienFileLabel(this);" />
+              <label for="modalAlienImage" id="modalAlienImageLabel" class="file-label-custom-btn" style="width: 100%; margin: 0; padding: 10px 16px; font-size: 0.75rem; font-family: var(--font-display); letter-spacing: 0.5px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                SUBIR IMAGEN ALIEN
+              </label>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+            <button type="button" id="alienFormCancelBtn" class="btn-secondary" style="font-size: 0.75rem; padding: 10px 18px; font-family: var(--font-display);">CANCELAR</button>
+            <button type="submit" id="modalSubmitAlienBtn" class="btn-primary" style="font-size: 0.75rem; padding: 10px 22px; font-family: var(--font-display);">+ REGISTRAR</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
+  {% include 'collector/includes/profile_modal.html' %}
+
+  <!-- ===== MODAL GALERÍA DE HOLOGRAMAS ===== -->
+  <div class="modal-container" id="alienGalleryModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.65);">
+    <div class="modal-overlay" id="alienGalleryOverlay" style="position: absolute; width: 100%; height: 100%; cursor: pointer;"></div>
+    
+    <div class="modal-content-wrapper"
+      style="max-width: 950px; width: 95%; height: 85vh; max-height: 800px; background: var(--dark-2); border: 1px solid var(--border-green); border-radius: 16px; position: relative; z-index: 2001; box-shadow: 0 0 35px rgba(0, 255, 65, 0.25); box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden;">
+      
+      <!-- HEADER -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 25px 30px; border-bottom: 1px solid rgba(0, 255, 65, 0.15); flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <div class="omni-radar" style="width: 18px; height: 18px;"></div>
+          <h2 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--green-glow);">GALERÍA DE HOLOGRAMAS</h2>
+        </div>
+        <button type="button" id="alienGalleryCloseX" style="background: none; border: none; color: var(--green-primary); font-size: 1.8rem; cursor: pointer; outline: none;">✕</button>
+      </div>
+
+      <!-- BODY WITH SCROLLBAR -->
+      <div class="hud-scrollbar" style="flex-grow: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 40px; box-sizing: border-box;">
+        
+        <!-- SECCIÓN: BEN 10 CLÁSICO -->
+        <div class="gallery-section-wrapper">
+          <h3 style="font-family: var(--font-display); font-size: 1rem; color: var(--green-primary); border-bottom: 1px solid rgba(0, 255, 65, 0.1); padding-bottom: 8px; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px var(--green-glow);">
+            Ben 10 (Clásico)
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; justify-items: center;">
+            {% for alien in aliens %}
+              {% if alien.serie_default == 'Ben 10' %}
+                <div class="gallery-holo-item" style="position: relative; width: 100px; height: 100px; border-radius: 12px; border: 1px solid rgba(0, 255, 65, 0.15); background: radial-gradient(circle, rgba(0, 255, 65, 0.04), var(--dark-3)); overflow: hidden; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; cursor: pointer;" 
+                  title="{{ alien.nombre }}">
+                  {% if alien.imagen %}
+                    <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ alien.nombre }}" style="max-width: 65%; max-height: 65%; filter: grayscale(1) opacity(0.3);" />
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- SECCIÓN: BEN 10 ALIEN FORCE -->
+        <div class="gallery-section-wrapper">
+          <h3 style="font-family: var(--font-display); font-size: 1rem; color: #00ccff; border-bottom: 1px solid rgba(0, 204, 255, 0.1); padding-bottom: 8px; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px rgba(0, 204, 255, 0.4);">
+            Ben 10 Alien Force
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; justify-items: center;">
+            {% for alien in aliens %}
+              {% if alien.serie_default == 'Ben 10 Alien Force' %}
+                <div class="gallery-holo-item" style="position: relative; width: 100px; height: 100px; border-radius: 12px; border: 1px solid rgba(0, 204, 255, 0.2); background: radial-gradient(circle, rgba(0, 204, 255, 0.04), var(--dark-3)); overflow: hidden; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; cursor: pointer;" 
+                  title="{{ alien.nombre }}">
+                  {% if alien.imagen %}
+                    <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ alien.nombre }}" style="max-width: 65%; max-height: 65%; filter: grayscale(1) opacity(0.3);" />
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- SECCIÓN: BEN 10 OMNIVERSE -->
+        <div class="gallery-section-wrapper">
+          <h3 style="font-family: var(--font-display); font-size: 1rem; color: #d880ff; border-bottom: 1px solid rgba(216, 128, 255, 0.1); padding-bottom: 8px; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px rgba(216, 128, 255, 0.4);">
+            Ben 10 Omniverse
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; justify-items: center;">
+            {% for alien in aliens %}
+              {% if alien.serie_default == 'Ben 10 Omniverse' %}
+                <div class="gallery-holo-item" style="position: relative; width: 100px; height: 100px; border-radius: 12px; border: 1px solid rgba(216, 128, 255, 0.2); background: radial-gradient(circle, rgba(216, 128, 255, 0.04), var(--dark-3)); overflow: hidden; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; cursor: pointer;" 
+                  title="{{ alien.nombre }}">
+                  {% if alien.imagen %}
+                    <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ alien.nombre }}" style="max-width: 65%; max-height: 65%; filter: grayscale(1) opacity(0.3);" />
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- SECCIÓN: PERSONAJES -->
+        <div class="gallery-section-wrapper">
+          <h3 style="font-family: var(--font-display); font-size: 1rem; color: #ffcc00; border-bottom: 1px solid rgba(255, 204, 0, 0.1); padding-bottom: 8px; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px rgba(255, 204, 0, 0.4);">
+            Personajes
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; justify-items: center;">
+            {% for alien in aliens %}
+              {% if alien.serie_default == 'Personajes' %}
+                <div class="gallery-holo-item" style="position: relative; width: 100px; height: 100px; border-radius: 12px; border: 1px solid rgba(255, 204, 0, 0.2); background: radial-gradient(circle, rgba(255, 204, 0, 0.04), var(--dark-3)); overflow: hidden; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; cursor: pointer;" 
+                  title="{{ alien.nombre }}">
+                  {% if alien.imagen %}
+                    <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ alien.nombre }}" style="max-width: 65%; max-height: 65%; filter: grayscale(1) opacity(0.3);" />
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- SECCIÓN: VILLANOS -->
+        <div class="gallery-section-wrapper">
+          <h3 style="font-family: var(--font-display); font-size: 1rem; color: #ff3333; border-bottom: 1px solid rgba(255, 51, 51, 0.1); padding-bottom: 8px; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px rgba(255, 51, 51, 0.4);">
+            Villanos
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; justify-items: center;">
+            {% for alien in aliens %}
+              {% if alien.serie_default == 'Villanos' %}
+                <div class="gallery-holo-item" style="position: relative; width: 100px; height: 100px; border-radius: 12px; border: 1px solid rgba(255, 51, 51, 0.2); background: radial-gradient(circle, rgba(255, 51, 51, 0.04), var(--dark-3)); overflow: hidden; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; cursor: pointer;" 
+                  title="{{ alien.nombre }}">
+                  {% if alien.imagen %}
+                    <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ alien.nombre }}" style="max-width: 65%; max-height: 65%; filter: grayscale(1) opacity(0.3);" />
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE ZOOM DE HOLOGRAMA / ESPECIE ===== -->
+  <div id="alienGalleryZoomModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(12px); background: rgba(0, 0, 0, 0.82);">
+    <div id="alienGalleryZoomOverlay" style="position: absolute; width: 100%; height: 100%; cursor: pointer;"></div>
+    <div id="alienGalleryZoomContent" style="position: relative; z-index: 3001; background: var(--dark-2); border: 2px solid var(--green-primary); border-radius: 20px; padding: 30px 25px; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 0 50px rgba(0, 255, 65, 0.3); transition: transform 0.25s ease; transform: scale(0.9); max-width: 460px; width: 90%;">
+      
+      <!-- BOTÓN CERRAR ✕ -->
+      <button type="button" id="alienGalleryZoomCloseX" style="position: absolute; top: 12px; right: 18px; background: none; border: none; color: var(--green-primary); font-size: 1.6rem; cursor: pointer; outline: none; transition: transform 0.2s;" title="Cerrar (Esc)">✕</button>
+
+      <!-- MARCO DE LA IMAGEN AMPLIADA -->
+      <div id="zoomImgFrame" style="width: 300px; height: 300px; max-width: 100%; border-radius: 18px; overflow: hidden; border: 2px solid var(--green-primary); background: radial-gradient(circle, rgba(0,255,65,0.08), var(--dark-3)); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); transition: all 0.3s ease;">
+        <img id="zoomAlienImg" src="" alt="" style="max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; padding: 8px;" />
+      </div>
+      
+      <!-- INFORMACIÓN DETALLADA -->
+      <div style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <h3 id="zoomAlienName" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 12px var(--green-glow);"></h3>
+        <span id="zoomAlienSerie" class="figure-serie-badge" style="display: inline-block; position: static; padding: 4px 12px; font-size: 0.7rem; font-family: var(--font-display); letter-spacing: 1px;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="{% static 'js/modal-detail.js' %}?v=1"></script>
+  <script src="{% static 'js/profile-modal.js' %}?v=1"></script>
+  <script src="{% static 'js/base_de_datos.js' %}?v=2"></script>
+  <script src="{% static 'js/bg-particles.js' %}"></script>
+
+</body>
+
+</html>

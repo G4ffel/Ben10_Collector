@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Funciones de tabs y filtros usando queries dinámicas
   const setTabActive = (tabName) => {
-    const tabs = ['Figures', 'Aliens', 'Bodega'];
+    const tabs = ['Figures', 'Bodega'];
     tabs.forEach(t => {
       const btn = document.getElementById(`tab${t}Btn`);
       const content = document.getElementById(`tab${t}Content`);

@@ -90,6 +90,37 @@ def coleccion(request):
     figuras_personajes_grouped = get_grouped_figures(figuras_personajes)
     figuras_villanos_grouped = get_grouped_figures(figuras_villanos)
 
+    # Items de Wishlist para la Vista Combinada (Modo Ojo)
+    wishlist_classic = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10'))
+    wishlist_af = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Alien Force'))
+    wishlist_ov = get_ordered_figures(WishlistItem.objects.filter(serie='Ben 10 Omniverse'))
+    wishlist_villanos = get_ordered_figures(WishlistItem.objects.filter(serie='Villanos'))
+    wishlist_personajes = get_ordered_figures(WishlistItem.objects.filter(serie='Personajes'))
+
+    def get_series_combined_data(figuras_qs, wishlist_qs):
+        combined = []
+        std_fig = figuras_qs.filter(subcategoria='')
+        std_wish = wishlist_qs.filter(subcategoria='')
+        if std_fig.exists() or std_wish.exists():
+            combined.append(('', std_fig, std_wish, std_fig.exists()))
+
+        for sub_val, sub_label in Figura.SUBCATEGORIA_CHOICES:
+            if sub_val == '':
+                continue
+            sub_fig = figuras_qs.filter(subcategoria=sub_val)
+            sub_wish = wishlist_qs.filter(subcategoria=sub_val)
+            if sub_fig.exists() or sub_wish.exists():
+                combined.append((sub_label, sub_fig, sub_wish, sub_fig.exists()))
+        return combined
+
+    classic_combined = get_series_combined_data(figuras_classic, wishlist_classic)
+    af_combined = get_series_combined_data(figuras_af, wishlist_af)
+    ov_combined = get_series_combined_data(figuras_ov, wishlist_ov)
+    personajes_combined = get_series_combined_data(figuras_personajes, wishlist_personajes)
+    villanos_combined = get_series_combined_data(figuras_villanos, wishlist_villanos)
+
+    wishlist_count = WishlistItem.objects.count()
+
     figuras_classic_count = figuras_classic.count()
     figuras_af_count = figuras_af.count()
     figuras_ov_count = figuras_ov.count()
@@ -99,11 +130,12 @@ def coleccion(request):
     aliens_por_serie = get_aliens_por_serie_data()
 
     return render(request, 'collector/coleccion.html', {
-        'figuras_classic_grouped': figuras_classic_grouped,
-        'figuras_af_grouped': figuras_af_grouped,
-        'figuras_ov_grouped': figuras_ov_grouped,
-        'figuras_villanos_grouped': figuras_villanos_grouped,
-        'figuras_personajes_grouped': figuras_personajes_grouped,
+        'classic_combined': classic_combined,
+        'af_combined': af_combined,
+        'ov_combined': ov_combined,
+        'personajes_combined': personajes_combined,
+        'villanos_combined': villanos_combined,
+        'wishlist_count': wishlist_count,
         'figuras_classic_count': figuras_classic_count,
         'figuras_af_count': figuras_af_count,
         'figuras_ov_count': figuras_ov_count,
@@ -140,29 +172,6 @@ def editar_figura(request, id):
 
 @never_cache
 def dashboard(request):
-    if request.method == 'POST':
-        # Agregar o editar alien desde el panel
-        alien_id = request.POST.get('alien_id')
-        alien_nombre = request.POST.get('alien_nombre')
-        serie_default = request.POST.get('serie_default', 'Ben 10')
-        alien_imagen = request.FILES.get('alien_imagen')
-
-        if alien_id:
-            alien = get_object_or_404(Alien, id=alien_id)
-            if alien_nombre:
-                alien.nombre = alien_nombre
-            alien.serie_default = serie_default
-            if alien_imagen:
-                alien.imagen = alien_imagen
-            alien.save()
-            return redirect(f'/dashboard/?tab=aliens&serie={serie_default}')
-        elif alien_nombre:
-            alien, created = Alien.objects.get_or_create(nombre=alien_nombre, defaults={'serie_default': serie_default})
-            if alien_imagen:
-                alien.imagen = alien_imagen
-                alien.save()
-            return redirect(f'/dashboard/?tab=aliens&serie={serie_default}')
-
     total_figuras = Figura.objects.filter(estado_coleccion='coleccion').count()
     valor_total = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Sum('precio'))['precio__sum'] or 0
     precio_promedio = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Avg('precio'))['precio__avg'] or 0
@@ -270,11 +279,61 @@ def eliminar_figura(request, id):
         return redirect('coleccion')
     return redirect('dashboard')
 
+@never_cache
+def base_de_datos(request):
+    if Alien.objects.count() == 0:
+        Alien.seed_default_aliens()
+
+    if request.method == 'POST':
+        alien_id = request.POST.get('alien_id')
+        alien_nombre = request.POST.get('alien_nombre')
+        serie_default = request.POST.get('serie_default', 'Ben 10')
+        alien_imagen = request.FILES.get('alien_imagen')
+
+        if alien_id:
+            alien = get_object_or_404(Alien, id=alien_id)
+            if alien_nombre:
+                alien.nombre = alien_nombre
+            alien.serie_default = serie_default
+            if alien_imagen:
+                alien.imagen = alien_imagen
+            alien.save()
+            return redirect(f'/base-de-datos/?serie={serie_default}')
+        elif alien_nombre:
+            alien, created = Alien.objects.get_or_create(nombre=alien_nombre, defaults={'serie_default': serie_default})
+            if alien_imagen:
+                alien.imagen = alien_imagen
+                alien.save()
+            return redirect(f'/base-de-datos/?serie={serie_default}')
+
+    aliens = Alien.objects.all().order_by('orden_aparicion')
+    aliens_por_serie = get_aliens_por_serie_data()
+    total_aliens = aliens.count()
+    total_classic = aliens.filter(serie_default='Ben 10').count()
+    total_af = aliens.filter(serie_default='Ben 10 Alien Force').count()
+    total_ov = aliens.filter(serie_default='Ben 10 Omniverse').count()
+    total_personajes = aliens.filter(serie_default='Personajes').count()
+    total_villanos = aliens.filter(serie_default='Villanos').count()
+    perfil = Perfil.objects.first()
+
+    return render(request, 'collector/base_de_datos.html', {
+        'aliens': aliens,
+        'aliens_por_serie': aliens_por_serie,
+        'total_aliens': total_aliens,
+        'total_classic': total_classic,
+        'total_af': total_af,
+        'total_ov': total_ov,
+        'total_personajes': total_personajes,
+        'total_villanos': total_villanos,
+        'serie_choices': Figura.SERIE_CHOICES,
+        'perfil': perfil,
+    })
+
 def eliminar_alien(request, id):
     alien = get_object_or_404(Alien, id=id)
     serie = alien.serie_default
     alien.delete()
-    return redirect(f'/dashboard/?tab=aliens&serie={serie}')
+    return redirect(f'/base-de-datos/?serie={serie}')
 
 @never_cache
 def home(request):
@@ -307,7 +366,7 @@ def api_figuras(request):
         data.append({
             'id': f.id,
             'nombre': f.nombre,
-            'imagen_url': f.imagen.url if f.imagen else '/media/omnitrix/Ben_10_Omnitrix.png',
+            'imagen_url': f.imagen_url,
             'serie': f.serie,
             'estado': f.estado,
             'marca': f.marca,
@@ -471,7 +530,7 @@ def mover_a_coleccion(request, wishlist_id):
         post_data['nombre'] = wishlist_item.nombre
         post_data['serie'] = wishlist_item.serie
         
-        is_custom = not Alien.objects.filter(nombre=wishlist_item.nombre).exists()
+        is_custom = not Alien.objects.filter(nombre__iexact=wishlist_item.nombre.strip()).exists()
         if is_custom:
             form = FiguraCustomForm(post_data, request.FILES)
         else:

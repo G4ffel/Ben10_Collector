@@ -152,23 +152,19 @@ class Figura(models.Model):
     def imagen_url(self):
         if self.imagen:
             return self.imagen.url
-        try:
-            alien_db = Alien.objects.get(nombre=self.nombre)
-            if alien_db.imagen:
-                return alien_db.imagen.url
-        except Alien.DoesNotExist:
-            pass
+        clean_nombre = self.nombre.strip() if self.nombre else ''
+        alien_db = Alien.objects.filter(nombre__iexact=clean_nombre).first()
+        if alien_db and alien_db.imagen:
+            return alien_db.imagen.url
         return '/media/omnitrix/Ben_10_Omnitrix.png'
 
     @property
     def has_real_image(self):
         if self.imagen:
             return True
-        try:
-            alien_db = Alien.objects.get(nombre=self.nombre)
-            return bool(alien_db.imagen)
-        except Alien.DoesNotExist:
-            return False
+        clean_nombre = self.nombre.strip() if self.nombre else ''
+        alien_db = Alien.objects.filter(nombre__iexact=clean_nombre).first()
+        return bool(alien_db and alien_db.imagen)
 
 
 class Alien(models.Model):
@@ -423,20 +419,16 @@ class WishlistItem(models.Model):
     def imagen_url(self):
         if self.imagen:
             return self.imagen.url
-        try:
-            alien_db = Alien.objects.get(nombre=self.nombre)
-            if alien_db.imagen:
-                return alien_db.imagen.url
-        except Alien.DoesNotExist:
-            pass
+        clean_nombre = self.nombre.strip() if self.nombre else ''
+        alien_db = Alien.objects.filter(nombre__iexact=clean_nombre).first()
+        if alien_db and alien_db.imagen:
+            return alien_db.imagen.url
         return '/media/omnitrix/Ben_10_Omnitrix.png'
 
     @property
     def has_real_image(self):
         if self.imagen:
             return True
-        try:
-            alien_db = Alien.objects.get(nombre=self.nombre)
-            return bool(alien_db.imagen)
-        except Alien.DoesNotExist:
-            return False
+        clean_nombre = self.nombre.strip() if self.nombre else ''
+        alien_db = Alien.objects.filter(nombre__iexact=clean_nombre).first()
+        return bool(alien_db and alien_db.imagen)

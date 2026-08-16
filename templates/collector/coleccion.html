@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5" />
 </head>
 
 <body>
@@ -40,7 +40,17 @@
       <h2 class="sub-title-omni" style="margin-bottom: 0; border: none; padding-left: 0;">
         Mis Figuras (<span class="green-text">{{ figuras_count }}</span>)
       </h2>
-      <div style="display: flex; gap: 15px;">
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <!-- BOTÓN OJO VISTA COMBINADA -->
+        <button class="btn-secondary" id="toggleWishlistOverlayBtn" 
+          title="Vista Combinada: Mostrar aliens deseados (Wishlist) opacos"
+          style="cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); box-shadow: none; padding: 10px 14px; border-radius: 8px;">
+          <svg class="eye-icon-open" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg class="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+          <span id="toggleWishlistBtnText">Vista Combinada</span>
+          <span class="wishlist-badge-count" style="background: rgba(0, 255, 65, 0.15); border: 1px solid var(--border-green); font-size: 0.75rem; padding: 2px 7px; border-radius: 12px; color: var(--green-primary); font-weight: 700;">+{{ wishlist_count }}</span>
+        </button>
+
         <button class="btn-secondary" id="openCustomModalBtn" style="cursor: pointer; border-color: var(--border-green); font-family: var(--font-display);">
           + Alien Personalizado
         </button>
@@ -52,7 +62,7 @@
 
     <!-- LISTADO DE FIGURAS (SEPARADO POR SECCIONES DE SERIE) -->
     <div class="figures-list-container">
-      {% if figuras_count > 0 %}
+      {% if figuras_count > 0 or wishlist_count > 0 %}
 
       <!-- SECCIÓN: BEN 10 CLÁSICO -->
       <div class="serie-section-wrapper" style="margin-bottom: 60px;">
@@ -60,11 +70,11 @@
           style="border-left-color: var(--green-primary); margin-bottom: 25px; font-size: 1.3rem;">
           Ben 10 (Clásico) <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">{{ figuras_classic_count }} Figuras</span>
         </h2>
-        {% if figuras_classic_grouped %}
+        {% if classic_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras in figuras_classic_grouped %}
+          {% for sub_label, sub_figuras, sub_wishlist, has_figures in classic_combined %}
             {% if sub_label %}
-              <div class="sub-category-divider-omni" style="margin-top: 15px; border-bottom: 1px dashed rgba(0, 255, 65, 0.2); padding-bottom: 6px; width: 100%;">
+              <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(0, 255, 65, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px var(--green-glow);">{{ sub_label }}</h4>
               </div>
             {% endif %}
@@ -82,7 +92,7 @@
                 data-subcategoria="{{ figura.subcategoria }}"
                 data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-classic">
                   {{ figura.serie }}
@@ -119,6 +129,71 @@
                 </div>
               </div>
               {% endfor %}
+
+              {% for item in sub_wishlist %}
+              <div class="figure-card-omni wishlist-preview-card"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-serie="{{ item.serie }}"
+                data-precio="{{ item.precio }}"
+                data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                data-estado="{{ item.estado }}"
+                data-marca="{{ item.marca }}"
+                data-tamano="{{ item.tamano }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                
+                <div class="figure-img-wrap" style="border-bottom: none; position: relative;">
+                  {% if item.has_real_image %}
+                    <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />
+                  {% endif %}
+                  <span class="wishlist-tag-badge">DESEADO</span>
+                </div>
+
+                <span class="figure-serie-badge serie-classic">
+                  {{ item.serie }}
+                </span>
+
+                <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+                  <div>
+                    <h3>{{ item.nombre }}</h3>
+                    <div class="figure-meta">
+                      <div class="meta-item">
+                        <span class="meta-label">ESTADO:</span>
+                        <span class="meta-value green-text">DESEADO</span>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">WISHLIST:</span>
+                        <span class="meta-value">{{ item.fecha_agregado|date:"d/m/Y" }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-primary move-to-collection-btn" 
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; margin: 0; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);"
+                      data-id="{{ item.id }}"
+                      data-nombre="{{ item.nombre }}"
+                      data-serie="{{ item.serie }}"
+                      data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                      data-estado="{{ item.estado }}"
+                      data-marca="{{ item.marca }}"
+                      data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Coleccionar
+                    </button>
+                    <a href="{% url 'wishlist' %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; box-shadow: none;">
+                      Ver Wishlist
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
             </div>
           {% endfor %}
         </div>
@@ -135,11 +210,11 @@
         <h2 class="sub-title-omni" style="border-left-color: #0066ff; margin-bottom: 25px; font-size: 1.3rem;">
           Ben 10: Alien Force <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_af_count }} Figuras)</span>
         </h2>
-        {% if figuras_af_grouped %}
+        {% if af_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras in figuras_af_grouped %}
+          {% for sub_label, sub_figuras, sub_wishlist, has_figures in af_combined %}
             {% if sub_label %}
-              <div class="sub-category-divider-omni" style="margin-top: 15px; border-bottom: 1px dashed rgba(0, 102, 255, 0.2); padding-bottom: 6px; width: 100%;">
+              <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(0, 102, 255, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #00ccff; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(0, 102, 255, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
@@ -157,7 +232,7 @@
                 data-subcategoria="{{ figura.subcategoria }}"
                 data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-af">
                   {{ figura.serie }}
@@ -194,6 +269,71 @@
                 </div>
               </div>
               {% endfor %}
+
+              {% for item in sub_wishlist %}
+              <div class="figure-card-omni wishlist-preview-card"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-serie="{{ item.serie }}"
+                data-precio="{{ item.precio }}"
+                data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                data-estado="{{ item.estado }}"
+                data-marca="{{ item.marca }}"
+                data-tamano="{{ item.tamano }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                
+                <div class="figure-img-wrap" style="border-bottom: none; position: relative;">
+                  {% if item.has_real_image %}
+                    <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />
+                  {% endif %}
+                  <span class="wishlist-tag-badge">DESEADO</span>
+                </div>
+
+                <span class="figure-serie-badge serie-af">
+                  {{ item.serie }}
+                </span>
+
+                <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+                  <div>
+                    <h3>{{ item.nombre }}</h3>
+                    <div class="figure-meta">
+                      <div class="meta-item">
+                        <span class="meta-label">ESTADO:</span>
+                        <span class="meta-value green-text">DESEADO</span>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">WISHLIST:</span>
+                        <span class="meta-value">{{ item.fecha_agregado|date:"d/m/Y" }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-primary move-to-collection-btn" 
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; margin: 0; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);"
+                      data-id="{{ item.id }}"
+                      data-nombre="{{ item.nombre }}"
+                      data-serie="{{ item.serie }}"
+                      data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                      data-estado="{{ item.estado }}"
+                      data-marca="{{ item.marca }}"
+                      data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Coleccionar
+                    </button>
+                    <a href="{% url 'wishlist' %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; box-shadow: none;">
+                      Ver Wishlist
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
             </div>
           {% endfor %}
         </div>
@@ -210,11 +350,11 @@
         <h2 class="sub-title-omni" style="border-left-color: #b400ff; margin-bottom: 25px; font-size: 1.3rem;">
           Ben 10: Omniverse <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_ov_count }} Figuras)</span>
         </h2>
-        {% if figuras_ov_grouped %}
+        {% if ov_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras in figuras_ov_grouped %}
+          {% for sub_label, sub_figuras, sub_wishlist, has_figures in ov_combined %}
             {% if sub_label %}
-              <div class="sub-category-divider-omni" style="margin-top: 15px; border-bottom: 1px dashed rgba(180, 0, 255, 0.2); padding-bottom: 6px; width: 100%;">
+              <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(180, 0, 255, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #d880ff; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(180, 0, 255, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
@@ -232,7 +372,7 @@
                 data-subcategoria="{{ figura.subcategoria }}"
                 data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-ov">
                   {{ figura.serie }}
@@ -269,6 +409,71 @@
                 </div>
               </div>
               {% endfor %}
+
+              {% for item in sub_wishlist %}
+              <div class="figure-card-omni wishlist-preview-card"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-serie="{{ item.serie }}"
+                data-precio="{{ item.precio }}"
+                data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                data-estado="{{ item.estado }}"
+                data-marca="{{ item.marca }}"
+                data-tamano="{{ item.tamano }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                
+                <div class="figure-img-wrap" style="border-bottom: none; position: relative;">
+                  {% if item.has_real_image %}
+                    <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />
+                  {% endif %}
+                  <span class="wishlist-tag-badge">DESEADO</span>
+                </div>
+
+                <span class="figure-serie-badge serie-ov">
+                  {{ item.serie }}
+                </span>
+
+                <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+                  <div>
+                    <h3>{{ item.nombre }}</h3>
+                    <div class="figure-meta">
+                      <div class="meta-item">
+                        <span class="meta-label">ESTADO:</span>
+                        <span class="meta-value green-text">DESEADO</span>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">WISHLIST:</span>
+                        <span class="meta-value">{{ item.fecha_agregado|date:"d/m/Y" }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-primary move-to-collection-btn" 
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; margin: 0; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);"
+                      data-id="{{ item.id }}"
+                      data-nombre="{{ item.nombre }}"
+                      data-serie="{{ item.serie }}"
+                      data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                      data-estado="{{ item.estado }}"
+                      data-marca="{{ item.marca }}"
+                      data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Coleccionar
+                    </button>
+                    <a href="{% url 'wishlist' %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; box-shadow: none;">
+                      Ver Wishlist
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
             </div>
           {% endfor %}
         </div>
@@ -285,11 +490,11 @@
         <h2 class="sub-title-omni" style="border-left-color: #ffcc00; margin-bottom: 25px; font-size: 1.3rem;">
           Personajes <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_personajes_count }} Figuras)</span>
         </h2>
-        {% if figuras_personajes_grouped %}
+        {% if personajes_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras in figuras_personajes_grouped %}
+          {% for sub_label, sub_figuras, sub_wishlist, has_figures in personajes_combined %}
             {% if sub_label %}
-              <div class="sub-category-divider-omni" style="margin-top: 15px; border-bottom: 1px dashed rgba(255, 204, 0, 0.2); padding-bottom: 6px; width: 100%;">
+              <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(255, 204, 0, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #ffcc00; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
@@ -307,7 +512,7 @@
                 data-subcategoria="{{ figura.subcategoria }}"
                 data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-personajes">
                   {{ figura.serie }}
@@ -344,6 +549,71 @@
                 </div>
               </div>
               {% endfor %}
+
+              {% for item in sub_wishlist %}
+              <div class="figure-card-omni wishlist-preview-card"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-serie="{{ item.serie }}"
+                data-precio="{{ item.precio }}"
+                data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                data-estado="{{ item.estado }}"
+                data-marca="{{ item.marca }}"
+                data-tamano="{{ item.tamano }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                
+                <div class="figure-img-wrap" style="border-bottom: none; position: relative;">
+                  {% if item.has_real_image %}
+                    <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />
+                  {% endif %}
+                  <span class="wishlist-tag-badge">DESEADO</span>
+                </div>
+
+                <span class="figure-serie-badge serie-personajes">
+                  {{ item.serie }}
+                </span>
+
+                <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+                  <div>
+                    <h3>{{ item.nombre }}</h3>
+                    <div class="figure-meta">
+                      <div class="meta-item">
+                        <span class="meta-label">ESTADO:</span>
+                        <span class="meta-value green-text">DESEADO</span>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">WISHLIST:</span>
+                        <span class="meta-value">{{ item.fecha_agregado|date:"d/m/Y" }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-primary move-to-collection-btn" 
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; margin: 0; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);"
+                      data-id="{{ item.id }}"
+                      data-nombre="{{ item.nombre }}"
+                      data-serie="{{ item.serie }}"
+                      data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                      data-estado="{{ item.estado }}"
+                      data-marca="{{ item.marca }}"
+                      data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Coleccionar
+                    </button>
+                    <a href="{% url 'wishlist' %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; box-shadow: none;">
+                      Ver Wishlist
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
             </div>
           {% endfor %}
         </div>
@@ -360,11 +630,11 @@
         <h2 class="sub-title-omni" style="border-left-color: #ff3333; margin-bottom: 25px; font-size: 1.3rem;">
           Villanos <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">({{ figuras_villanos_count }} Figuras)</span>
         </h2>
-        {% if figuras_villanos_grouped %}
+        {% if villanos_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras in figuras_villanos_grouped %}
+          {% for sub_label, sub_figuras, sub_wishlist, has_figures in villanos_combined %}
             {% if sub_label %}
-              <div class="sub-category-divider-omni" style="margin-top: 15px; border-bottom: 1px dashed rgba(255, 51, 51, 0.2); padding-bottom: 6px; width: 100%;">
+              <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(255, 51, 51, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #ff3333; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
@@ -382,7 +652,7 @@
                 data-subcategoria="{{ figura.subcategoria }}"
                 data-imagen="{{ figura.imagen_url }}">
                 <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%%;height:60%%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
                 </div>
                 <span class="figure-serie-badge serie-villanos">
                   {{ figura.serie }}
@@ -419,6 +689,71 @@
                 </div>
               </div>
               {% endfor %}
+
+              {% for item in sub_wishlist %}
+              <div class="figure-card-omni wishlist-preview-card"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-serie="{{ item.serie }}"
+                data-precio="{{ item.precio }}"
+                data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                data-estado="{{ item.estado }}"
+                data-marca="{{ item.marca }}"
+                data-tamano="{{ item.tamano }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                
+                <div class="figure-img-wrap" style="border-bottom: none; position: relative;">
+                  {% if item.has_real_image %}
+                    <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />
+                  {% else %}
+                    <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />
+                  {% endif %}
+                  <span class="wishlist-tag-badge">DESEADO</span>
+                </div>
+
+                <span class="figure-serie-badge serie-villanos">
+                  {{ item.serie }}
+                </span>
+
+                <div class="figure-info-omni" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+                  <div>
+                    <h3>{{ item.nombre }}</h3>
+                    <div class="figure-meta">
+                      <div class="meta-item">
+                        <span class="meta-label">ESTADO:</span>
+                        <span class="meta-value green-text">DESEADO</span>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-label">WISHLIST:</span>
+                        <span class="meta-value">{{ item.fecha_agregado|date:"d/m/Y" }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-primary move-to-collection-btn" 
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; margin: 0; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);"
+                      data-id="{{ item.id }}"
+                      data-nombre="{{ item.nombre }}"
+                      data-serie="{{ item.serie }}"
+                      data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}"
+                      data-estado="{{ item.estado }}"
+                      data-marca="{{ item.marca }}"
+                      data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Coleccionar
+                    </button>
+                    <a href="{% url 'wishlist' %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; box-shadow: none;">
+                      Ver Wishlist
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
             </div>
           {% endfor %}
         </div>
@@ -450,6 +785,9 @@
   <!-- ===== MODAL ALIEN PERSONALIZADO FIGURA ===== -->
   {% include 'collector/includes/figure_custom_modal.html' %}
 
+  <!-- ===== MODAL MOVER DE WISHLIST A COLECCIÓN ===== -->
+  {% include 'collector/includes/wishlist_move_modal.html' %}
+
   <!-- ===== DATOS PARA JAVASCRIPT ===== -->
   {{ aliens_por_serie|json_script:"aliens-por-serie-data" }}
 
@@ -463,6 +801,45 @@
   <script src="{% static 'js/modal-figure.js' %}?v=1"></script>
   <script src="{% static 'js/modal-detail.js' %}?v=1"></script>
   <script src="{% static 'js/modal-figure-custom.js' %}?v=1"></script>
+  <script src="{% static 'js/modal-wishlist-move.js' %}?v=1"></script>
+
+  <!-- Script para la conmutación del ojo en la vista combinada -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('toggleWishlistOverlayBtn');
+      const listContainer = document.querySelector('.figures-list-container');
+      const btnText = document.getElementById('toggleWishlistBtnText');
+
+      if (toggleBtn && listContainer) {
+        // Cargar estado inicial desde localStorage
+        const isWishlistVisible = localStorage.getItem('showWishlistInCollection') === 'true';
+        if (isWishlistVisible) {
+          toggleBtn.classList.add('active');
+          listContainer.classList.add('show-wishlist');
+          if (btnText) btnText.textContent = 'Ocultar Wishlist';
+        } else {
+          toggleBtn.classList.remove('active');
+          listContainer.classList.remove('show-wishlist');
+          if (btnText) btnText.textContent = 'Vista Combinada';
+        }
+
+        toggleBtn.addEventListener('click', () => {
+          const currentlyActive = toggleBtn.classList.contains('active');
+          if (currentlyActive) {
+            toggleBtn.classList.remove('active');
+            listContainer.classList.remove('show-wishlist');
+            if (btnText) btnText.textContent = 'Vista Combinada';
+            localStorage.setItem('showWishlistInCollection', 'false');
+          } else {
+            toggleBtn.classList.add('active');
+            listContainer.classList.add('show-wishlist');
+            if (btnText) btnText.textContent = 'Ocultar Wishlist';
+            localStorage.setItem('showWishlistInCollection', 'true');
+          }
+        });
+      }
+    });
+  </script>
 
   <!-- ===== MODAL DE EDICIÓN DE PERFIL ===== -->
   {% include 'collector/includes/profile_modal.html' %}
