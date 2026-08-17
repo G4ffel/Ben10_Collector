@@ -1,13 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const pModal = document.getElementById('profileModal');
-  const openPBtn = document.getElementById('openProfileBtn');
-  const overlayP = document.getElementById('profileModalOverlay');
-
-  const viewCard = document.getElementById('profileViewCard');
-  const closeProfile = document.getElementById('closeProfileBtn');
+  const getPModal = () => document.getElementById('profileModal');
+  const getViewCard = () => document.getElementById('profileViewCard');
+  const getAvatarPickerSection = () => document.getElementById('avatarPickerSection');
 
   // Elementos del panel lateral de configuración
-  const avatarPickerSection = document.getElementById('avatarPickerSection');
   const subPanelAvatar = document.getElementById('subPanelAvatar');
   const subPanelData = document.getElementById('subPanelData');
 
@@ -22,6 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const quickDataForm = document.getElementById('quickDataForm');
 
   const openProfileModal = () => {
+    const pModal = getPModal();
+    const viewCard = getViewCard();
+    const avatarPickerSection = getAvatarPickerSection();
+
     if (viewCard) viewCard.style.display = 'flex';
     if (avatarPickerSection) avatarPickerSection.classList.remove('open');
     if (pModal) {
@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const closeProfileModal = () => {
+    const pModal = getPModal();
+    const avatarPickerSection = getAvatarPickerSection();
+
     if (pModal) {
       pModal.style.display = 'none';
       pModal.classList.remove('ready');
@@ -42,6 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (avatarPickerSection) avatarPickerSection.classList.remove('open');
     document.body.style.overflow = '';
   };
+
+  // Delegación global de eventos para apertura y cierre del modal de perfil
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#openProfileBtn, .nav-profile-btn')) {
+      e.preventDefault();
+      openProfileModal();
+    } else if (e.target.closest('#closeProfileBtn, #profileModalOverlay, .close-profile-btn-custom')) {
+      e.preventDefault();
+      closeProfileModal();
+    }
+  });
 
   // Control del fallback para los slots de la galería de aliens favoritos
   document.querySelectorAll('.perfil-gallery-slot img').forEach(img => {
@@ -54,10 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
       img.parentElement.classList.add('has-img');
     };
   });
-
-  if (openPBtn) openPBtn.addEventListener('click', openProfileModal);
-  if (closeProfile) closeProfile.addEventListener('click', closeProfileModal);
-  if (overlayP) overlayP.addEventListener('click', closeProfileModal);
 
   // Cerrar panel lateral (para botones ✕)
   document.querySelectorAll('.close-picker-btn').forEach(btn => {

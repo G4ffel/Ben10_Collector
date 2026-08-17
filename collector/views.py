@@ -32,6 +32,37 @@ def get_ordered_figures_by_series(queryset):
         alien_order=Coalesce(alien_order, 999)
     ).order_by('custom_series_order', 'alien_order', 'nombre')
 
+def apply_figure_sorting(queryset, sort_key):
+    if sort_key == 'serie' or sort_key == 'serie_asc':
+        return get_ordered_figures_by_series(queryset)
+    elif sort_key == 'serie_desc':
+        series_order = Case(
+            When(serie='Villanos', then=Value(1)),
+            When(serie='Personajes', then=Value(2)),
+            When(serie='Ben 10 Omniverse', then=Value(3)),
+            When(serie='Ben 10 Alien Force', then=Value(4)),
+            When(serie='Ben 10', then=Value(5)),
+            default=Value(99),
+            output_field=IntegerField()
+        )
+        alien_order = Subquery(
+            Alien.objects.filter(nombre=OuterRef('nombre')).values('orden_aparicion')[:1]
+        )
+        return queryset.annotate(
+            custom_series_order=series_order,
+            alien_order=Coalesce(alien_order, 999)
+        ).order_by('custom_series_order', 'alien_order', 'nombre')
+    elif sort_key == 'precio_desc':
+        return queryset.order_by('-precio', 'nombre')
+    elif sort_key == 'precio_asc':
+        return queryset.order_by('precio', 'nombre')
+    elif sort_key == 'fecha_desc':
+        return queryset.order_by('-fecha_adquisicion', 'nombre')
+    elif sort_key == 'fecha_asc':
+        return queryset.order_by('fecha_adquisicion', 'nombre')
+    else:
+        return get_ordered_figures_by_series(queryset)
+
 def get_aliens_por_serie_data():
     aliens = Alien.objects.all().order_by('orden_aparicion')
     aliens_por_serie = {}
@@ -188,7 +219,8 @@ def dashboard(request):
     total_figuras = Figura.objects.filter(estado_coleccion='coleccion').count()
     valor_total = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Sum('precio'))['precio__sum'] or 0
     precio_promedio = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Avg('precio'))['precio__avg'] or 0
-    precio_maximo = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Max('precio'))['precio__max'] or 0
+    figura_suprema = Figura.objects.filter(estado_coleccion='coleccion').order_by('-precio').first()
+    precio_maximo = figura_suprema.precio if figura_suprema else 0
 
     # Bodega & Ventas Stats
     total_bodega = Figura.objects.filter(estado_coleccion='bodega').count()
@@ -235,23 +267,31 @@ def dashboard(request):
     total_posibles_personajes = unicos_personajes + wishlist_personajes_count
     completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
 
-    figuras_list = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion='coleccion'))
-    paginator = Paginator(figuras_list, 7)
+    current_sort = request.GET.get('sort', '')
+    
+    figuras_qs = Figura.objects.filter(estado_coleccion='coleccion')
+    figuras_list = apply_figure_sorting(figuras_qs, current_sort)
+    paginator = Paginator(figuras_list, 9)
     page_number = request.GET.get('page')
     figuras = paginator.get_page(page_number)
 
-    # Fetch bodega and sold figures for the dashboard
-    figuras_bodega = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion__in=['bodega', 'vendido']))
+    figuras_bodega_qs = Figura.objects.filter(estado_coleccion__in=['bodega', 'vendido'])
+    figuras_bodega_list = apply_figure_sorting(figuras_bodega_qs, current_sort)
+    paginator_bodega = Paginator(figuras_bodega_list, 9)
+    page_bodega_number = request.GET.get('page_bodega')
+    figuras_bodega = paginator_bodega.get_page(page_bodega_number)
 
     aliens = Alien.objects.all().order_by('orden_aparicion')
     aliens_por_serie = get_aliens_por_serie_data()
     form = FiguraForm()
 
     return render(request, 'collector/dashboard.html', {
+        'current_sort': current_sort,
         'total_figuras': total_figuras,
         'valor_total': valor_total,
         'precio_promedio': round(precio_promedio),
         'precio_maximo': precio_maximo,
+        'figura_suprema': figura_suprema,
         'completitud_classic': completitud_classic,
         'total_posibles_classic': total_posibles_classic,
         'unicos_classic': unicos_classic,
