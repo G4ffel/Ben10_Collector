@@ -72,65 +72,15 @@
         </h2>
         {% if classic_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras, sub_wishlist, has_figures in classic_combined %}
+          {% for sub_label, sub_items, has_figures in classic_combined %}
             {% if sub_label %}
               <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(0, 255, 65, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px var(--green-glow);">{{ sub_label }}</h4>
               </div>
             {% endif %}
             <div class="figures-grid-omni">
-              {% for figura in sub_figuras %}
-              <div class="figure-card-omni" style="cursor: pointer;"
-                data-id="{{ figura.id }}"
-                data-nombre="{{ figura.nombre }}"
-                data-precio="${{ figura.precio }} CLP"
-                data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
-                data-serie="{{ figura.serie }}"
-                data-estado="{{ figura.get_estado_display }}"
-                data-marca="{{ figura.get_marca_display }}"
-                data-tamano="{{ figura.get_tamano_display }}"
-                data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen_url }}">
-                <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
-                </div>
-                <span class="figure-serie-badge serie-classic">
-                  {{ figura.serie }}
-                </span>
-                <div class="figure-info-omni">
-                  <h3>{{ figura.nombre }}</h3>
-                  <div class="figure-meta">
-                    <div class="meta-item">
-                      <span class="meta-label">PRECIO:</span>
-                      <span class="meta-value green-text">${{ figura.precio }} CLP</span>
-                    </div>
-                    <div class="meta-item">
-                      <span class="meta-label">FECHA:</span>
-                      <span class="meta-value">{{ figura.fecha_adquisicion|date:"d/m/Y" }}</span>
-                    </div>
-                  </div>
-
-                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
-                    <button class="btn-secondary edit-figure-btn"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
-                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                      data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{{ figura.imagen_url }}">
-                      Editar
-                    </button>
-                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
-                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
-                      A Bodega
-                    </a>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
-
-              {% for item in sub_wishlist %}
+              {% for item in sub_items %}
+              {% if item.is_wishlist %}
               <div class="figure-card-omni wishlist-preview-card"
                 data-id="{{ item.id }}"
                 data-nombre="{{ item.nombre }}"
@@ -193,6 +143,56 @@
                   </div>
                 </div>
               </div>
+              {% else %}
+              <div class="figure-card-omni" style="cursor: pointer;"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-precio="${{ item.precio }} CLP"
+                data-fecha="{{ item.fecha_adquisicion|date:'d/m/Y' }}"
+                data-serie="{{ item.serie }}"
+                data-estado="{{ item.get_estado_display }}"
+                data-marca="{{ item.get_marca_display }}"
+                data-tamano="{{ item.get_tamano_display }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                <div class="figure-img-wrap" style="border-bottom: none;">
+                  {% if item.has_real_image %}<img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                </div>
+                <span class="figure-serie-badge serie-classic">
+                  {{ item.serie }}
+                </span>
+                <div class="figure-info-omni">
+                  <h3>{{ item.nombre }}</h3>
+                  <div class="figure-meta">
+                    <div class="meta-item">
+                      <span class="meta-label">PRECIO:</span>
+                      <span class="meta-value green-text">${{ item.precio }} CLP</span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-label">FECHA:</span>
+                      <span class="meta-value">{{ item.fecha_adquisicion|date:"d/m/Y" }}</span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ item.serie }}"
+                      data-estado="{{ item.estado }}" data-marca="{{ item.marca }}" data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' item.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ item.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
               {% endfor %}
             </div>
           {% endfor %}
@@ -212,65 +212,15 @@
         </h2>
         {% if af_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras, sub_wishlist, has_figures in af_combined %}
+          {% for sub_label, sub_items, has_figures in af_combined %}
             {% if sub_label %}
               <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(0, 102, 255, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #00ccff; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(0, 102, 255, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
             <div class="figures-grid-omni">
-              {% for figura in sub_figuras %}
-              <div class="figure-card-omni" style="cursor: pointer;"
-                data-id="{{ figura.id }}"
-                data-nombre="{{ figura.nombre }}"
-                data-precio="${{ figura.precio }} CLP"
-                data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
-                data-serie="{{ figura.serie }}"
-                data-estado="{{ figura.get_estado_display }}"
-                data-marca="{{ figura.get_marca_display }}"
-                data-tamano="{{ figura.get_tamano_display }}"
-                data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen_url }}">
-                <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
-                </div>
-                <span class="figure-serie-badge serie-af">
-                  {{ figura.serie }}
-                </span>
-                <div class="figure-info-omni">
-                  <h3>{{ figura.nombre }}</h3>
-                  <div class="figure-meta">
-                    <div class="meta-item">
-                      <span class="meta-label">PRECIO:</span>
-                      <span class="meta-value green-text">${{ figura.precio }} CLP</span>
-                    </div>
-                    <div class="meta-item">
-                      <span class="meta-label">FECHA:</span>
-                      <span class="meta-value">{{ figura.fecha_adquisicion|date:"d/m/Y" }}</span>
-                    </div>
-                  </div>
-
-                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
-                    <button class="btn-secondary edit-figure-btn"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
-                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                      data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{{ figura.imagen_url }}">
-                      Editar
-                    </button>
-                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
-                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
-                      A Bodega
-                    </a>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
-
-              {% for item in sub_wishlist %}
+              {% for item in sub_items %}
+              {% if item.is_wishlist %}
               <div class="figure-card-omni wishlist-preview-card"
                 data-id="{{ item.id }}"
                 data-nombre="{{ item.nombre }}"
@@ -333,6 +283,56 @@
                   </div>
                 </div>
               </div>
+              {% else %}
+              <div class="figure-card-omni" style="cursor: pointer;"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-precio="${{ item.precio }} CLP"
+                data-fecha="{{ item.fecha_adquisicion|date:'d/m/Y' }}"
+                data-serie="{{ item.serie }}"
+                data-estado="{{ item.get_estado_display }}"
+                data-marca="{{ item.get_marca_display }}"
+                data-tamano="{{ item.get_tamano_display }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                <div class="figure-img-wrap" style="border-bottom: none;">
+                  {% if item.has_real_image %}<img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                </div>
+                <span class="figure-serie-badge serie-af">
+                  {{ item.serie }}
+                </span>
+                <div class="figure-info-omni">
+                  <h3>{{ item.nombre }}</h3>
+                  <div class="figure-meta">
+                    <div class="meta-item">
+                      <span class="meta-label">PRECIO:</span>
+                      <span class="meta-value green-text">${{ item.precio }} CLP</span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-label">FECHA:</span>
+                      <span class="meta-value">{{ item.fecha_adquisicion|date:"d/m/Y" }}</span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ item.serie }}"
+                      data-estado="{{ item.estado }}" data-marca="{{ item.marca }}" data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' item.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ item.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
               {% endfor %}
             </div>
           {% endfor %}
@@ -352,65 +352,15 @@
         </h2>
         {% if ov_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras, sub_wishlist, has_figures in ov_combined %}
+          {% for sub_label, sub_items, has_figures in ov_combined %}
             {% if sub_label %}
               <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(180, 0, 255, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #d880ff; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(180, 0, 255, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
             <div class="figures-grid-omni">
-              {% for figura in sub_figuras %}
-              <div class="figure-card-omni" style="cursor: pointer;"
-                data-id="{{ figura.id }}"
-                data-nombre="{{ figura.nombre }}"
-                data-precio="${{ figura.precio }} CLP"
-                data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
-                data-serie="{{ figura.serie }}"
-                data-estado="{{ figura.get_estado_display }}"
-                data-marca="{{ figura.get_marca_display }}"
-                data-tamano="{{ figura.get_tamano_display }}"
-                data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen_url }}">
-                <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
-                </div>
-                <span class="figure-serie-badge serie-ov">
-                  {{ figura.serie }}
-                </span>
-                <div class="figure-info-omni">
-                  <h3>{{ figura.nombre }}</h3>
-                  <div class="figure-meta">
-                    <div class="meta-item">
-                      <span class="meta-label">PRECIO:</span>
-                      <span class="meta-value green-text">${{ figura.precio }} CLP</span>
-                    </div>
-                    <div class="meta-item">
-                      <span class="meta-label">FECHA:</span>
-                      <span class="meta-value">{{ figura.fecha_adquisicion|date:"d/m/Y" }}</span>
-                    </div>
-                  </div>
-
-                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
-                    <button class="btn-secondary edit-figure-btn"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
-                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                      data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{{ figura.imagen_url }}">
-                      Editar
-                    </button>
-                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
-                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
-                      A Bodega
-                    </a>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
-
-              {% for item in sub_wishlist %}
+              {% for item in sub_items %}
+              {% if item.is_wishlist %}
               <div class="figure-card-omni wishlist-preview-card"
                 data-id="{{ item.id }}"
                 data-nombre="{{ item.nombre }}"
@@ -473,6 +423,56 @@
                   </div>
                 </div>
               </div>
+              {% else %}
+              <div class="figure-card-omni" style="cursor: pointer;"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-precio="${{ item.precio }} CLP"
+                data-fecha="{{ item.fecha_adquisicion|date:'d/m/Y' }}"
+                data-serie="{{ item.serie }}"
+                data-estado="{{ item.get_estado_display }}"
+                data-marca="{{ item.get_marca_display }}"
+                data-tamano="{{ item.get_tamano_display }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                <div class="figure-img-wrap" style="border-bottom: none;">
+                  {% if item.has_real_image %}<img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                </div>
+                <span class="figure-serie-badge serie-ov">
+                  {{ item.serie }}
+                </span>
+                <div class="figure-info-omni">
+                  <h3>{{ item.nombre }}</h3>
+                  <div class="figure-meta">
+                    <div class="meta-item">
+                      <span class="meta-label">PRECIO:</span>
+                      <span class="meta-value green-text">${{ item.precio }} CLP</span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-label">FECHA:</span>
+                      <span class="meta-value">{{ item.fecha_adquisicion|date:"d/m/Y" }}</span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ item.serie }}"
+                      data-estado="{{ item.estado }}" data-marca="{{ item.marca }}" data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' item.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ item.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
               {% endfor %}
             </div>
           {% endfor %}
@@ -492,65 +492,15 @@
         </h2>
         {% if personajes_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras, sub_wishlist, has_figures in personajes_combined %}
+          {% for sub_label, sub_items, has_figures in personajes_combined %}
             {% if sub_label %}
               <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(255, 204, 0, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #ffcc00; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
             <div class="figures-grid-omni">
-              {% for figura in sub_figuras %}
-              <div class="figure-card-omni" style="cursor: pointer;"
-                data-id="{{ figura.id }}"
-                data-nombre="{{ figura.nombre }}"
-                data-precio="${{ figura.precio }} CLP"
-                data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
-                data-serie="{{ figura.serie }}"
-                data-estado="{{ figura.get_estado_display }}"
-                data-marca="{{ figura.get_marca_display }}"
-                data-tamano="{{ figura.get_tamano_display }}"
-                data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen_url }}">
-                <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
-                </div>
-                <span class="figure-serie-badge serie-personajes">
-                  {{ figura.serie }}
-                </span>
-                <div class="figure-info-omni">
-                  <h3>{{ figura.nombre }}</h3>
-                  <div class="figure-meta">
-                    <div class="meta-item">
-                      <span class="meta-label">PRECIO:</span>
-                      <span class="meta-value green-text">${{ figura.precio }} CLP</span>
-                    </div>
-                    <div class="meta-item">
-                      <span class="meta-label">FECHA:</span>
-                      <span class="meta-value">{{ figura.fecha_adquisicion|date:"d/m/Y" }}</span>
-                    </div>
-                  </div>
-
-                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
-                    <button class="btn-secondary edit-figure-btn"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
-                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                      data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{{ figura.imagen_url }}">
-                      Editar
-                    </button>
-                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
-                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
-                      A Bodega
-                    </a>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
-
-              {% for item in sub_wishlist %}
+              {% for item in sub_items %}
+              {% if item.is_wishlist %}
               <div class="figure-card-omni wishlist-preview-card"
                 data-id="{{ item.id }}"
                 data-nombre="{{ item.nombre }}"
@@ -613,6 +563,56 @@
                   </div>
                 </div>
               </div>
+              {% else %}
+              <div class="figure-card-omni" style="cursor: pointer;"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-precio="${{ item.precio }} CLP"
+                data-fecha="{{ item.fecha_adquisicion|date:'d/m/Y' }}"
+                data-serie="{{ item.serie }}"
+                data-estado="{{ item.get_estado_display }}"
+                data-marca="{{ item.get_marca_display }}"
+                data-tamano="{{ item.get_tamano_display }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                <div class="figure-img-wrap" style="border-bottom: none;">
+                  {% if item.has_real_image %}<img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                </div>
+                <span class="figure-serie-badge serie-personajes">
+                  {{ item.serie }}
+                </span>
+                <div class="figure-info-omni">
+                  <h3>{{ item.nombre }}</h3>
+                  <div class="figure-meta">
+                    <div class="meta-item">
+                      <span class="meta-label">PRECIO:</span>
+                      <span class="meta-value green-text">${{ item.precio }} CLP</span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-label">FECHA:</span>
+                      <span class="meta-value">{{ item.fecha_adquisicion|date:"d/m/Y" }}</span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ item.serie }}"
+                      data-estado="{{ item.estado }}" data-marca="{{ item.marca }}" data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' item.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ item.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
               {% endfor %}
             </div>
           {% endfor %}
@@ -632,65 +632,15 @@
         </h2>
         {% if villanos_combined %}
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          {% for sub_label, sub_figuras, sub_wishlist, has_figures in villanos_combined %}
+          {% for sub_label, sub_items, has_figures in villanos_combined %}
             {% if sub_label %}
               <div class="sub-category-divider-omni {% if not has_figures %}wishlist-only-divider{% endif %}" style="margin-top: 15px; border-bottom: 1px dashed rgba(255, 51, 51, 0.2); padding-bottom: 6px; width: 100%;">
                 <h4 style="font-family: var(--font-display); font-size: 0.85rem; color: #ff3333; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);">{{ sub_label }}</h4>
               </div>
             {% endif %}
             <div class="figures-grid-omni">
-              {% for figura in sub_figuras %}
-              <div class="figure-card-omni" style="cursor: pointer;"
-                data-id="{{ figura.id }}"
-                data-nombre="{{ figura.nombre }}"
-                data-precio="${{ figura.precio }} CLP"
-                data-fecha="{{ figura.fecha_adquisicion|date:'d/m/Y' }}"
-                data-serie="{{ figura.serie }}"
-                data-estado="{{ figura.get_estado_display }}"
-                data-marca="{{ figura.get_marca_display }}"
-                data-tamano="{{ figura.get_tamano_display }}"
-                data-subcategoria="{{ figura.subcategoria }}"
-                data-imagen="{{ figura.imagen_url }}">
-                <div class="figure-img-wrap" style="border-bottom: none;">
-                  {% if figura.has_real_image %}<img src="{{ figura.imagen_url }}" alt="{{ figura.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ figura.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
-                </div>
-                <span class="figure-serie-badge serie-villanos">
-                  {{ figura.serie }}
-                </span>
-                <div class="figure-info-omni">
-                  <h3>{{ figura.nombre }}</h3>
-                  <div class="figure-meta">
-                    <div class="meta-item">
-                      <span class="meta-label">PRECIO:</span>
-                      <span class="meta-value green-text">${{ figura.precio }} CLP</span>
-                    </div>
-                    <div class="meta-item">
-                      <span class="meta-label">FECHA:</span>
-                      <span class="meta-value">{{ figura.fecha_adquisicion|date:"d/m/Y" }}</span>
-                    </div>
-                  </div>
-
-                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
-                    <button class="btn-secondary edit-figure-btn"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
-                      data-id="{{ figura.id }}" data-nombre="{{ figura.nombre }}" data-precio="{{ figura.precio }}"
-                      data-fecha="{{ figura.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ figura.serie }}"
-                      data-estado="{{ figura.estado }}" data-marca="{{ figura.marca }}" data-tamano="{{ figura.tamano }}"
-                      data-subcategoria="{{ figura.subcategoria }}"
-                      data-imagen="{{ figura.imagen_url }}">
-                      Editar
-                    </button>
-                    <a href="{% url 'mover_a_bodega' figura.id %}" class="btn-secondary"
-                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
-                      data-confirm="¿Mandar a {{ figura.nombre }} a la Bodega fuera de tu colección activa?">
-                      A Bodega
-                    </a>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
-
-              {% for item in sub_wishlist %}
+              {% for item in sub_items %}
+              {% if item.is_wishlist %}
               <div class="figure-card-omni wishlist-preview-card"
                 data-id="{{ item.id }}"
                 data-nombre="{{ item.nombre }}"
@@ -753,6 +703,56 @@
                   </div>
                 </div>
               </div>
+              {% else %}
+              <div class="figure-card-omni" style="cursor: pointer;"
+                data-id="{{ item.id }}"
+                data-nombre="{{ item.nombre }}"
+                data-precio="${{ item.precio }} CLP"
+                data-fecha="{{ item.fecha_adquisicion|date:'d/m/Y' }}"
+                data-serie="{{ item.serie }}"
+                data-estado="{{ item.get_estado_display }}"
+                data-marca="{{ item.get_marca_display }}"
+                data-tamano="{{ item.get_tamano_display }}"
+                data-subcategoria="{{ item.subcategoria }}"
+                data-imagen="{{ item.imagen_url }}">
+                <div class="figure-img-wrap" style="border-bottom: none;">
+                  {% if item.has_real_image %}<img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" />{% else %}<img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="{{ item.nombre }}" style="width:60%;height:60%;object-fit:contain;opacity:0.3;margin:auto;" />{% endif %}
+                </div>
+                <span class="figure-serie-badge serie-villanos">
+                  {{ item.serie }}
+                </span>
+                <div class="figure-info-omni">
+                  <h3>{{ item.nombre }}</h3>
+                  <div class="figure-meta">
+                    <div class="meta-item">
+                      <span class="meta-label">PRECIO:</span>
+                      <span class="meta-value green-text">${{ item.precio }} CLP</span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-label">FECHA:</span>
+                      <span class="meta-value">{{ item.fecha_adquisicion|date:"d/m/Y" }}</span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+                    <button class="btn-secondary edit-figure-btn"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: var(--border-green); margin: 0;"
+                      data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}"
+                      data-fecha="{{ item.fecha_adquisicion|date:'Y-m-d' }}" data-serie="{{ item.serie }}"
+                      data-estado="{{ item.estado }}" data-marca="{{ item.marca }}" data-tamano="{{ item.tamano }}"
+                      data-subcategoria="{{ item.subcategoria }}"
+                      data-imagen="{{ item.imagen_url }}">
+                      Editar
+                    </button>
+                    <a href="{% url 'mover_a_bodega' item.id %}" class="btn-secondary"
+                      style="flex: 1; font-size: 0.75rem; padding: 8px 12px; justify-content: center; cursor: pointer; border-color: #ff9900; color: #ff9900; text-decoration: none; display: flex; align-items: center;"
+                      data-confirm="¿Mandar a {{ item.nombre }} a la Bodega fuera de tu colección activa?">
+                      A Bodega
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
               {% endfor %}
             </div>
           {% endfor %}

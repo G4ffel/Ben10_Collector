@@ -98,11 +98,23 @@ def coleccion(request):
     wishlist_personajes = get_ordered_figures(WishlistItem.objects.filter(serie='Personajes'))
 
     def get_series_combined_data(figuras_qs, wishlist_qs):
+        def merge_and_sort(fig_qs, wish_qs):
+            items = []
+            for f in fig_qs:
+                f.is_wishlist = False
+                items.append(f)
+            for w in wish_qs:
+                w.is_wishlist = True
+                items.append(w)
+            items.sort(key=lambda x: (getattr(x, 'alien_order', 999), getattr(x, 'nombre', ''), getattr(x, 'is_wishlist', False)))
+            return items
+
         combined = []
         std_fig = figuras_qs.filter(subcategoria='')
         std_wish = wishlist_qs.filter(subcategoria='')
         if std_fig.exists() or std_wish.exists():
-            combined.append(('', std_fig, std_wish, std_fig.exists()))
+            merged = merge_and_sort(std_fig, std_wish)
+            combined.append(('', merged, std_fig.exists()))
 
         for sub_val, sub_label in Figura.SUBCATEGORIA_CHOICES:
             if sub_val == '':
@@ -110,7 +122,8 @@ def coleccion(request):
             sub_fig = figuras_qs.filter(subcategoria=sub_val)
             sub_wish = wishlist_qs.filter(subcategoria=sub_val)
             if sub_fig.exists() or sub_wish.exists():
-                combined.append((sub_label, sub_fig, sub_wish, sub_fig.exists()))
+                merged = merge_and_sort(sub_fig, sub_wish)
+                combined.append((sub_label, merged, sub_fig.exists()))
         return combined
 
     classic_combined = get_series_combined_data(figuras_classic, wishlist_classic)
