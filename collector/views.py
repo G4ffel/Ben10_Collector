@@ -3,60 +3,11 @@ from django.views.decorators.cache import never_cache
 from django.db.models import Sum, Avg, Max, Subquery, OuterRef, Case, When, Value, IntegerField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 
 from .forms import FiguraForm, PerfilForm, WishlistItemForm, WishlistEditForm, WishlistCustomForm, FiguraCustomForm
 from .models import Figura, Perfil, Alien, WishlistItem
-
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('coleccion')
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            next_url = request.GET.get('next', 'coleccion')
-            return redirect(next_url)
-        else:
-            messages.error(request, "Usuario o contraseña incorrectos. Verifica tus credenciales.")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'collector/login.html', {'form': form})
-
-def registro_view(request):
-    if request.user.is_authenticated:
-        return redirect('coleccion')
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            Perfil.objects.create(
-                user=user,
-                nombre=user.username.capitalize(),
-                alien_favorito='Fuego',
-                omnitrix_favorito='Clásico',
-                avatar='ben_clasico',
-                rango='recluta'
-            )
-            login(request, user)
-            messages.success(request, f"¡Bienvenido {user.username}! Tu colección ha sido creada.")
-            return redirect('coleccion')
-        else:
-            for error in form.errors.values():
-                messages.error(request, error)
-    else:
-        form = UserCreationForm()
-    return render(request, 'collector/registro.html', {'form': form})
-
-def logout_view(request):
-    logout(request)
-    messages.info(request, "Sesión cerrada correctamente.")
-    return redirect('login')
 
 def get_ordered_figures(queryset):
     alien_order = Subquery(
@@ -149,7 +100,6 @@ def sync_figure_subcategoria(instance):
             instance.save()
 
 @never_cache
-@login_required(login_url='login')
 def coleccion(request):
     form = FiguraForm()
     form_custom = FiguraCustomForm()
@@ -159,7 +109,7 @@ def coleccion(request):
             form_custom = FiguraCustomForm(request.POST, request.FILES)
             if form_custom.is_valid():
                 figura = form_custom.save(commit=False)
-                figura.user = request.user
+                figura.user = request.user if request.user.is_authenticated else None
                 figura.save()
                 sync_figure_subcategoria(figura)
                 return redirect('coleccion')
@@ -167,13 +117,13 @@ def coleccion(request):
             form = FiguraForm(request.POST, request.FILES)
             if form.is_valid():
                 figura = form.save(commit=False)
-                figura.user = request.user
+                figura.user = request.user if request.user.is_authenticated else None
                 figura.save()
                 sync_figure_subcategoria(figura)
                 return redirect('coleccion')
     
-    user_figuras = Figura.objects.filter(user=request.user)
-    user_wishlist = WishlistItem.objects.filter(user=request.user)
+    user_figuras = Figura.objects.all()
+    user_wishlist = WishlistItem.objects.all()
 
     figuras_classic = get_ordered_figures(user_figuras.filter(serie='Ben 10', estado_coleccion='coleccion'))
     figuras_af = get_ordered_figures(user_figuras.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion'))
@@ -267,9 +217,8 @@ def coleccion(request):
         'aliens_por_serie': aliens_por_serie
     })
 
-@login_required(login_url='login')
 def editar_figura(request, id):
-    figura = get_object_or_404(Figura, id=id, user=request.user)
+    figura = get_object_or_404(Figura, id=id)
     referer = request.META.get('HTTP_REFERER', '')
     if request.method == 'POST':
         form = FiguraForm(request.POST, request.FILES, instance=figura)
@@ -290,10 +239,9 @@ def editar_figura(request, id):
     return redirect('coleccion')
 
 @never_cache
-@login_required(login_url='login')
 def dashboard(request):
-    user_figuras = Figura.objects.filter(user=request.user)
-    user_wishlist = WishlistItem.objects.filter(user=request.user)
+    user_figuras = Figura.objects.all()
+    user_wishlist = WishlistItem.objects.all()
 
     total_figuras = user_figuras.filter(estado_coleccion='coleccion').count()
     valor_total = user_figuras.filter(estado_coleccion='coleccion').aggregate(Sum('precio'))['precio__sum'] or 0
@@ -345,6 +293,12 @@ def dashboard(request):
     total_posibles_personajes = unicos_personajes + wishlist_personajes_count
     completitud_personajes = int((unicos_personajes / total_posibles_personajes) * 100) if total_posibles_personajes > 0 else 0
 
+    col_classic = get_ordered_figures(user_figuras.filter(serie='Ben 10', estado_coleccion='coleccion'))
+    col_af = get_ordered_figures(user_figuras.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion'))
+    col_ov = get_ordered_figures(user_figuras.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion'))
+    col_personajes = get_ordered_figures(user_figuras.filter(serie='Personajes', estado_coleccion='coleccion'))
+    col_villanos = get_ordered_figures(user_figuras.filter(serie='Villanos', estado_coleccion='coleccion'))
+
     current_sort = request.GET.get('sort', '')
     
     figuras_qs = user_figuras.filter(estado_coleccion='coleccion')
@@ -385,6 +339,11 @@ def dashboard(request):
         'completitud_personajes': completitud_personajes,
         'total_posibles_personajes': total_posibles_personajes,
         'unicos_personajes': unicos_personajes,
+        'col_classic': col_classic,
+        'col_af': col_af,
+        'col_ov': col_ov,
+        'col_personajes': col_personajes,
+        'col_villanos': col_villanos,
         'figuras': figuras,
         'figuras_bodega': figuras_bodega,
         'aliens': aliens,
@@ -400,9 +359,8 @@ def dashboard(request):
         'valor_wishlist': valor_wishlist,
     })
 
-@login_required(login_url='login')
 def eliminar_figura(request, id):
-    figura = get_object_or_404(Figura, id=id, user=request.user)
+    figura = get_object_or_404(Figura, id=id)
     figura.delete()
     referer = request.META.get('HTTP_REFERER', '')
     if 'bodega' in referer:
@@ -412,13 +370,7 @@ def eliminar_figura(request, id):
     return redirect('dashboard')
 
 @never_cache
-@login_required(login_url='login')
 def base_de_datos(request):
-    # Acceso restringido únicamente al Administrador 'gaffel' / staff
-    if not request.user.is_staff and request.user.username.lower() != 'gaffel':
-        messages.warning(request, "Acceso restringido: Solo el Administrador (gaffel) puede acceder a la Base de Datos.")
-        return redirect('coleccion')
-
     if Alien.objects.count() == 0:
         Alien.seed_default_aliens()
 
@@ -497,7 +449,7 @@ def base_de_datos(request):
     total_ov = aliens.filter(serie_default='Ben 10 Omniverse').count()
     total_personajes = aliens.filter(serie_default='Personajes').count()
     total_villanos = aliens.filter(serie_default='Villanos').count()
-    perfil = Perfil.objects.filter(user=request.user).first() or Perfil.objects.filter(user__isnull=True).first()
+    perfil = Perfil.objects.first() or Perfil.objects.create(nombre='Ben Tennyson')
 
     return render(request, 'collector/base_de_datos.html', {
         'aliens': aliens,
@@ -514,11 +466,7 @@ def base_de_datos(request):
         'perfil': perfil,
     })
 
-@login_required(login_url='login')
 def eliminar_alien(request, id):
-    if not request.user.is_staff and request.user.username.lower() != 'gaffel':
-        messages.warning(request, "Acceso restringido: Solo el Administrador puede eliminar especies.")
-        return redirect('coleccion')
     alien = get_object_or_404(Alien, id=id)
     serie = alien.serie_default
     alien.delete()
@@ -526,13 +474,12 @@ def eliminar_alien(request, id):
 
 @never_cache
 def home(request):
-    if request.user.is_authenticated:
-        return redirect('coleccion')
-    return redirect('login')
+    return redirect('coleccion')
 
-@login_required(login_url='login')
 def editar_perfil(request):
-    perfil, _ = Perfil.objects.get_or_create(user=request.user, defaults={'nombre': request.user.username.capitalize()})
+    perfil = Perfil.objects.first()
+    if not perfil:
+        perfil = Perfil.objects.create(nombre='Ben Tennyson')
     if request.method == 'POST':
         form = PerfilForm(request.POST, instance=perfil)
         if form.is_valid():
@@ -540,9 +487,8 @@ def editar_perfil(request):
             messages.success(request, "Perfil actualizado correctamente.")
     return redirect(request.META.get('HTTP_REFERER', 'coleccion'))
 
-@login_required(login_url='login')
 def api_figuras(request):
-    figuras = get_ordered_figures_by_series(Figura.objects.filter(user=request.user, estado_coleccion='coleccion'))
+    figuras = get_ordered_figures_by_series(Figura.objects.filter(estado_coleccion='coleccion'))
     data = []
     for f in figuras:
         data.append({
@@ -560,9 +506,8 @@ def api_figuras(request):
     return JsonResponse({'figuras': data})
 
 @never_cache
-@login_required(login_url='login')
 def wishlist(request):
-    user_wishlist = WishlistItem.objects.filter(user=request.user)
+    user_wishlist = WishlistItem.objects.all()
     wishlist_items = get_ordered_figures_by_series(user_wishlist)
     wishlist_classic = get_ordered_figures(user_wishlist.filter(serie='Ben 10'))
     wishlist_af = get_ordered_figures(user_wishlist.filter(serie='Ben 10 Alien Force'))
@@ -598,7 +543,6 @@ def wishlist(request):
         'aliens_por_serie': aliens_por_serie,
     })
 
-@login_required(login_url='login')
 def agregar_a_wishlist(request):
     if request.method == 'POST':
         nombres = request.POST.getlist('nombres_multiple')
@@ -606,7 +550,7 @@ def agregar_a_wishlist(request):
         
         if nombres and serie:
             for nombre in nombres:
-                item = WishlistItem(nombre=nombre, serie=serie, user=request.user)
+                item = WishlistItem(nombre=nombre, serie=serie, user=request.user if request.user.is_authenticated else None)
                 item.save()
                 sync_figure_subcategoria(item)
             return redirect('wishlist')
@@ -614,7 +558,7 @@ def agregar_a_wishlist(request):
             form_wishlist_custom = WishlistCustomForm(request.POST, request.FILES)
             if form_wishlist_custom.is_valid():
                 item = form_wishlist_custom.save(commit=False)
-                item.user = request.user
+                item.user = request.user if request.user.is_authenticated else None
                 item.save()
                 sync_figure_subcategoria(item)
                 return redirect('wishlist')
@@ -622,30 +566,27 @@ def agregar_a_wishlist(request):
             form_wishlist = WishlistItemForm(request.POST)
             if form_wishlist.is_valid():
                 item = form_wishlist.save(commit=False)
-                item.user = request.user
+                item.user = request.user if request.user.is_authenticated else None
                 item.save()
                 sync_figure_subcategoria(item)
                 return redirect('wishlist')
     return redirect('wishlist')
 
-@login_required(login_url='login')
 def eliminar_de_wishlist(request, id):
-    item = get_object_or_404(WishlistItem, id=id, user=request.user)
+    item = get_object_or_404(WishlistItem, id=id)
     item.delete()
     return redirect('wishlist')
 
-@login_required(login_url='login')
 def editar_wishlist(request, id):
-    item = get_object_or_404(WishlistItem, id=id, user=request.user)
+    item = get_object_or_404(WishlistItem, id=id)
     if request.method == 'POST':
         form = WishlistEditForm(request.POST, request.FILES, instance=item)
         if form.is_valid():
             form.save()
     return redirect('wishlist')
 
-@login_required(login_url='login')
 def mover_a_coleccion(request, wishlist_id):
-    wishlist_item = get_object_or_404(WishlistItem, id=wishlist_id, user=request.user)
+    wishlist_item = get_object_or_404(WishlistItem, id=wishlist_id)
     if request.method == 'POST':
         post_data = request.POST.copy()
         post_data['nombre'] = wishlist_item.nombre
@@ -658,7 +599,7 @@ def mover_a_coleccion(request, wishlist_id):
             form = FiguraForm(post_data, request.FILES)
         if form.is_valid():
             figura = form.save(commit=False)
-            figura.user = request.user
+            figura.user = request.user if request.user.is_authenticated else None
             if not figura.imagen and wishlist_item.imagen:
                 figura.imagen = wishlist_item.imagen
             if not figura.subcategoria:
@@ -670,14 +611,13 @@ def mover_a_coleccion(request, wishlist_id):
     return redirect('wishlist')
 
 @never_cache
-@login_required(login_url='login')
 def bodega(request):
-    user_figuras = Figura.objects.filter(user=request.user)
+    user_figuras = Figura.objects.all()
     if request.method == 'POST':
         form = FiguraForm(request.POST, request.FILES)
         if form.is_valid():
             figura = form.save(commit=False)
-            figura.user = request.user
+            figura.user = request.user if request.user.is_authenticated else None
             figura.estado_coleccion = 'bodega'
             figura.save()
             return redirect('bodega')
@@ -705,9 +645,8 @@ def bodega(request):
         'aliens_por_serie': aliens_por_serie,
     })
 
-@login_required(login_url='login')
 def mover_a_bodega(request, id):
-    figura = get_object_or_404(Figura, id=id, user=request.user)
+    figura = get_object_or_404(Figura, id=id)
     figura.estado_coleccion = 'bodega'
     figura.save()
     referer = request.META.get('HTTP_REFERER', '')
@@ -717,9 +656,8 @@ def mover_a_bodega(request, id):
         return redirect('coleccion')
     return redirect('bodega')
 
-@login_required(login_url='login')
 def mover_a_vendido(request, id):
-    figura = get_object_or_404(Figura, id=id, user=request.user)
+    figura = get_object_or_404(Figura, id=id)
     precio_venta = request.GET.get('precio_venta')
     if precio_venta is not None:
         try:
@@ -732,9 +670,8 @@ def mover_a_vendido(request, id):
     figura.save()
     return redirect('bodega')
 
-@login_required(login_url='login')
 def reintegrar_a_coleccion(request, id):
-    figura = get_object_or_404(Figura, id=id, user=request.user)
+    figura = get_object_or_404(Figura, id=id)
     figura.estado_coleccion = 'coleccion'
     figura.save()
     return redirect('bodega')

@@ -43,17 +43,8 @@ INSTALLED_APPS = [
     'collector',
 ]
 
-import os
-
-try:
-    import dj_database_url
-    has_dj_database_url = True
-except ImportError:
-    has_dj_database_url = False
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -93,17 +84,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
-if has_dj_database_url:
-    db_from_env = dj_database_url.config(conn_max_age=500)
-    if db_from_env:
-        DATABASES['default'].update(db_from_env)
-
-if os.environ.get('RENDER') or os.environ.get('USE_SQLITE', 'False') == 'True':
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
 
 
 # Password validation

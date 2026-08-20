@@ -48,21 +48,12 @@
         La plataforma definitiva para coleccionistas de Ben 10. Registra tu colección de figuras de acción, gestiona tu bodega, organiza tu lista de deseos personalizada y lleva el control total de tu universo alienígena.
       </p>
       <div class="hero-actions">
-        {% if user.is_authenticated %}
-          <a href="{% url 'coleccion' %}" class="btn-primary" id="heroPrimary">
-            Ver Colección
-          </a>
-          <a href="{% url 'dashboard' %}" class="btn-secondary" id="heroSecondary">
-            Panel de Control
-          </a>
-        {% else %}
-          <a href="{% url 'login' %}" class="btn-primary" id="heroPrimary">
-            Iniciar Sesión
-          </a>
-          <a href="{% url 'registro' %}" class="btn-secondary" id="heroSecondary">
-            Registrarse
-          </a>
-        {% endif %}
+        <a href="{% url 'coleccion' %}" class="btn-primary" id="heroPrimary">
+          Ver Colección
+        </a>
+        <a href="{% url 'dashboard' %}" class="btn-secondary" id="heroSecondary">
+          Panel de Control
+        </a>
       </div>
     </div>
 

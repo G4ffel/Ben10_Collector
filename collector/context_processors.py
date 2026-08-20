@@ -7,31 +7,18 @@ def perfil_global(request):
     if Alien.objects.count() == 0:
         Alien.seed_default_aliens()
 
-    if request.user.is_authenticated:
-        perfil, _ = Perfil.objects.get_or_create(
-            user=request.user,
-            defaults={
-                'nombre': request.user.username.capitalize(),
-                'alien_favorito': 'Fuego',
-                'omnitrix_favorito': 'Clásico',
-                'avatar': 'ben_clasico',
-                'rango': 'recluta'
-            }
+    perfil = Perfil.objects.first()
+    if not perfil:
+        perfil = Perfil.objects.create(
+            nombre='Ben Tennyson',
+            alien_favorito='Fuego',
+            omnitrix_favorito='Clásico',
+            avatar='ben_clasico',
+            rango='recluta'
         )
-        user_figuras = Figura.objects.filter(user=request.user)
-    else:
-        perfil = Perfil.objects.filter(user__isnull=True).first()
-        if not perfil:
-            perfil = Perfil(
-                nombre='Invitado',
-                alien_favorito='Fuego',
-                omnitrix_favorito='Clásico',
-                avatar='ben_clasico',
-                rango='recluta'
-            )
-        user_figuras = Figura.objects.none()
 
-    form_perfil = PerfilForm(instance=perfil) if request.user.is_authenticated else None
+    user_figuras = Figura.objects.all()
+    form_perfil = PerfilForm(instance=perfil)
 
     # Calcular estadísticas agregadas
     figuras_count = user_figuras.filter(estado_coleccion='coleccion').count()

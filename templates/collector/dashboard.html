@@ -246,7 +246,6 @@
         Completitud de Base de Datos (Aliens Únicos)
       </h2>
       <div style="display: flex; flex-direction: column; gap: 20px;">
-
         <!-- Classic Bar -->
         <div class="progress-bar-row">
           <div
@@ -259,6 +258,16 @@
             <div
               style="width: {{ completitud_classic }}%; height: 100%; background: linear-gradient(90deg, rgba(0,180,45,0.8), var(--green-primary)); box-shadow: 0 0 10px var(--green-primary); transition: width 0.8s ease;">
             </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+            {% for item in col_classic %}
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; background: rgba(0, 255, 65, 0.08); border: 1px solid rgba(0, 255, 65, 0.25); border-radius: 20px; font-size: 0.8rem; color: var(--text-primary); font-family: var(--font-display);">
+                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" style="width: 20px; height: 20px; object-fit: contain; border-radius: 50%;" />
+                <span>{{ item.nombre }}</span>
+              </div>
+            {% empty %}
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Sin figuras registradas en esta serie.</span>
+            {% endfor %}
           </div>
         </div>
 
@@ -275,6 +284,16 @@
               style="width: {{ completitud_af }}%; height: 100%; background: linear-gradient(90deg, #0044cc, #0099ff); box-shadow: 0 0 10px #00ccff; transition: width 0.8s ease;">
             </div>
           </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+            {% for item in col_af %}
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; background: rgba(0, 153, 255, 0.08); border: 1px solid rgba(0, 153, 255, 0.3); border-radius: 20px; font-size: 0.8rem; color: var(--text-primary); font-family: var(--font-display);">
+                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" style="width: 20px; height: 20px; object-fit: contain; border-radius: 50%;" />
+                <span>{{ item.nombre }}</span>
+              </div>
+            {% empty %}
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Sin figuras registradas en esta serie.</span>
+            {% endfor %}
+          </div>
         </div>
 
         <!-- Omniverse Bar -->
@@ -289,6 +308,16 @@
             <div
               style="width: {{ completitud_ov }}%; height: 100%; background: linear-gradient(90deg, #8800cc, #b400ff); box-shadow: 0 0 10px #d880ff; transition: width 0.8s ease;">
             </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+            {% for item in col_ov %}
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; background: rgba(180, 0, 255, 0.08); border: 1px solid rgba(180, 0, 255, 0.3); border-radius: 20px; font-size: 0.8rem; color: var(--text-primary); font-family: var(--font-display);">
+                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" style="width: 20px; height: 20px; object-fit: contain; border-radius: 50%;" />
+                <span>{{ item.nombre }}</span>
+              </div>
+            {% empty %}
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Sin figuras registradas en esta serie.</span>
+            {% endfor %}
           </div>
         </div>
 
@@ -305,6 +334,16 @@
               style="width: {{ completitud_personajes }}%; height: 100%; background: linear-gradient(90deg, #cc9900, #ffcc00); box-shadow: 0 0 10px #ffcc00; transition: width 0.8s ease;">
             </div>
           </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+            {% for item in col_personajes %}
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; background: rgba(255, 204, 0, 0.08); border: 1px solid rgba(255, 204, 0, 0.3); border-radius: 20px; font-size: 0.8rem; color: var(--text-primary); font-family: var(--font-display);">
+                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" style="width: 20px; height: 20px; object-fit: contain; border-radius: 50%;" />
+                <span>{{ item.nombre }}</span>
+              </div>
+            {% empty %}
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Sin figuras registradas en esta serie.</span>
+            {% endfor %}
+          </div>
         </div>
 
         <!-- Villanos Bar -->
@@ -319,6 +358,16 @@
             <div
               style="width: {{ completitud_villanos }}%; height: 100%; background: linear-gradient(90deg, #b30000, #ff3333); box-shadow: 0 0 10px #ff3333; transition: width 0.8s ease;">
             </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+            {% for item in col_villanos %}
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; background: rgba(255, 51, 51, 0.08); border: 1px solid rgba(255, 51, 51, 0.3); border-radius: 20px; font-size: 0.8rem; color: var(--text-primary); font-family: var(--font-display);">
+                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" style="width: 20px; height: 20px; object-fit: contain; border-radius: 50%;" />
+                <span>{{ item.nombre }}</span>
+              </div>
+            {% empty %}
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Sin figuras registradas en esta serie.</span>
+            {% endfor %}
           </div>
         </div>
 
