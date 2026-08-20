@@ -7,32 +7,44 @@ def perfil_global(request):
     if Alien.objects.count() == 0:
         Alien.seed_default_aliens()
 
-    # Intentamos obtener el perfil existente, si no, creamos uno por defecto
-    perfil = Perfil.objects.first()
-    if not perfil:
-        perfil = Perfil.objects.create(
-            nombre='Ben Tennyson',
-            alien_favorito='Fuego',
-            omnitrix_favorito='Clásico',
-            avatar='icon1',
-            rango='recluta'
+    if request.user.is_authenticated:
+        perfil, _ = Perfil.objects.get_or_create(
+            user=request.user,
+            defaults={
+                'nombre': request.user.username.capitalize(),
+                'alien_favorito': 'Fuego',
+                'omnitrix_favorito': 'Clásico',
+                'avatar': 'ben_clasico',
+                'rango': 'recluta'
+            }
         )
-    
-    form_perfil = PerfilForm(instance=perfil)
-    
+        user_figuras = Figura.objects.filter(user=request.user)
+    else:
+        perfil = Perfil.objects.filter(user__isnull=True).first()
+        if not perfil:
+            perfil = Perfil(
+                nombre='Invitado',
+                alien_favorito='Fuego',
+                omnitrix_favorito='Clásico',
+                avatar='ben_clasico',
+                rango='recluta'
+            )
+        user_figuras = Figura.objects.none()
+
+    form_perfil = PerfilForm(instance=perfil) if request.user.is_authenticated else None
+
     # Calcular estadísticas agregadas
-    figuras_count = Figura.objects.filter(estado_coleccion='coleccion').count()
-    valor_total = Figura.objects.filter(estado_coleccion='coleccion').aggregate(Sum('precio'))['precio__sum'] or 0
-    aliens_unicos = Figura.objects.filter(estado_coleccion='coleccion').values('nombre').distinct().count()
+    figuras_count = user_figuras.filter(estado_coleccion='coleccion').count()
+    valor_total = user_figuras.filter(estado_coleccion='coleccion').aggregate(Sum('precio'))['precio__sum'] or 0
+    aliens_unicos = user_figuras.filter(estado_coleccion='coleccion').values('nombre').distinct().count()
 
     # Conteos por serie
-    count_ben10 = Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion').count()
-    count_af    = Figura.objects.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion').count()
-    count_ov    = Figura.objects.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion').count()
-    count_villanos = Figura.objects.filter(serie='Villanos', estado_coleccion='coleccion').count()
-    count_personajes = Figura.objects.filter(serie='Personajes', estado_coleccion='coleccion').count()
+    count_ben10 = user_figuras.filter(serie='Ben 10', estado_coleccion='coleccion').count()
+    count_af    = user_figuras.filter(serie='Ben 10 Alien Force', estado_coleccion='coleccion').count()
+    count_ov    = user_figuras.filter(serie='Ben 10 Omniverse', estado_coleccion='coleccion').count()
+    count_villanos = user_figuras.filter(serie='Villanos', estado_coleccion='coleccion').count()
+    count_personajes = user_figuras.filter(serie='Personajes', estado_coleccion='coleccion').count()
 
-    # Rango editable asignado al perfil
     rango = perfil.get_rango_display()
     
     rango_class_map = {
@@ -46,17 +58,14 @@ def perfil_global(request):
     }
     rango_class = rango_class_map.get(perfil.rango, 'rango-novato')
 
-    # Obtener todos los aliens únicos registrados de las figuras creadas en DB
-    aliens_en_db = list(Figura.objects.filter(estado_coleccion='coleccion').values_list('nombre', flat=True).distinct())
+    aliens_en_db = list(user_figuras.filter(estado_coleccion='coleccion').values_list('nombre', flat=True).distinct())
     
-    # Lista predeterminada de aliens icónicos de Ben 10 como fallback/iniciales
     aliens_predeterminados = [
         "Fuego", "Cuatro Brazos", "Bestia", "XLR8", "Materia Gris", 
         "Ultra T", "Diamante", "Fauces", "Insectoide", "Fantasmático", 
         "Cannonbolt", "Wildvine", "Upchuck", "Muy Grande", "Feedback", 
         "Humungosaurio", "Fuego Pantanoso", "Frío", "Eco Eco", "Rath", "Gloop"
     ]
-    # Unificar
     todos_los_aliens_raw = list(set(aliens_en_db + aliens_predeterminados))
 
     alien_orders = {a.nombre: a.orden_aparicion for a in Alien.objects.all()}

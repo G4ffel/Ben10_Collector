@@ -1,0 +1,2241 @@
+[
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$glNBqktyKSQEcPTOlEJoav$sPkAgBvIyIr1AXS0vbpSWEXmMNq9qrXdceqCcucf83A=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "gaffel",
+    "first_name": "",
+    "last_name": "",
+    "email": "gaffel@ben10collector.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-20T21:28:31.113Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 31,
+  "fields": {
+    "nombre": "Cannonbolt",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10/Cannonbolt.jpg",
+    "fecha_adquisicion": "2026-02-27",
+    "serie": "Ben 10",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 32,
+  "fields": {
+    "nombre": "Cuatrobrazos",
+    "precio": 0,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10/Cuatrobrazos.jpg",
+    "fecha_adquisicion": "2026-02-26",
+    "serie": "Ben 10",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 33,
+  "fields": {
+    "nombre": "Insectoide",
+    "precio": 9000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10/insectoide.jpg",
+    "fecha_adquisicion": "2026-02-27",
+    "serie": "Ben 10",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 35,
+  "fields": {
+    "nombre": "Bestia",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10/Bestia.jpg",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 36,
+  "fields": {
+    "nombre": "Ampfibio",
+    "precio": 100,
+    "precio_venta": 1500,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.22_1.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 37,
+  "fields": {
+    "nombre": "Amenaza Acuática",
+    "precio": 1000,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.19.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 38,
+  "fields": {
+    "nombre": "Feedback",
+    "precio": 500,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.22.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Omniverse",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 39,
+  "fields": {
+    "nombre": "Jetray",
+    "precio": 500,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.21.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 40,
+  "fields": {
+    "nombre": "Highbreed",
+    "precio": 500,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.21_2.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Villanos",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 41,
+  "fields": {
+    "nombre": "NRG",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.20_2.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 42,
+  "fields": {
+    "nombre": "Ben Tennyson",
+    "precio": 500,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.19_1.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Personajes",
+    "estado": "malo",
+    "marca": "fake",
+    "tamano": "grande",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 43,
+  "fields": {
+    "nombre": "Frío",
+    "precio": 100,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.20_1.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "pequeno",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 44,
+  "fields": {
+    "nombre": "Jetray",
+    "precio": 100,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.20.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "pequeno",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 45,
+  "fields": {
+    "nombre": "Goop",
+    "precio": 100,
+    "precio_venta": null,
+    "imagen": "bodega/WhatsApp_Image_2026-07-07_at_16.48.20_3.jpeg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "pequeno",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 46,
+  "fields": {
+    "nombre": "Rath",
+    "precio": 1500,
+    "precio_venta": 1500,
+    "imagen": "bodega/s-l400.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "vendido",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 47,
+  "fields": {
+    "nombre": "Fuego Pantanoso",
+    "precio": 500,
+    "precio_venta": 1500,
+    "imagen": "aliens_db/ben-10-alien-force/fuego-pantanoso.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "fake",
+    "tamano": "grande",
+    "subcategoria": "",
+    "estado_coleccion": "vendido",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 48,
+  "fields": {
+    "nombre": "Humungosaurio",
+    "precio": 500,
+    "precio_venta": 1500,
+    "imagen": "aliens_db/ben-10-alien-force/humungosaurio.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "vendido",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 50,
+  "fields": {
+    "nombre": "Ultra-T",
+    "precio": 2000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10/ultra-t.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 51,
+  "fields": {
+    "nombre": "Upchuck",
+    "precio": 100,
+    "precio_venta": null,
+    "imagen": "figuras/ben-10/Upchuck-kid.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10",
+    "estado": "medio",
+    "marca": "original",
+    "tamano": "pequeno",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 52,
+  "fields": {
+    "nombre": "Diamante",
+    "precio": 0,
+    "precio_venta": null,
+    "imagen": "figuras/ben-10/diamante.jpg",
+    "fecha_adquisicion": "2007-12-07",
+    "serie": "Ben 10",
+    "estado": "medio",
+    "marca": "original",
+    "tamano": "grande",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 53,
+  "fields": {
+    "nombre": "Fuego Pantanoso",
+    "precio": 2500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/fuego-pantanoso.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 54,
+  "fields": {
+    "nombre": "Eco Eco",
+    "precio": 8000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/eco-eco_iUhH4Zt.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 55,
+  "fields": {
+    "nombre": "Humungosaurio",
+    "precio": 500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/humungosaurio.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 56,
+  "fields": {
+    "nombre": "Jetray",
+    "precio": 500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/Jetray.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "bandai",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 57,
+  "fields": {
+    "nombre": "Piedra",
+    "precio": 4000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/piedra.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 58,
+  "fields": {
+    "nombre": "Cerebrón",
+    "precio": 1500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/cerebron.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 59,
+  "fields": {
+    "nombre": "Mono Araña",
+    "precio": 4000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/mono-araña.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 60,
+  "fields": {
+    "nombre": "Lodestar",
+    "precio": 1000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/lodestar.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 61,
+  "fields": {
+    "nombre": "Upchuck AF",
+    "precio": 6000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/upchuck-aF.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 62,
+  "fields": {
+    "nombre": "Amenaza Acuática",
+    "precio": 1500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/amenaza-acuatica.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 63,
+  "fields": {
+    "nombre": "Tortutornado",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/Tortutornado.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 64,
+  "fields": {
+    "nombre": "NRG",
+    "precio": 3000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/NRG.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 65,
+  "fields": {
+    "nombre": "Ampfibio",
+    "precio": 3000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/Ampfibio.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 66,
+  "fields": {
+    "nombre": "Vulkanus",
+    "precio": 1500,
+    "precio_venta": null,
+    "imagen": "aliens_db/villanos/vulkanus.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Villanos",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 67,
+  "fields": {
+    "nombre": "Highbreed",
+    "precio": 4000,
+    "precio_venta": null,
+    "imagen": "aliens_db/villanos/highbreed.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Villanos",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 68,
+  "fields": {
+    "nombre": "DNAliens",
+    "precio": 500,
+    "precio_venta": null,
+    "imagen": "aliens_db/villanos/DNAliens.jpg",
+    "fecha_adquisicion": "2026-07-07",
+    "serie": "Villanos",
+    "estado": "bueno",
+    "marca": "fake",
+    "tamano": "grande",
+    "subcategoria": "",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 71,
+  "fields": {
+    "nombre": "Toepick",
+    "precio": 1500,
+    "precio_venta": null,
+    "imagen": "aliens_db/omniverse/Toepick.jpg",
+    "fecha_adquisicion": "2026-07-08",
+    "serie": "Ben 10 Omniverse",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 72,
+  "fields": {
+    "nombre": "Tetrax",
+    "precio": 1000,
+    "precio_venta": null,
+    "imagen": "aliens_db/personajes/tetrax-shard.jpg",
+    "fecha_adquisicion": "2026-07-08",
+    "serie": "Personajes",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 73,
+  "fields": {
+    "nombre": "Frío Supremo BC",
+    "precio": 2500,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/61Kvfd9ODeL_BWaLmC9._AC_UF8941000_QL80_.jpg",
+    "fecha_adquisicion": "2026-07-08",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Supremos",
+    "estado_coleccion": "bodega",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 89,
+  "fields": {
+    "nombre": "Amenaza Acuática",
+    "precio": 10000,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-09",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 90,
+  "fields": {
+    "nombre": "Frío Supremo",
+    "precio": 10000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/Frío_Supremo.jpg",
+    "fecha_adquisicion": "2026-07-09",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Supremos",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 91,
+  "fields": {
+    "nombre": "Upchuck",
+    "precio": 5000,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-10",
+    "serie": "Ben 10",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 92,
+  "fields": {
+    "nombre": "Bestia Suprema",
+    "precio": 5000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/Bestia_Suprema.jpg",
+    "fecha_adquisicion": "2026-07-18",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Supremos",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 93,
+  "fields": {
+    "nombre": "Fuego Pantanoso Supremo",
+    "precio": 10000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/fuego-pantanoso-supremo.jpg",
+    "fecha_adquisicion": "2026-07-18",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Supremos",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 94,
+  "fields": {
+    "nombre": "Cerebrón",
+    "precio": 5000,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-18",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 95,
+  "fields": {
+    "nombre": "DNAliens",
+    "precio": 5000,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-18",
+    "serie": "Villanos",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 96,
+  "fields": {
+    "nombre": "Humungosaurio Supremo",
+    "precio": 15000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10-alien-force/Humungosaurio_Supremo.jpg",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Supremos",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 97,
+  "fields": {
+    "nombre": "Kevin 11 AF",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "aliens_db/villanos/kevin-11-AF.jpg",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Villanos",
+    "estado": "bueno",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 98,
+  "fields": {
+    "nombre": "Ben Tennyson",
+    "precio": 10000,
+    "precio_venta": null,
+    "imagen": "aliens_db/personajes/Ben_Tennyson_niño.jpg",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Personajes",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 99,
+  "fields": {
+    "nombre": "Bloxx",
+    "precio": 5000,
+    "precio_venta": null,
+    "imagen": "aliens_db/omniverse/bloxx.jpg",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10 Omniverse",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 100,
+  "fields": {
+    "nombre": "Rath",
+    "precio": 8000,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10 Alien Force",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 101,
+  "fields": {
+    "nombre": "Nanomech",
+    "precio": 8000,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 102,
+  "fields": {
+    "nombre": "Clockwork",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 103,
+  "fields": {
+    "nombre": "Eatle",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10 Alien Force",
+    "estado": "bueno",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 104,
+  "fields": {
+    "nombre": "Diamante AF",
+    "precio": 3500,
+    "precio_venta": null,
+    "imagen": "",
+    "fecha_adquisicion": "2026-07-30",
+    "serie": "Ben 10 Alien Force",
+    "estado": "medio",
+    "marca": "fake",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.figura",
+  "pk": 105,
+  "fields": {
+    "nombre": "Fuego",
+    "precio": 15000,
+    "precio_venta": null,
+    "imagen": "aliens_db/ben-10/fuego.jpg",
+    "fecha_adquisicion": "2026-08-07",
+    "serie": "Ben 10",
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "estado_coleccion": "coleccion",
+    "user": 2
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 1,
+  "fields": {
+    "nombre": "Bestia",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/Bestia.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 2
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 2,
+  "fields": {
+    "nombre": "Cuatrobrazos",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/Cuatrobrazos.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 6
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 3,
+  "fields": {
+    "nombre": "Materia Gris",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/materia-gris.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 5
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 4,
+  "fields": {
+    "nombre": "XLR8",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/xlr8.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 4
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 5,
+  "fields": {
+    "nombre": "Ultra-T",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/ultra-t.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 9
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 6,
+  "fields": {
+    "nombre": "Diamante",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/diamante.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 3
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 7,
+  "fields": {
+    "nombre": "Insectoide",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/insectoide.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 7
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 8,
+  "fields": {
+    "nombre": "Acuático",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/acuatico.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 10
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 9,
+  "fields": {
+    "nombre": "Fantasmático",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/fantasmatico.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 8
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 10,
+  "fields": {
+    "nombre": "Cannonbolt",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/Cannonbolt.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 11
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 11,
+  "fields": {
+    "nombre": "Fuego",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/fuego.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 1
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 12,
+  "fields": {
+    "nombre": "Goop",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/gub.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 25
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 13,
+  "fields": {
+    "nombre": "Fuego Pantanoso",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/fuego-pantanoso.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 17
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 14,
+  "fields": {
+    "nombre": "Piedra",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/piedra.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 22
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 15,
+  "fields": {
+    "nombre": "Frío",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/frio.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 21
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 16,
+  "fields": {
+    "nombre": "Humungosaurio",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/humungosaurio.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 19
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 17,
+  "fields": {
+    "nombre": "Cerebrón",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/cerebron.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 23
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 18,
+  "fields": {
+    "nombre": "Jetray",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Jetray.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 20
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 19,
+  "fields": {
+    "nombre": "Mono Araña",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/mono-araña.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 24
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 20,
+  "fields": {
+    "nombre": "Eco Eco",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/eco-eco_iUhH4Zt.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 18
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 21,
+  "fields": {
+    "nombre": "Alien X",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/alien-x.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 26
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 22,
+  "fields": {
+    "nombre": "Toepick",
+    "serie_default": "Ben 10 Omniverse",
+    "imagen": "aliens_db/omniverse/Toepick.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 52
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 23,
+  "fields": {
+    "nombre": "Bloxx",
+    "serie_default": "Ben 10 Omniverse",
+    "imagen": "aliens_db/omniverse/bloxx.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 46
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 24,
+  "fields": {
+    "nombre": "Bullfrag",
+    "serie_default": "Ben 10 Omniverse",
+    "imagen": "aliens_db/omniverse/Bullfrag.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 51
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 25,
+  "fields": {
+    "nombre": "Crashhopper",
+    "serie_default": "Ben 10 Omniverse",
+    "imagen": "aliens_db/omniverse/Crashhopper.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 49
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 26,
+  "fields": {
+    "nombre": "Feedback",
+    "serie_default": "Ben 10 Omniverse",
+    "imagen": "aliens_db/omniverse/feedback.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 47
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 27,
+  "fields": {
+    "nombre": "Gravattack",
+    "serie_default": "Ben 10 Omniverse",
+    "imagen": "aliens_db/omniverse/Gravattack.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 50
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 28,
+  "fields": {
+    "nombre": "Ben Tennyson",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/Ben_Tennyson_niño.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 53
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 29,
+  "fields": {
+    "nombre": "Kevin Levin AF",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/Kevin_Levin_AF.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 57
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 30,
+  "fields": {
+    "nombre": "Gwen Tennyson AF",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/Gwen_Tennyson.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 55
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 31,
+  "fields": {
+    "nombre": "Max Tennyson",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/Max_Tennyson.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 58
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 32,
+  "fields": {
+    "nombre": "Highbreed",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/highbreed.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 64
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 33,
+  "fields": {
+    "nombre": "DNAliens",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/DNAliens.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 63
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 34,
+  "fields": {
+    "nombre": "Vulkanus",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/vulkanus.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 62
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 35,
+  "fields": {
+    "nombre": "Tetrax",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/tetrax-shard.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 59
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 36,
+  "fields": {
+    "nombre": "Amenaza Acuática",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/amenaza-acuatica.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 31
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 37,
+  "fields": {
+    "nombre": "Ampfibio",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Ampfibio.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 36
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 38,
+  "fields": {
+    "nombre": "Tortutornado",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Tortutornado.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 33
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 39,
+  "fields": {
+    "nombre": "NRG",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/NRG.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 34
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 40,
+  "fields": {
+    "nombre": "Armadillo",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/armadillo.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 32
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 42,
+  "fields": {
+    "nombre": "Clockwork",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Clockwork.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 35
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 44,
+  "fields": {
+    "nombre": "Fuego Pantanoso Supremo",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/fuego-pantanoso-supremo.jpg",
+    "subcategoria": "Supremos",
+    "orden_aparicion": 40
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 45,
+  "fields": {
+    "nombre": "Frío Supremo",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Frío_Supremo.jpg",
+    "subcategoria": "Supremos",
+    "orden_aparicion": 42
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 46,
+  "fields": {
+    "nombre": "Humungosaurio Supremo",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Humungosaurio_Supremo.jpg",
+    "subcategoria": "Supremos",
+    "orden_aparicion": 39
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 47,
+  "fields": {
+    "nombre": "Eco Eco Supremo",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Eco_Eco_Supremo.jpg",
+    "subcategoria": "Supremos",
+    "orden_aparicion": 44
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 48,
+  "fields": {
+    "nombre": "Mono Araña Supremo",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Mono_Araña_Supremo.jpg",
+    "subcategoria": "Supremos",
+    "orden_aparicion": 43
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 49,
+  "fields": {
+    "nombre": "Cannonbolt Supremo",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Cannonbolt_Supremo.jpg",
+    "subcategoria": "Supremos",
+    "orden_aparicion": 41
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 50,
+  "fields": {
+    "nombre": "Bestia Suprema",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Bestia_Suprema.jpg",
+    "subcategoria": "Supremos",
+    "orden_aparicion": 45
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 51,
+  "fields": {
+    "nombre": "Nanomech",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/nanomech.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 30
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 52,
+  "fields": {
+    "nombre": "Lodestar",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/lodestar.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 27
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 53,
+  "fields": {
+    "nombre": "Rath",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/rath.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 28
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 54,
+  "fields": {
+    "nombre": "Upchuck AF",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/upchuck-aF.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 29
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 55,
+  "fields": {
+    "nombre": "Wildvine",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/Wildvine.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 12
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 56,
+  "fields": {
+    "nombre": "Blitzwolfer",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/Blitzwolfer.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 13
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 57,
+  "fields": {
+    "nombre": "Snare-Oh",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/Snare-Oh.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 14
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 58,
+  "fields": {
+    "nombre": "Frankenstrike",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/Frankenstrike.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 15
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 59,
+  "fields": {
+    "nombre": "Eatle OV",
+    "serie_default": "Ben 10 Omniverse",
+    "imagen": "aliens_db/omniverse/Eatle_OV.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 48
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 60,
+  "fields": {
+    "nombre": "Eatle",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Eatle.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 38
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 61,
+  "fields": {
+    "nombre": "Upchuck",
+    "serie_default": "Ben 10",
+    "imagen": "aliens_db/ben-10/upchuck_86IuDyv.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 16
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 70,
+  "fields": {
+    "nombre": "Ben Tennyson AF",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/Ben_Tennyson_AF.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 54
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 71,
+  "fields": {
+    "nombre": "vilgax",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/vilgax.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 72,
+  "fields": {
+    "nombre": "Kevin 11",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/kevin-11.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 73,
+  "fields": {
+    "nombre": "Kevin 11 AF",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/kevin-11-AF.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 75,
+  "fields": {
+    "nombre": "Cuatrobrazos AF",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/cuatrobrazos-af.jpg",
+    "subcategoria": "Ultimate Alien",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 76,
+  "fields": {
+    "nombre": "Diamante AF",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/diamant6e-af.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 78,
+  "fields": {
+    "nombre": "Cannonbolt AF",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Cannonbolt-af.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 79,
+  "fields": {
+    "nombre": "Muy Grande AF",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "aliens_db/ben-10-alien-force/Way_Big.jpg",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 80,
+  "fields": {
+    "nombre": "Kevin Levin",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/kid-kevin.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 56
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 81,
+  "fields": {
+    "nombre": "rook",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/ruk.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 61
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 83,
+  "fields": {
+    "nombre": "Magistrado Patelliday",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/Magistrado-Patelliday.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 60
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 84,
+  "fields": {
+    "nombre": "Caballero Eterno",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/caballero-eterno.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 85,
+  "fields": {
+    "nombre": "Agregor",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/Agregor.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 87,
+  "fields": {
+    "nombre": "Agregor Supremo",
+    "serie_default": "Villanos",
+    "imagen": "aliens_db/villanos/Agregor-Supremo.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 999
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 88,
+  "fields": {
+    "nombre": "Fasttrack",
+    "serie_default": "Ben 10 Alien Force",
+    "imagen": "",
+    "subcategoria": "",
+    "orden_aparicion": 37
+  }
+},
+{
+  "model": "collector.alien",
+  "pk": 89,
+  "fields": {
+    "nombre": "Gwen Tennyson",
+    "serie_default": "Personajes",
+    "imagen": "aliens_db/personajes/gwen.jpg",
+    "subcategoria": "",
+    "orden_aparicion": 55
+  }
+},
+{
+  "model": "collector.perfil",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "nombre": "Gaffel",
+    "alien_favorito": "Fuego",
+    "omnitrix_favorito": "Ultimatrix",
+    "avatar": "ben_10k",
+    "rango": "heroe",
+    "banner": "cf3c5mya0xc71.jpg",
+    "fav_figuras": "105,63,60,62,93"
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 33,
+  "fields": {
+    "nombre": "Eco Eco Supremo",
+    "serie": "Ben 10 Alien Force",
+    "precio": 10000,
+    "imagen": "aliens_db/ben-10-alien-force/Eco_Eco_Supremo.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Supremos",
+    "fecha_agregado": "2026-07-07T03:24:43.631Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 37,
+  "fields": {
+    "nombre": "XLR8",
+    "serie": "Ben 10",
+    "precio": 12000,
+    "imagen": "aliens_db/ben-10/xlr8.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-07T06:00:14.474Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 38,
+  "fields": {
+    "nombre": "Fantasmático",
+    "serie": "Ben 10",
+    "precio": 20000,
+    "imagen": "aliens_db/ben-10/fantasmatico.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-07T06:00:21.619Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 43,
+  "fields": {
+    "nombre": "Alien X",
+    "serie": "Ben 10 Alien Force",
+    "precio": 12000,
+    "imagen": "aliens_db/ben-10-alien-force/alien-x.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-07T06:01:59.736Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 52,
+  "fields": {
+    "nombre": "Armadillo",
+    "serie": "Ben 10 Alien Force",
+    "precio": 12000,
+    "imagen": "aliens_db/ben-10-alien-force/armadillo.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Ultimate Alien",
+    "fecha_agregado": "2026-07-07T07:27:37.420Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 55,
+  "fields": {
+    "nombre": "Feedback",
+    "serie": "Ben 10 Omniverse",
+    "precio": 8000,
+    "imagen": "aliens_db/omniverse/feedback.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:00:54.756Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 56,
+  "fields": {
+    "nombre": "Eatle OV",
+    "serie": "Ben 10 Omniverse",
+    "precio": 8000,
+    "imagen": "aliens_db/omniverse/Eatle_OV.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:00:54.760Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 57,
+  "fields": {
+    "nombre": "Gravattack",
+    "serie": "Ben 10 Omniverse",
+    "precio": 8000,
+    "imagen": "aliens_db/omniverse/Gravattack.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:00:54.764Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 60,
+  "fields": {
+    "nombre": "Max Tennyson",
+    "serie": "Personajes",
+    "precio": 8000,
+    "imagen": "aliens_db/personajes/Max_Tennyson.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:19:27.132Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 61,
+  "fields": {
+    "nombre": "Kevin Levin",
+    "serie": "Personajes",
+    "precio": 8000,
+    "imagen": "aliens_db/personajes/Kevin_Levin_AF.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:19:27.134Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 62,
+  "fields": {
+    "nombre": "Ben Tennyson AF",
+    "serie": "Personajes",
+    "precio": 8000,
+    "imagen": "aliens_db/personajes/Ben_Tennyson_AF.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:19:27.136Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 64,
+  "fields": {
+    "nombre": "Kevin 11",
+    "serie": "Villanos",
+    "precio": 12000,
+    "imagen": "aliens_db/villanos/kevin-11.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:29:41.829Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 65,
+  "fields": {
+    "nombre": "vilgax",
+    "serie": "Villanos",
+    "precio": 15000,
+    "imagen": "aliens_db/villanos/vilgax.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T07:29:41.831Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 66,
+  "fields": {
+    "nombre": "Snare-Oh",
+    "serie": "Ben 10",
+    "precio": 12000,
+    "imagen": "aliens_db/ben-10/Snare-Oh.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Alienígenas Desbloqueados",
+    "fecha_agregado": "2026-07-08T08:24:16.842Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 67,
+  "fields": {
+    "nombre": "Goop",
+    "serie": "Ben 10 Alien Force",
+    "precio": 0,
+    "imagen": "aliens_db/ben-10-alien-force/gub.jpg",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-07-08T08:42:59.222Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 76,
+  "fields": {
+    "nombre": "Mono Araña Supremo",
+    "serie": "Ben 10 Alien Force",
+    "precio": 0,
+    "imagen": "",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "Supremos",
+    "fecha_agregado": "2026-07-11T00:24:13.036Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 77,
+  "fields": {
+    "nombre": "Ultra-T",
+    "serie": "Ben 10",
+    "precio": 0,
+    "imagen": "",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-08-15T21:22:26.261Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 78,
+  "fields": {
+    "nombre": "Diamante",
+    "serie": "Ben 10",
+    "precio": 0,
+    "imagen": "",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-08-15T21:22:26.266Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 79,
+  "fields": {
+    "nombre": "rook",
+    "serie": "Personajes",
+    "precio": 0,
+    "imagen": "",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-08-16T07:53:04.253Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 80,
+  "fields": {
+    "nombre": "Magistrado Patelliday",
+    "serie": "Personajes",
+    "precio": 0,
+    "imagen": "",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-08-16T07:53:04.256Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 81,
+  "fields": {
+    "nombre": "kid kevin",
+    "serie": "Personajes",
+    "precio": 0,
+    "imagen": "",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-08-16T07:53:04.258Z",
+    "user": 2
+  }
+},
+{
+  "model": "collector.wishlistitem",
+  "pk": 82,
+  "fields": {
+    "nombre": "Caballero Eterno",
+    "serie": "Villanos",
+    "precio": 0,
+    "imagen": "",
+    "fecha_adquisicion": null,
+    "estado": "excelente",
+    "marca": "original",
+    "tamano": "mediano",
+    "subcategoria": "",
+    "fecha_agregado": "2026-08-16T07:53:52.259Z",
+    "user": 2
+  }
+}
+]

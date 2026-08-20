@@ -1,0 +1,402 @@
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Lógica de scroll inicial en caso de recargas F5 o reloads convencionales
+  const scrollKey = 'dashboard_scroll_pos';
+  const savedScroll = localStorage.getItem(scrollKey);
+  if (savedScroll !== null) {
+    window.scrollTo(0, parseInt(savedScroll, 10));
+    localStorage.removeItem(scrollKey);
+  }
+
+  // Funciones de tabs y filtros usando queries dinámicas
+  const setTabActive = (tabName) => {
+    const tabs = ['Figures', 'Bodega'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`tab${t}Btn`);
+      const content = document.getElementById(`tab${t}Content`);
+      if (btn) {
+        if (t === tabName) {
+          btn.style.color = 'var(--green-primary)';
+          btn.style.borderBottomColor = 'var(--green-primary)';
+          btn.style.textShadow = '0 0 8px var(--green-glow)';
+          btn.style.fontWeight = 'bold';
+        } else {
+          btn.style.color = 'var(--text-muted)';
+          btn.style.borderBottomColor = 'transparent';
+          btn.style.textShadow = 'none';
+          btn.style.fontWeight = 'normal';
+        }
+      }
+      if (content) {
+        content.style.display = t === tabName ? 'flex' : 'none';
+      }
+    });
+
+    const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
+    if (alienGalleryBtn) {
+      if (tabName === 'Aliens') {
+        alienGalleryBtn.style.visibility = 'visible';
+        alienGalleryBtn.style.pointerEvents = 'auto';
+      } else {
+        alienGalleryBtn.style.visibility = 'hidden';
+        alienGalleryBtn.style.pointerEvents = 'none';
+      }
+    }
+  };
+
+  const selectFiguresTab = () => setTabActive('Figures');
+  const selectAliensTab = () => setTabActive('Aliens');
+  const selectBodegaTab = () => setTabActive('Bodega');
+
+  const applyFilter = (serie) => {
+    const alienRows = document.querySelectorAll('.alien-row');
+    const filterBtns = document.querySelectorAll('.sub-tab-filter');
+
+    alienRows.forEach(row => {
+      if (row.getAttribute('data-serie') === serie) {
+        row.style.display = 'table-row';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    filterBtns.forEach(b => {
+      const bFilter = b.getAttribute('data-filter');
+      if (bFilter === serie) {
+        b.classList.add('active');
+        if (bFilter === 'Ben 10') {
+          b.style.background = 'rgba(0, 255, 65, 0.08)';
+          b.style.borderColor = 'var(--green-primary)';
+          b.style.textShadow = '0 0 5px var(--green-glow)';
+        } else if (bFilter === 'Ben 10 Alien Force') {
+          b.style.background = 'rgba(0, 162, 255, 0.08)';
+          b.style.borderColor = '#00ccff';
+          b.style.textShadow = '0 0 5px #00ccff';
+        } else if (bFilter === 'Ben 10 Omniverse') {
+          b.style.background = 'rgba(216, 128, 255, 0.08)';
+          b.style.borderColor = '#d880ff';
+          b.style.textShadow = '0 0 5px #d880ff';
+        } else if (bFilter === 'Villanos') {
+          b.style.background = 'rgba(255, 51, 51, 0.08)';
+          b.style.borderColor = '#ff3333';
+          b.style.textShadow = '0 0 5px #ff3333';
+        } else if (bFilter === 'Personajes') {
+          b.style.background = 'rgba(255, 204, 0, 0.08)';
+          b.style.borderColor = '#ffcc00';
+          b.style.textShadow = '0 0 5px #ffcc00';
+        }
+      } else {
+        b.classList.remove('active');
+        b.style.background = 'none';
+        b.style.textShadow = 'none';
+        if (bFilter === 'Ben 10') {
+          b.style.borderColor = 'rgba(0, 255, 65, 0.3)';
+        } else if (bFilter === 'Ben 10 Alien Force') {
+          b.style.borderColor = 'rgba(0, 162, 255, 0.3)';
+        } else if (bFilter === 'Ben 10 Omniverse') {
+          b.style.borderColor = 'rgba(216, 128, 255, 0.3)';
+        } else if (bFilter === 'Villanos') {
+          b.style.borderColor = 'rgba(255, 51, 51, 0.3)';
+        } else if (bFilter === 'Personajes') {
+          b.style.borderColor = 'rgba(255, 204, 0, 0.3)';
+        }
+      }
+    });
+  };
+
+  // Función para realizar la carga PJAX y reemplazar componentes de forma asíncrona
+  const performPjax = async (url, options = {}) => {
+    try {
+      const container = document.querySelector('.collection-container');
+      if (container) container.style.opacity = '0.75';
+
+      const response = await fetch(url, options);
+      if (!response.ok) throw new Error('Error en la petición');
+      
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Reemplazar paneles de estadísticas
+      const newStats = doc.querySelector('.hud-stats-grid');
+      const oldStats = document.querySelector('.hud-stats-grid');
+      if (newStats && oldStats) oldStats.innerHTML = newStats.innerHTML;
+
+      // Reemplazar completitud
+      const newProgress = doc.querySelector('.progress-section-omni');
+      const oldProgress = document.querySelector('.progress-section-omni');
+      if (newProgress && oldProgress) oldProgress.innerHTML = newProgress.innerHTML;
+
+      // Reemplazar consola de gestión
+      const newConsole = doc.getElementById('management-console');
+      const oldConsole = document.getElementById('management-console');
+      if (newConsole && oldConsole) oldConsole.innerHTML = newConsole.innerHTML;
+
+      if (container) container.style.opacity = '1';
+
+      // Sincronizar URL del navegador
+      window.history.pushState({}, '', response.url);
+
+      // Cerrar modal de edición si existe
+      const figureModal = document.getElementById('omniFormModal');
+      if (figureModal) {
+        figureModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // Re-aplicar estado de tabs activo
+      const urlObj = new URL(response.url);
+      const activeTab = urlObj.searchParams.get('tab');
+      const activeSerie = urlObj.searchParams.get('serie') || 'Ben 10';
+
+      if (activeTab === 'aliens') {
+        selectAliensTab();
+      } else if (activeTab === 'bodega') {
+        selectBodegaTab();
+      } else {
+        selectFiguresTab();
+      }
+      applyFilter(activeSerie);
+
+    } catch (err) {
+      console.error('Error PJAX:', err);
+      if (options.method === 'POST' && options.form) {
+        options.form.submit();
+      } else {
+        window.location.href = url;
+      }
+    }
+  };
+
+  // Interceptar clicks con delegación de eventos
+  document.addEventListener('click', (e) => {
+    // 1. Control de pestañas del dashboard
+    if (e.target.closest('#tabFiguresBtn')) {
+      e.preventDefault();
+      selectFiguresTab();
+    } else if (e.target.closest('#tabAliensBtn')) {
+      e.preventDefault();
+      selectAliensTab();
+    } else if (e.target.closest('#tabBodegaBtn')) {
+      e.preventDefault();
+      selectBodegaTab();
+    }
+
+    // 2. Control de filtros de series
+    const subTab = e.target.closest('.sub-tab-filter');
+    if (subTab) {
+      e.preventDefault();
+      const filterVal = subTab.getAttribute('data-filter');
+      applyFilter(filterVal);
+    }
+
+    // 3. Botón de editar Alien
+    const editBtn = e.target.closest('.edit-alien-db-btn');
+    if (editBtn) {
+      e.preventDefault();
+      const id = editBtn.getAttribute('data-id');
+      const nombre = editBtn.getAttribute('data-nombre');
+      const serie = editBtn.getAttribute('data-serie');
+      const imagenUrl = editBtn.getAttribute('data-imagen');
+
+      const form = document.querySelector('input[name="alien_nombre"]')?.closest('form');
+      if (form) {
+        const idInput = document.getElementById('dashboardAlienIdInput');
+        if (idInput) idInput.value = id;
+        
+        const nameInput = form.querySelector('input[name="alien_nombre"]');
+        if (nameInput) nameInput.value = nombre;
+        
+        const serieSelect = form.querySelector('select[name="serie_default"]');
+        if (serieSelect) serieSelect.value = serie;
+
+        const submitBtnSpan = form.querySelector('button[type="submit"] span');
+        if (submitBtnSpan) submitBtnSpan.textContent = "GUARDAR CAMBIOS";
+
+        const label = document.getElementById('dashboardAlienImageLabel');
+        if (label) {
+          if (imagenUrl) {
+            label.textContent = "CAMBIAR FOTO";
+            label.style.borderColor = "var(--green-primary)";
+            label.style.color = "var(--green-primary)";
+            label.style.background = "rgba(0, 255, 65, 0.08)";
+            label.style.boxShadow = "none";
+          } else {
+            label.textContent = "FOTO ALIEN";
+            label.style.borderColor = "var(--border-green)";
+            label.style.color = "var(--green-primary)";
+            label.style.background = "var(--dark-3)";
+            label.style.boxShadow = "none";
+          }
+        }
+      }
+      return;
+    }
+
+    // 4. Interceptar enlaces de acción (eliminar, paginación, etc.)
+    const link = e.target.closest('a');
+    if (link) {
+      if (link.closest('#navbar')) return;
+
+      const href = link.getAttribute('href');
+      if (href) {
+        if (href.startsWith('http') && !href.startsWith(window.location.origin)) return;
+        if (href.startsWith('#') || href.startsWith('javascript:')) return;
+
+        if (href.includes('eliminar') || href.includes('editar') || href.includes('dashboard') || href.startsWith('?') || href.includes('/dashboard')) {
+          const onclickAttr = link.getAttribute('onclick');
+          if (onclickAttr && onclickAttr.includes('confirm')) {
+            const confirmMsg = onclickAttr.match(/confirm\('([^']+)'\)/);
+            if (confirmMsg && !confirm(confirmMsg[1])) {
+              e.preventDefault();
+              return;
+            }
+          }
+          e.preventDefault();
+          performPjax(link.href);
+        }
+      }
+    }
+  });
+
+  // Interceptar envíos de formularios en el Dashboard
+  document.addEventListener('submit', (e) => {
+    const form = e.target.closest('form');
+    if (form) {
+      const action = form.getAttribute('action') || '';
+      if (action.includes('dashboard') || action === '' || action.includes('eliminar') || action.includes('editar')) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        performPjax(form.action || window.location.href, {
+          method: 'POST',
+          body: formData,
+          form: form
+        });
+      }
+    }
+  });
+
+  // === MODAL DE GALERÍA DE HOLOGRAMAS ===
+  const alienGalleryBtn = document.getElementById('openAlienGalleryBtn');
+  const alienGalleryModal = document.getElementById('alienGalleryModal');
+  const alienGalleryCloseX = document.getElementById('alienGalleryCloseX');
+  const alienGalleryOverlay = document.getElementById('alienGalleryOverlay');
+
+  if (alienGalleryBtn && alienGalleryModal) {
+    alienGalleryBtn.addEventListener('click', () => {
+      alienGalleryModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  const closeAlienGalleryModal = () => {
+    if (alienGalleryModal) {
+      alienGalleryModal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  };
+
+  if (alienGalleryCloseX) alienGalleryCloseX.addEventListener('click', closeAlienGalleryModal);
+  if (alienGalleryOverlay) alienGalleryOverlay.addEventListener('click', closeAlienGalleryModal);
+
+  // === ZOOM DE HOLOGRAMAS EN LA GALERÍA ===
+  const holoItems = document.querySelectorAll('.gallery-holo-item');
+  const zoomModal = document.getElementById('alienGalleryZoomModal');
+  const zoomImg = document.getElementById('zoomAlienImg');
+  const zoomName = document.getElementById('zoomAlienName');
+  const zoomSerie = document.getElementById('zoomAlienSerie');
+  const zoomOverlay = document.getElementById('alienGalleryZoomOverlay');
+  const zoomContent = document.getElementById('alienGalleryZoomContent');
+
+  holoItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const img = item.querySelector('img');
+      const nombre = item.getAttribute('title');
+      const wrapper = item.closest('.gallery-section-wrapper');
+      const serie = wrapper ? wrapper.querySelector('h3').textContent.trim() : '';
+
+      if (img && zoomModal && zoomImg && zoomName && zoomSerie) {
+        zoomImg.src = img.src;
+        zoomName.textContent = nombre;
+        zoomSerie.textContent = serie;
+
+        // Asignar colores según la serie
+        let color = 'var(--green-primary)';
+        let shadow = 'var(--green-glow)';
+        if (serie === 'Ben 10 Alien Force') {
+          color = '#00ccff';
+          shadow = 'rgba(0, 204, 255, 0.4)';
+        } else if (serie === 'Ben 10 Omniverse') {
+          color = '#d880ff';
+          shadow = 'rgba(216, 128, 255, 0.4)';
+        } else if (serie === 'Personajes') {
+          color = '#ffcc00';
+          shadow = 'rgba(255, 204, 0, 0.4)';
+        } else if (serie === 'Villanos') {
+          color = '#ff3333';
+          shadow = 'rgba(255, 51, 51, 0.4)';
+        }
+
+        zoomModal.style.borderColor = color;
+        zoomContent.style.borderColor = color;
+        zoomContent.style.boxShadow = `0 0 45px ${shadow}`;
+        zoomName.style.color = color;
+        zoomName.style.textShadow = `0 0 10px ${shadow}`;
+
+        zoomModal.style.display = 'flex';
+        setTimeout(() => {
+          zoomContent.style.transform = 'scale(1)';
+        }, 10);
+      }
+    });
+  });
+
+  const closeZoomModal = () => {
+    if (zoomModal) {
+      zoomContent.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        zoomModal.style.display = 'none';
+      }, 150);
+    }
+  };
+
+  if (zoomOverlay) zoomOverlay.addEventListener('click', closeZoomModal);
+  if (zoomContent) zoomContent.addEventListener('click', closeZoomModal);
+
+  // Inicializar estado del Dashboard desde los parámetros URL iniciales
+  const urlParams = new URLSearchParams(window.location.search);
+  const activeTab = urlParams.get('tab');
+  const activeSerie = urlParams.get('serie') || 'Ben 10';
+
+  if (activeTab === 'aliens') {
+    selectAliensTab();
+  } else if (activeTab === 'bodega') {
+    selectBodegaTab();
+  } else {
+    selectFiguresTab();
+  }
+  applyFilter(activeSerie);
+});
+
+// Helper function for dashboard alien photo file label update
+function updateDashboardAlienFileLabel(input) {
+  const label = document.getElementById('dashboardAlienImageLabel');
+  if (label) {
+    if (input.files && input.files[0]) {
+      label.textContent = "✓ CARGADA";
+      label.style.borderColor = "var(--green-primary)";
+      label.style.color = "var(--dark-1)";
+      label.style.background = "linear-gradient(135deg, var(--green-primary), var(--green-mid))";
+      label.style.boxShadow = "0 0 15px var(--green-glow)";
+    } else {
+      label.textContent = "FOTO ALIEN";
+      label.style.borderColor = "var(--border-green)";
+      label.style.color = "var(--green-primary)";
+      label.style.background = "var(--dark-3)";
+      label.style.boxShadow = "none";
+    }
+  }
+}

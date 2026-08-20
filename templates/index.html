@@ -45,37 +45,24 @@
         <span class="hero-tag">Miles de aliens. Un héroe.</span>
       </h1>
       <p class="hero-desc">
-        Con el poder del Omnitrix, Benjamin Tennyson puede transformarse en cualquiera de los 10 aliens más poderosos de
-        la galaxia. ¿Estás listo para descubrirlos?
+        La plataforma definitiva para coleccionistas de Ben 10. Registra tu colección de figuras de acción, gestiona tu bodega, organiza tu lista de deseos personalizada y lleva el control total de tu universo alienígena.
       </p>
       <div class="hero-actions">
-        <a href="{% url 'coleccion' %}" class="btn-primary" id="heroPrimary">
-          Ver Colección
-        </a>
-        <a href="{% url 'dashboard' %}" class="btn-secondary" id="heroSecondary">
-          Panel de control
-        </a>  
-      </div>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <span class="stat-num">{{ total_classic }}</span>
-          <span class="stat-label">Ben 10</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-num">{{ total_af }}</span>
-          <span class="stat-label">Alien Force</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-num">{{ total_ov }}</span>
-          <span class="stat-label">Omniverse</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-num">{{ total_figuras }}</span>
-          <span class="stat-label">Totales</span>
-        </div>
+        {% if user.is_authenticated %}
+          <a href="{% url 'coleccion' %}" class="btn-primary" id="heroPrimary">
+            Ver Colección
+          </a>
+          <a href="{% url 'dashboard' %}" class="btn-secondary" id="heroSecondary">
+            Panel de Control
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-primary" id="heroPrimary">
+            Iniciar Sesión
+          </a>
+          <a href="{% url 'registro' %}" class="btn-secondary" id="heroSecondary">
+            Registrarse
+          </a>
+        {% endif %}
       </div>
     </div>
 

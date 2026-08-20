@@ -135,9 +135,9 @@
     /* FILTROS POR SERIE EN CHIPS */
     .series-chips-bar {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
-      margin-bottom: 25px;
+      margin-bottom: 0;
       flex-wrap: wrap;
     }
 
@@ -145,16 +145,16 @@
       background: rgba(10, 21, 10, 0.5);
       border: 1px solid rgba(0, 255, 65, 0.2);
       border-radius: 20px;
-      padding: 6px 14px;
+      padding: 5px 11px;
       font-family: var(--font-display);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: bold;
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       outline: none;
       white-space: nowrap;
     }
@@ -162,8 +162,8 @@
     .series-chip .chip-count {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
-      padding: 2px 7px;
-      font-size: 0.7rem;
+      padding: 2px 6px;
+      font-size: 0.68rem;
     }
 
     .series-chip.active[data-filter="all"] {
@@ -181,24 +181,24 @@
     }
 
     .series-chip.active[data-filter="Ben 10 Alien Force"] {
-      background: rgba(0, 204, 255, 0.12);
-      border-color: #00ccff;
-      color: #00ccff;
-      box-shadow: 0 0 12px rgba(0, 204, 255, 0.4);
+      background: rgba(0, 255, 65, 0.12);
+      border-color: var(--green-primary);
+      color: var(--green-primary);
+      box-shadow: 0 0 12px var(--green-glow);
     }
 
     .series-chip.active[data-filter="Ben 10 Omniverse"] {
-      background: rgba(216, 128, 255, 0.12);
-      border-color: #d880ff;
-      color: #d880ff;
-      box-shadow: 0 0 12px rgba(216, 128, 255, 0.4);
+      background: rgba(0, 255, 65, 0.12);
+      border-color: var(--green-primary);
+      color: var(--green-primary);
+      box-shadow: 0 0 12px var(--green-glow);
     }
 
     .series-chip.active[data-filter="Personajes"] {
-      background: rgba(255, 204, 0, 0.12);
-      border-color: #ffcc00;
-      color: #ffcc00;
-      box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+      background: rgba(0, 255, 170, 0.12);
+      border-color: #00ffaa;
+      color: #00ffaa;
+      box-shadow: 0 0 12px rgba(0, 255, 170, 0.4);
     }
 
     .series-chip.active[data-filter="Villanos"] {
@@ -270,14 +270,20 @@
 
     .alien-card-title {
       font-family: var(--font-display);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: #ffffff;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin: 0 0 8px 0;
+      margin: 0 0 10px 0;
       text-align: center;
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+      min-height: 2.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.25;
+      word-break: break-word;
     }
 
     .alien-card-omni:hover .alien-card-title {
@@ -292,7 +298,8 @@
       border-radius: 12px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
+      display: inline-block;
     }
 
     .alien-card-actions {
@@ -427,7 +434,7 @@
       </div>
 
       <!-- BUSCADOR A LA PAR EN LA MISMA FILA DERECHA -->
-      <div class="db-search-bar" style="min-width: 200px; max-width: 260px; margin: 0; flex-shrink: 0;">
+      <div class="db-search-bar" style="min-width: 170px; max-width: 220px; margin: 0; flex-shrink: 0;">
         <svg class="db-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -436,40 +443,55 @@
       </div>
     </div>
 
-    <!-- VISTA 1: GRID DE TARJETAS HOLOGRÁFICAS DE ALIENS -->
-    <div id="alienGridView" class="aliens-grid-container">
-      {% if aliens %}
-        {% for alien in aliens %}
-        <div class="alien-card-omni alien-item" data-name="{{ alien.nombre|lower }}" data-serie="{{ alien.serie_default }}" data-nombre-real="{{ alien.nombre }}" data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% else %}/media/omnitrix/Ben_10_Omnitrix.png{% endif %}" style="cursor: pointer;">
-          <div class="alien-card-avatar-wrapper">
-            {% if alien.imagen %}
-              <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" class="alien-card-avatar-img" />
-            {% else %}
-              <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="No image" class="alien-card-avatar-img" style="opacity: 0.35; filter: grayscale(1);" />
-            {% endif %}
+    <!-- VISTA 1: GRID DE TARJETAS HOLOGRÁFICAS DE ALIENS (AGRUPADAS POR SUBCATEGORÍA) -->
+    <div id="alienGridView" style="display: flex; flex-direction: column; gap: 35px; margin-bottom: 50px;">
+      {% if aliens_grouped %}
+        {% for sub_label, sub_aliens in aliens_grouped %}
+        <div class="subcategory-group-wrapper" style="display: flex; flex-direction: column; gap: 15px;">
+          <!-- ENCABEZADO DE SUBCATEGORÍA -->
+          <div class="sub-category-divider-omni subcategory-group-header" style="border-bottom: 1px dashed rgba(0, 255, 65, 0.2); padding-bottom: 8px;">
+            <h4 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--green-primary); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 8px var(--green-glow); display: flex; align-items: center; gap: 10px;">
+              <span>❖ {{ sub_label }}</span>
+              <span class="subcategory-count-badge" style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">({{ sub_aliens|length }})</span>
+            </h4>
           </div>
-          <h3 class="alien-card-title">{{ alien.nombre }}</h3>
-          <span class="figure-serie-badge alien-card-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% elif alien.serie_default == 'Ben 10 Omniverse' %}serie-ov{% elif alien.serie_default == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}">
-            {{ alien.serie_default }}
-          </span>
-          
-          <div class="alien-card-actions">
-            <button type="button" class="alien-card-btn edit-alien-db-btn" style="border: 1px solid var(--border-green); background: rgba(0,255,65,0.05); color: var(--green-primary);"
-              data-id="{{ alien.id }}"
-              data-nombre="{{ alien.nombre }}"
-              data-serie="{{ alien.serie_default }}"
-              data-subcategoria="{{ alien.subcategoria }}"
-              data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% endif %}">
-              Editar
-            </button>
-            <a href="{% url 'eliminar_alien' alien.id %}" class="alien-card-btn" style="border: 1px solid rgba(255,51,51,0.4); background: rgba(255,51,51,0.05); color: #ff3333;" data-confirm="¿Seguro que deseas eliminar a {{ alien.nombre }} de la base de datos?">
-              Eliminar
-            </a>
+
+          <!-- GRID DE TARJETAS DE LA SUBCATEGORÍA -->
+          <div class="aliens-grid-container" style="margin-bottom: 0;">
+            {% for alien in sub_aliens %}
+            <div class="alien-card-omni alien-item" data-name="{{ alien.nombre|lower }}" data-serie="{{ alien.serie_default }}" data-subcategoria="{{ alien.subcategoria }}" data-nombre-real="{{ alien.nombre }}" data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% else %}/media/omnitrix/Ben_10_Omnitrix.png{% endif %}" style="cursor: pointer;">
+              <div class="alien-card-avatar-wrapper">
+                {% if alien.imagen %}
+                  <img src="{{ alien.imagen.url }}" alt="{{ alien.nombre }}" class="alien-card-avatar-img" />
+                {% else %}
+                  <img src="/media/omnitrix/Ben_10_Omnitrix.png" alt="No image" class="alien-card-avatar-img" style="opacity: 0.35; filter: grayscale(1);" />
+                {% endif %}
+              </div>
+              <h3 class="alien-card-title">{{ alien.nombre }}</h3>
+              <span class="figure-serie-badge alien-card-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% elif alien.serie_default == 'Ben 10 Omniverse' %}serie-ov{% elif alien.serie_default == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}">
+                {{ alien.serie_default }}
+              </span>
+              
+              <div class="alien-card-actions">
+                <button type="button" class="alien-card-btn edit-alien-db-btn" style="border: 1px solid var(--border-green); background: rgba(0,255,65,0.05); color: var(--green-primary);"
+                  data-id="{{ alien.id }}"
+                  data-nombre="{{ alien.nombre }}"
+                  data-serie="{{ alien.serie_default }}"
+                  data-subcategoria="{{ alien.subcategoria }}"
+                  data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% endif %}">
+                  Editar
+                </button>
+                <a href="{% url 'eliminar_alien' alien.id %}" class="alien-card-btn" style="border: 1px solid rgba(255,51,51,0.4); background: rgba(255,51,51,0.05); color: #ff3333;" data-confirm="¿Seguro que deseas eliminar a {{ alien.nombre }} de la base de datos?">
+                  Eliminar
+                </a>
+              </div>
+            </div>
+            {% endfor %}
           </div>
         </div>
         {% endfor %}
       {% else %}
-        <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted); font-family: var(--font-body);">
+        <div style="text-align: center; padding: 60px; color: var(--text-muted); font-family: var(--font-body);">
           No hay especies registradas en la base de datos.
         </div>
       {% endif %}
@@ -483,12 +505,19 @@
             <tr style="border-bottom: 1px solid var(--border-green); font-family: var(--font-display); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
               <th style="padding: 12px 15px;">Especie</th>
               <th style="padding: 12px 15px;">Serie de Origen</th>
+              <th style="padding: 12px 15px;">Subcategoría</th>
               <th style="padding: 12px 15px; text-align: center;">Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            {% for alien in aliens %}
-            <tr class="table-row-hover alien-item" data-name="{{ alien.nombre|lower }}" data-serie="{{ alien.serie_default }}" data-nombre-real="{{ alien.nombre }}" data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% else %}/media/omnitrix/Ben_10_Omnitrix.png{% endif %}" style="border-bottom: 1px solid rgba(0,255,65,0.05); cursor: pointer;">
+          {% for sub_label, sub_aliens in aliens_grouped %}
+          <tbody class="subcategory-table-group" data-subcategoria="{{ sub_label }}">
+            <tr class="subcategory-table-header" style="background: rgba(0, 255, 65, 0.04); border-bottom: 1px solid rgba(0, 255, 65, 0.15);">
+              <td colspan="4" style="padding: 10px 15px; font-family: var(--font-display); font-size: 0.8rem; color: var(--green-primary); font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;">
+                ❖ {{ sub_label }} <span class="subcategory-table-count" style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">({{ sub_aliens|length }})</span>
+              </td>
+            </tr>
+            {% for alien in sub_aliens %}
+            <tr class="table-row-hover alien-item" data-name="{{ alien.nombre|lower }}" data-serie="{{ alien.serie_default }}" data-subcategoria="{{ alien.subcategoria }}" data-nombre-real="{{ alien.nombre }}" data-imagen="{% if alien.imagen %}{{ alien.imagen.url }}{% else %}/media/omnitrix/Ben_10_Omnitrix.png{% endif %}" style="border-bottom: 1px solid rgba(0,255,65,0.05); cursor: pointer;">
               <td style="padding: 12px 15px; display: flex; align-items: center; gap: 15px;">
                 <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(0, 255, 65, 0.2); background: var(--dark-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                   {% if alien.imagen %}
@@ -505,6 +534,17 @@
                 <span class="figure-serie-badge {% if alien.serie_default == 'Ben 10' %}serie-classic{% elif alien.serie_default == 'Ben 10 Alien Force' %}serie-af{% elif alien.serie_default == 'Ben 10 Omniverse' %}serie-ov{% elif alien.serie_default == 'Villanos' %}serie-villanos{% else %}serie-personajes{% endif %}" style="position: static; display: inline-block; padding: 4px 8px; font-size: 0.55rem; letter-spacing: 0.5px;">
                   {{ alien.serie_default }}
                 </span>
+              </td>
+              <td style="padding: 12px 15px;">
+                {% if alien.subcategoria %}
+                  <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--green-primary); background: rgba(0,255,65,0.08); border: 1px solid rgba(0,255,65,0.2); padding: 3px 8px; border-radius: 10px; font-weight: 600;">
+                    {{ alien.subcategoria }}
+                  </span>
+                {% else %}
+                  <span style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted);">
+                    Estándar
+                  </span>
+                {% endif %}
               </td>
               <td style="padding: 12px 15px; text-align: center;">
                 <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
@@ -524,6 +564,7 @@
             </tr>
             {% endfor %}
           </tbody>
+          {% endfor %}
         </table>
       </div>
     </div>

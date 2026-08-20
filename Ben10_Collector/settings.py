@@ -29,8 +29,7 @@ SECRET_KEY = 'django-insecure-1!r$*!k^a_kp6^06prfks-87hd^79h4re+7&c)b_e8yd*5vd4^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -44,8 +43,17 @@ INSTALLED_APPS = [
     'collector',
 ]
 
+import os
+
+try:
+    import dj_database_url
+    has_dj_database_url = True
+except ImportError:
+    has_dj_database_url = False
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,9 +83,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Ben10_Collector.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -88,6 +93,17 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
+if has_dj_database_url:
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    if db_from_env:
+        DATABASES['default'].update(db_from_env)
+
+if os.environ.get('RENDER') or os.environ.get('USE_SQLITE', 'False') == 'True':
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 
 
 # Password validation
@@ -126,6 +142,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'

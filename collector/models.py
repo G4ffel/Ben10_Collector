@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 def figuras_upload_path(instance, filename):
     if hasattr(instance, 'estado_coleccion') and instance.estado_coleccion in ['bodega', 'vendido']:
@@ -139,6 +140,7 @@ class Figura(models.Model):
         default='coleccion',
         verbose_name="Estado de Colección"
     )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='figuras', null=True, blank=True)
 
     class Meta:
         verbose_name = "Figura"
@@ -270,15 +272,21 @@ class Alien(models.Model):
 
             # Personajes
             ('Ben Tennyson', 'Personajes', 53),
-            ('Gwen Tennyson', 'Personajes', 54),
-            ('Max Tennyson', 'Personajes', 55),
+            ('Ben Tennyson AF', 'Personajes', 54),
+            ('Gwen Tennyson AF', 'Personajes', 55),
+            ('Gwen Tennyson', 'Personajes', 55),
             ('Kevin Levin', 'Personajes', 56),
-            ('Tetrax', 'Personajes', 57),
+            ('Kevin Levin AF', 'Personajes', 57),
+            ('Max Tennyson', 'Personajes', 58),
+            ('Tetrax', 'Personajes', 59),
+            ('Magistrado Patelliday', 'Personajes', 60),
+            ('Rook', 'Personajes', 61),
+            ('rook', 'Personajes', 61),
 
             # Villanos
-            ('Vulkanus', 'Villanos', 58),
-            ('DNAliens', 'Villanos', 59),
-            ('Highbreed', 'Villanos', 60),
+            ('Vulkanus', 'Villanos', 62),
+            ('DNAliens', 'Villanos', 63),
+            ('Highbreed', 'Villanos', 64),
         ]
         for name, series, order in initial_aliens:
             alien, created = cls.objects.get_or_create(nombre=name, defaults={'serie_default': series, 'orden_aparicion': order})
@@ -318,6 +326,7 @@ class Perfil(models.Model):
         ('heroe', 'Héroe del Cosmos'),
     ]
     
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil', null=True, blank=True)
     nombre = models.CharField(max_length=100, default='Ben Tennyson', verbose_name="Nombre de Coleccionista")
     alien_favorito = models.CharField(max_length=100, default='Fuego', verbose_name="Alien Favorito")
     omnitrix_favorito = models.CharField(max_length=50, choices=OMNITRIX_CHOICES, default='Clásico', verbose_name="Omnitrix Favorito")
@@ -421,6 +430,7 @@ class WishlistItem(models.Model):
         verbose_name="Subcategoría"
     )
     fecha_agregado = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Agregado")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items', null=True, blank=True)
 
     class Meta:
         verbose_name = "Item de Wishlist"
