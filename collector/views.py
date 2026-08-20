@@ -77,6 +77,13 @@ def get_aliens_por_serie_data():
         aliens_por_serie[s] = list_aliens
     return aliens_por_serie
 
+def sync_figure_subcategoria(instance):
+    if not getattr(instance, 'subcategoria', '') and getattr(instance, 'nombre', ''):
+        alien = Alien.objects.filter(nombre__iexact=instance.nombre.strip()).first()
+        if alien and alien.subcategoria:
+            instance.subcategoria = alien.subcategoria
+            instance.save()
+
 @never_cache
 def coleccion(request):
     form = FiguraForm()
@@ -87,11 +94,13 @@ def coleccion(request):
             form_custom = FiguraCustomForm(request.POST, request.FILES)
             if form_custom.is_valid():
                 figura = form_custom.save()
+                sync_figure_subcategoria(figura)
                 return redirect('coleccion')
         else:
             form = FiguraForm(request.POST, request.FILES)
             if form.is_valid():
                 figura = form.save()
+                sync_figure_subcategoria(figura)
                 return redirect('coleccion')
     
     figuras_classic = get_ordered_figures(Figura.objects.filter(serie='Ben 10', estado_coleccion='coleccion'))
@@ -341,22 +350,38 @@ def base_de_datos(request):
         alien_id = request.POST.get('alien_id')
         alien_nombre = request.POST.get('alien_nombre')
         serie_default = request.POST.get('serie_default', 'Ben 10')
+        subcategoria = request.POST.get('subcategoria', '')
         alien_imagen = request.FILES.get('alien_imagen')
 
         if alien_id:
             alien = get_object_or_404(Alien, id=alien_id)
+            old_nombre = alien.nombre
             if alien_nombre:
                 alien.nombre = alien_nombre
+            alien.serie_default = serie_default
+            alien.subcategoria = subcategoria
+            if alien_imagen:
+                alien.imagen = alien_imagen
+            alien.save()
+            Figura.objects.filter(nombre__iexact=alien.nombre).update(subcategoria=subcategoria)
+            if old_nombre != alien.nombre:
+                Figura.objects.filter(nombre__iexact=old_nombre).update(subcategoria=subcategoria)
+            WishlistItem.objects.filter(nombre__iexact=alien.nombre).update(subcategoria=subcategoria)
+            if old_nombre != alien.nombre:
+                WishlistItem.objects.filter(nombre__iexact=old_nombre).update(subcategoria=subcategoria)
+            return redirect(f'/base-de-datos/?serie={serie_default}')
+        elif alien_nombre:
+            alien, created = Alien.objects.get_or_create(
+                nombre=alien_nombre, 
+                defaults={'serie_default': serie_default, 'subcategoria': subcategoria}
+            )
+            alien.subcategoria = subcategoria
             alien.serie_default = serie_default
             if alien_imagen:
                 alien.imagen = alien_imagen
             alien.save()
-            return redirect(f'/base-de-datos/?serie={serie_default}')
-        elif alien_nombre:
-            alien, created = Alien.objects.get_or_create(nombre=alien_nombre, defaults={'serie_default': serie_default})
-            if alien_imagen:
-                alien.imagen = alien_imagen
-                alien.save()
+            Figura.objects.filter(nombre__iexact=alien.nombre).update(subcategoria=subcategoria)
+            WishlistItem.objects.filter(nombre__iexact=alien.nombre).update(subcategoria=subcategoria)
             return redirect(f'/base-de-datos/?serie={serie_default}')
 
     aliens = Alien.objects.all().order_by('orden_aparicion')
@@ -379,6 +404,7 @@ def base_de_datos(request):
         'total_personajes': total_personajes,
         'total_villanos': total_villanos,
         'serie_choices': Figura.SERIE_CHOICES,
+        'subcategoria_choices': Figura.SUBCATEGORIA_CHOICES,
         'perfil': perfil,
     })
 
@@ -478,11 +504,13 @@ def agregar_a_wishlist(request):
             for nombre in nombres:
                 item = WishlistItem(nombre=nombre, serie=serie)
                 item.save()
+                sync_figure_subcategoria(item)
             return redirect('wishlist')
         elif 'precio' in request.POST:
             form_wishlist_custom = WishlistCustomForm(request.POST, request.FILES)
             if form_wishlist_custom.is_valid():
-                form_wishlist_custom.save()
+                item = form_wishlist_custom.save()
+                sync_figure_subcategoria(item)
                 return redirect('wishlist')
             else:
                 wishlist_items = get_ordered_figures_by_series(WishlistItem.objects.all())
@@ -521,7 +549,8 @@ def agregar_a_wishlist(request):
         else:
             form_wishlist = WishlistItemForm(request.POST)
             if form_wishlist.is_valid():
-                form_wishlist.save()
+                item = form_wishlist.save()
+                sync_figure_subcategoria(item)
                 return redirect('wishlist')
             else:
                 wishlist_items = get_ordered_figures_by_series(WishlistItem.objects.all())
@@ -592,7 +621,10 @@ def mover_a_coleccion(request, wishlist_id):
             figura = form.save(commit=False)
             if not figura.imagen and wishlist_item.imagen:
                 figura.imagen = wishlist_item.imagen
+            if not figura.subcategoria:
+                figura.subcategoria = wishlist_item.subcategoria
             figura.save()
+            sync_figure_subcategoria(figura)
             wishlist_item.delete()
             return redirect('coleccion')
         else:

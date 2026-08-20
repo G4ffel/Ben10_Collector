@@ -119,7 +119,7 @@
                 <span class="error-text" style="color: #ff3333; font-size: 0.8rem; font-family: var(--font-body); margin-top: 4px;">{{ form.tamano.errors.0 }}</span>
               {% endif %}
             </div>
-            <div class="hud-info-box" style="background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; position: relative;">
+            <div class="hud-info-box" id="formSubcategoriaBox" style="display: none; background: rgba(0, 255, 65, 0.02); border: 1px solid rgba(0, 255, 65, 0.1); border-radius: 10px; padding: 10px 18px; flex-direction: column; position: relative;">
               <label for="{{ form.subcategoria.id_for_label }}" style="font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); display: block; letter-spacing: 1px; margin-bottom: 4px; cursor: pointer;">SUBCATEGORÍA</label>
               {{ form.subcategoria }}
               {% if form.subcategoria.errors %}

@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const idInput = document.getElementById('modalAlienIdInput');
   const nombreInput = document.getElementById('modalAlienNombreInput');
   const serieSelect = document.getElementById('modalAlienSerieSelect');
+  const subcategoriaSelect = document.getElementById('modalAlienSubcategoriaSelect');
   const imageLabel = document.getElementById('modalAlienImageLabel');
   
   const previewImg = document.getElementById('modalAlienPreviewImg');
@@ -97,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (idInput) idInput.value = data.id || '';
       if (nombreInput) nombreInput.value = data.nombre || '';
       if (serieSelect) serieSelect.value = data.serie || 'Ben 10';
+      if (subcategoriaSelect) subcategoriaSelect.value = data.subcategoria || '';
       if (previewText) previewText.textContent = data.nombre ? data.nombre.toUpperCase() : 'ESPECIE';
       if (previewImg) {
         previewImg.src = data.imagen || '/media/omnitrix/Ben_10_Omnitrix.png';
@@ -110,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (idInput) idInput.value = '';
       if (nombreInput) nombreInput.value = '';
       if (serieSelect) serieSelect.value = 'Ben 10';
+      if (subcategoriaSelect) subcategoriaSelect.value = '';
       if (previewText) previewText.textContent = "NUEVA ESPECIE";
       if (previewImg) previewImg.src = '/media/omnitrix/Ben_10_Omnitrix.png';
       if (imageLabel) imageLabel.textContent = "SUBIR IMAGEN ALIEN";
@@ -140,9 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = editBtn.getAttribute('data-id');
       const nombre = editBtn.getAttribute('data-nombre');
       const serie = editBtn.getAttribute('data-serie');
+      const subcategoria = editBtn.getAttribute('data-subcategoria');
       const imagen = editBtn.getAttribute('data-imagen');
 
-      openFormModal(true, { id, nombre, serie, imagen });
+      openFormModal(true, { id, nombre, serie, subcategoria, imagen });
     }
   });
 

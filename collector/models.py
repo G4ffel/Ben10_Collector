@@ -148,6 +148,14 @@ class Figura(models.Model):
     def __str__(self):
         return f"{self.nombre} ({self.serie})"
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            from .models import Alien
+            alien_db = Alien.objects.filter(nombre__iexact=self.nombre.strip()).first()
+            if alien_db:
+                self.subcategoria = alien_db.subcategoria
+        super().save(*args, **kwargs)
+
     @property
     def imagen_url(self):
         if self.imagen:
@@ -181,6 +189,13 @@ class Alien(models.Model):
         blank=True, 
         null=True, 
         verbose_name="Imagen por defecto"
+    )
+    subcategoria = models.CharField(
+        max_length=50,
+        choices=Figura.SUBCATEGORIA_CHOICES,
+        default='',
+        blank=True,
+        verbose_name="Subcategoría"
     )
     orden_aparicion = models.IntegerField(default=999, verbose_name="Orden de aparición")
 
@@ -414,6 +429,14 @@ class WishlistItem(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.serie}) [Wishlist]"
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            from .models import Alien
+            alien_db = Alien.objects.filter(nombre__iexact=self.nombre.strip()).first()
+            if alien_db:
+                self.subcategoria = alien_db.subcategoria
+        super().save(*args, **kwargs)
 
     @property
     def imagen_url(self):
